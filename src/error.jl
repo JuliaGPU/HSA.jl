@@ -1,0 +1,22 @@
+export HSAError
+
+type HSAError <: Exception
+    status::hsa_status_t
+end
+
+function show(io::IO, e::HSAError)
+	local message
+	try
+	    message = hsa_status_string(e.status)
+	catch
+		message = ""
+	end
+
+	print(io, typeof(e), "(", e.status, ")", message)
+end
+
+function test_status(status::hsa_status_t)
+	if status & HSA_STATUS_ERROR == HSA_STATUS_ERROR
+        throw(HSAError(status))
+    end
+end
