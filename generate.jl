@@ -21,8 +21,10 @@ clang_includes = [
 ]
 
 excluded_symbols = Set([
-    "HSA_API",
-	"HSA_IMPORT",
+   "HSA_API",
+   "HSA_IMPORT",
+   # Custom wrappers for
+   "hsa_system_get_info",
 ])
 
 const wc = wrap_c.init(
@@ -33,7 +35,7 @@ const wc = wrap_c.init(
 
 wc.clang_includes = clang_includes
 
-wc.header_library = x->:libhsa
+wc.header_library = x-> "\"libhsa-runtime64\""
 
 wc.header_wrapped = (x,y)-> begin
     contains(y,"hsa")
@@ -46,12 +48,16 @@ wc.cursor_wrapped = (name, cursor)-> begin
     elseif endswith(name, "_s") || endswith(name, "_u")
         println("excluded typedef'd struct/union type: ", name)
         return false
+	elseif cindex.name(cursor) == ""
+		return false
 	else
         return true
     end
 end
 
 wc.headers = hsa_hdrs
+
+#wc.options = wrap_c.InternalOptions(true, false, true)
 
 if !isinteractive()
     run(wc)

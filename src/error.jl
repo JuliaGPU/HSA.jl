@@ -8,11 +8,11 @@ function show(io::IO, e::HSAError)
 	local message
 	try
 	    message = hsa_status_string(e.status)
-	catch
-		message = ""
+	catch ex
+		message = sprint(show, ex)
 	end
 
-	print(io, typeof(e), "(", e.status, ")", message)
+	print(io, typeof(e), "(", e.status, ") ", message)
 end
 
 function test_status(status::hsa_status_t)

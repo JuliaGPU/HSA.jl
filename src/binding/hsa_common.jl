@@ -281,12 +281,6 @@ end
 typealias hsa_runtime_alloc_data_callback_t Ptr{Void}
 typealias hsa_ext_brig_profile8_t Uint8
 
-# begin enum ANONYMOUS_1
-typealias ANONYMOUS_1 Uint32
-const HSA_EXT_BRIG_PROFILE_BASE = (uint32)(0)
-const HSA_EXT_BRIG_PROFILE_FULL = (uint32)(1)
-# end enum ANONYMOUS_1
-
 # begin enum hsa_ext_brig_profile_t
 typealias hsa_ext_brig_profile_t Uint32
 const HSA_EXT_BRIG_PROFILE_BASE = (uint32)(0)
@@ -295,12 +289,6 @@ const HSA_EXT_BRIG_PROFILE_FULL = (uint32)(1)
 
 typealias hsa_ext_brig_machine_model8_t Uint8
 
-# begin enum ANONYMOUS_2
-typealias ANONYMOUS_2 Uint32
-const HSA_EXT_BRIG_MACHINE_SMALL = (uint32)(0)
-const HSA_EXT_BRIG_MACHINE_LARGE = (uint32)(1)
-# end enum ANONYMOUS_2
-
 # begin enum hsa_ext_brig_machine_model_t
 typealias hsa_ext_brig_machine_model_t Uint32
 const HSA_EXT_BRIG_MACHINE_SMALL = (uint32)(0)
@@ -308,13 +296,6 @@ const HSA_EXT_BRIG_MACHINE_LARGE = (uint32)(1)
 # end enum hsa_ext_brig_machine_model_t
 
 typealias hsa_ext_brig_section_id32_t Uint32
-
-# begin enum ANONYMOUS_3
-typealias ANONYMOUS_3 Uint32
-const HSA_EXT_BRIG_SECTION_DATA = (uint32)(0)
-const HSA_EXT_BRIG_SECTION_CODE = (uint32)(1)
-const HSA_EXT_BRIG_SECTION_OPERAND = (uint32)(2)
-# end enum ANONYMOUS_3
 
 # begin enum hsa_ext_brig_section_id_t
 typealias hsa_ext_brig_section_id_t Uint32
@@ -354,15 +335,6 @@ end
 typealias hsa_ext_brig_code_section_offset32_t Uint32
 typealias hsa_ext_exception_kind16_t Uint16
 
-# begin enum ANONYMOUS_4
-typealias ANONYMOUS_4 Uint32
-const HSA_EXT_EXCEPTION_INVALID_OPERATION = (uint32)(1)
-const HSA_EXT_EXCEPTION_DIVIDE_BY_ZERO = (uint32)(2)
-const HSA_EXT_EXCEPTION_OVERFLOW = (uint32)(4)
-const HSA_EXT_EXCEPTION_UNDERFLOW = (uint32)(8)
-const HSA_EXT_EXCEPTION_INEXACT = (uint32)(16)
-# end enum ANONYMOUS_4
-
 # begin enum hsa_ext_exception_kind_t
 typealias hsa_ext_exception_kind_t Uint32
 const HSA_EXT_EXCEPTION_INVALID_OPERATION = (uint32)(1)
@@ -373,20 +345,6 @@ const HSA_EXT_EXCEPTION_INEXACT = (uint32)(16)
 # end enum hsa_ext_exception_kind_t
 
 typealias hsa_ext_control_directive_present64_t Uint64
-
-# begin enum ANONYMOUS_5
-typealias ANONYMOUS_5 Uint32
-const HSA_EXT_CONTROL_DIRECTIVE_ENABLE_BREAK_EXCEPTIONS = (uint32)(0)
-const HSA_EXT_CONTROL_DIRECTIVE_ENABLE_DETECT_EXCEPTIONS = (uint32)(1)
-const HSA_EXT_CONTROL_DIRECTIVE_MAX_DYNAMIC_GROUP_SIZE = (uint32)(2)
-const HSA_EXT_CONTROL_DIRECTIVE_MAX_FLAT_GRID_SIZE = (uint32)(4)
-const HSA_EXT_CONTROL_DIRECTIVE_MAX_FLAT_WORKGROUP_SIZE = (uint32)(8)
-const HSA_EXT_CONTROL_DIRECTIVE_REQUESTED_WORKGROUPS_PER_CU = (uint32)(16)
-const HSA_EXT_CONTROL_DIRECTIVE_REQUIRED_GRID_SIZE = (uint32)(32)
-const HSA_EXT_CONTROL_DIRECTIVE_REQUIRED_WORKGROUP_SIZE = (uint32)(64)
-const HSA_EXT_CONTROL_DIRECTIVE_REQUIRED_DIM = (uint32)(128)
-const HSA_EXT_CONTROL_DIRECTIVE_REQUIRE_NO_PARTIAL_WORKGROUPS = (uint32)(256)
-# end enum ANONYMOUS_5
 
 # begin enum hsa_ext_control_directive_present_t
 typealias hsa_ext_control_directive_present_t Uint32
@@ -498,17 +456,6 @@ end
 
 typealias hsa_ext_code_kind32_t Uint32
 
-# begin enum ANONYMOUS_6
-typealias ANONYMOUS_6 Uint32
-const HSA_EXT_CODE_NONE = (uint32)(0)
-const HSA_EXT_CODE_KERNEL = (uint32)(1)
-const HSA_EXT_CODE_INDIRECT_FUNCTION = (uint32)(2)
-const HSA_EXT_CODE_RUNTIME_FIRST = (uint32)(1073741824)
-const HSA_EXT_CODE_RUNTIME_LAST = (uint32)(2147483647)
-const HSA_EXT_CODE_VENDOR_FIRST = (uint32)(0x0000000080000000)
-const HSA_EXT_CODE_VENDOR_LAST = (uint32)(0x00000000ffffffff)
-# end enum ANONYMOUS_6
-
 # begin enum hsa_ext_code_kind_t
 typealias hsa_ext_code_kind_t Uint32
 const HSA_EXT_CODE_NONE = (uint32)(0)
@@ -521,11 +468,6 @@ const HSA_EXT_CODE_VENDOR_LAST = (uint32)(0x00000000ffffffff)
 # end enum hsa_ext_code_kind_t
 
 typealias hsa_ext_program_call_convention_id32_t Uint32
-
-# begin enum ANONYMOUS_7
-typealias ANONYMOUS_7 Cint
-const HSA_EXT_PROGRAM_CALL_CONVENTION_FINALIZER_DETERMINED = (int32)(-1)
-# end enum ANONYMOUS_7
 
 # begin enum hsa_ext_program_call_convention_id_t
 typealias hsa_ext_program_call_convention_id_t Cint
@@ -764,64 +706,6 @@ end
 zero(::Type{Array_4_Cfloat}) = Array_4_Cfloat(fill(zero(Cfloat),4)...)
 
 # Skipping MacroDefinition: HSA_EXT_BIT_MASK ( shift , width ) ( ( ( 1 << width ) - 1 ) << shift )
-
-# begin enum ANONYMOUS_8
-typealias ANONYMOUS_8 Uint32
-const HSA_EXT_BRIG_PROFILE_BASE = (uint32)(0)
-const HSA_EXT_BRIG_PROFILE_FULL = (uint32)(1)
-# end enum ANONYMOUS_8
-
-# begin enum ANONYMOUS_9
-typealias ANONYMOUS_9 Uint32
-const HSA_EXT_BRIG_MACHINE_SMALL = (uint32)(0)
-const HSA_EXT_BRIG_MACHINE_LARGE = (uint32)(1)
-# end enum ANONYMOUS_9
-
-# begin enum ANONYMOUS_10
-typealias ANONYMOUS_10 Uint32
-const HSA_EXT_BRIG_SECTION_DATA = (uint32)(0)
-const HSA_EXT_BRIG_SECTION_CODE = (uint32)(1)
-const HSA_EXT_BRIG_SECTION_OPERAND = (uint32)(2)
-# end enum ANONYMOUS_10
-
-# begin enum ANONYMOUS_11
-typealias ANONYMOUS_11 Uint32
-const HSA_EXT_EXCEPTION_INVALID_OPERATION = (uint32)(1)
-const HSA_EXT_EXCEPTION_DIVIDE_BY_ZERO = (uint32)(2)
-const HSA_EXT_EXCEPTION_OVERFLOW = (uint32)(4)
-const HSA_EXT_EXCEPTION_UNDERFLOW = (uint32)(8)
-const HSA_EXT_EXCEPTION_INEXACT = (uint32)(16)
-# end enum ANONYMOUS_11
-
-# begin enum ANONYMOUS_12
-typealias ANONYMOUS_12 Uint32
-const HSA_EXT_CONTROL_DIRECTIVE_ENABLE_BREAK_EXCEPTIONS = (uint32)(0)
-const HSA_EXT_CONTROL_DIRECTIVE_ENABLE_DETECT_EXCEPTIONS = (uint32)(1)
-const HSA_EXT_CONTROL_DIRECTIVE_MAX_DYNAMIC_GROUP_SIZE = (uint32)(2)
-const HSA_EXT_CONTROL_DIRECTIVE_MAX_FLAT_GRID_SIZE = (uint32)(4)
-const HSA_EXT_CONTROL_DIRECTIVE_MAX_FLAT_WORKGROUP_SIZE = (uint32)(8)
-const HSA_EXT_CONTROL_DIRECTIVE_REQUESTED_WORKGROUPS_PER_CU = (uint32)(16)
-const HSA_EXT_CONTROL_DIRECTIVE_REQUIRED_GRID_SIZE = (uint32)(32)
-const HSA_EXT_CONTROL_DIRECTIVE_REQUIRED_WORKGROUP_SIZE = (uint32)(64)
-const HSA_EXT_CONTROL_DIRECTIVE_REQUIRED_DIM = (uint32)(128)
-const HSA_EXT_CONTROL_DIRECTIVE_REQUIRE_NO_PARTIAL_WORKGROUPS = (uint32)(256)
-# end enum ANONYMOUS_12
-
-# begin enum ANONYMOUS_13
-typealias ANONYMOUS_13 Uint32
-const HSA_EXT_CODE_NONE = (uint32)(0)
-const HSA_EXT_CODE_KERNEL = (uint32)(1)
-const HSA_EXT_CODE_INDIRECT_FUNCTION = (uint32)(2)
-const HSA_EXT_CODE_RUNTIME_FIRST = (uint32)(1073741824)
-const HSA_EXT_CODE_RUNTIME_LAST = (uint32)(2147483647)
-const HSA_EXT_CODE_VENDOR_FIRST = (uint32)(0x0000000080000000)
-const HSA_EXT_CODE_VENDOR_LAST = (uint32)(0x00000000ffffffff)
-# end enum ANONYMOUS_13
-
-# begin enum ANONYMOUS_14
-typealias ANONYMOUS_14 Cint
-const HSA_EXT_PROGRAM_CALL_CONVENTION_FINALIZER_DETERMINED = (int32)(-1)
-# end enum ANONYMOUS_14
 
 typealias hsa_ext_symbol_definition_callback_t Ptr{Void}
 
@@ -1100,42 +984,12 @@ typealias hsa_amd_call_convention32_t Uint32
 typealias hsa_amd_profile8_t Uint8
 typealias hsa_amd_machine_model8_t Uint8
 
-# begin enum ANONYMOUS_15
-typealias ANONYMOUS_15 Uint32
-const HSA_EXT_CODE_TYPE_NONE = (uint32)(0)
-const HSA_EXT_CODE_TYPE_KERNEL = (uint32)(1)
-const HSA_EXT_CODE_TYPE_INDIRECT_FUNCTION = (uint32)(2)
-# end enum ANONYMOUS_15
-
 # begin enum hsa_amd_code_type_t
 typealias hsa_amd_code_type_t Uint32
 const HSA_EXT_CODE_TYPE_NONE = (uint32)(0)
 const HSA_EXT_CODE_TYPE_KERNEL = (uint32)(1)
 const HSA_EXT_CODE_TYPE_INDIRECT_FUNCTION = (uint32)(2)
 # end enum hsa_amd_code_type_t
-
-# begin enum ANONYMOUS_16
-typealias ANONYMOUS_16 Uint32
-const HSA_EXT_CODE_UNIT_INFO_VERSION = (uint32)(1)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_COUNT = (uint32)(3)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_CODE = (uint32)(4)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_CODE_TYPE = (uint32)(5)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_NAME = (uint32)(6)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_CALL_CONVENTION = (uint32)(7)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_GROUP_SEGMENT_SIZE = (uint32)(8)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_KERNARG_SEGMENT_SIZE = (uint32)(9)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_PRIVATE_SEGMENT_SIZE = (uint32)(10)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_PRIVATE_SEGMENT_DYNAMIC_CALL_STACK = (uint32)(11)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_GROUP_SEGMENT_ALIGNMENT = (uint32)(15)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_KERNARG_SEGMENT_ALIGNMENT = (uint32)(16)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_PRIVATE_SEGMENT_ALIGNMENT = (uint32)(17)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_WAVEFRONT_SIZE = (uint32)(18)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_WORKGROUP_FBARRIER_COUNT = (uint32)(19)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_PROFILE = (uint32)(20)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_MACHINE_MODEL = (uint32)(21)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_HSAIL_VERSION_MAJOR = (uint32)(22)
-const HSA_EXT_CODE_UNIT_INFO_CODE_ENTITY_HSAIL_VERSION_MINOR = (uint32)(23)
-# end enum ANONYMOUS_16
 
 # begin enum hsa_amd_code_unit_info_t
 typealias hsa_amd_code_unit_info_t Uint32
