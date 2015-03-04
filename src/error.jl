@@ -7,7 +7,7 @@ end
 function show(io::IO, e::HSAError)
 	local message
 	try
-	    message = hsa_status_string(e.status)
+	    message = status_string(e.status)
 	catch ex
 		message = sprint(show, ex)
 	end

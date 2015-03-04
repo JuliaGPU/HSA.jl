@@ -1,5 +1,7 @@
 module Test
 
-include("runtime.jl")
+include("common.jl")
 
+include("runtime.jl")
+include("agent.jl")
 end

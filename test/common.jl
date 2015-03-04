@@ -1,0 +1,1 @@
+NewRT() = HSA.Runtime()

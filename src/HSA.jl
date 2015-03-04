@@ -1,5 +1,11 @@
 module HSA
 
-# package code goes here
+include("binding.jl")
 
-end # module
+import Base.show
+
+include("error.jl")
+include("runtime.jl")
+include("agent.jl")
+
+end

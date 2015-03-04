@@ -1,8 +1,6 @@
 using HSA
 using FactCheck
 
-NewRT() = HSA.Runtime()
-
 facts("The Runtime") do
 
     context("Holds a reference to the HSA Runtime while it lives") do
@@ -31,6 +29,7 @@ facts("The Misc Functions") do
 
     context("Can retrieve status strings") do
         @fact HSA.status_string(HSA.HSA_STATUS_SUCCESS) => x -> isa(x, String)
+        @fact HSA.status_string(HSA.HSA_STATUS_ERROR_INVALID_ARGUMENT) => x -> contains(x, "argument")
     end
 
     finalize(rt)

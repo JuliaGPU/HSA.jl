@@ -25,6 +25,7 @@ excluded_symbols = Set([
    "HSA_IMPORT",
    # Custom wrappers for
    "hsa_system_get_info",
+   "hsa_iterate_agents",
 ])
 
 const wc = wrap_c.init(
@@ -35,7 +36,7 @@ const wc = wrap_c.init(
 
 wc.clang_includes = clang_includes
 
-wc.header_library = x-> "\"libhsa-runtime64\""
+wc.header_library = x-> "libhsa"
 
 wc.header_wrapped = (x,y)-> begin
     contains(y,"hsa")
