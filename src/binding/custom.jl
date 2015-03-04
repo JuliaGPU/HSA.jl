@@ -1,6 +1,6 @@
 function getter(name::Symbol, argnames, argtypes, name_mangling, map)
     function is_type_tuple(t)
-    	if !isa(t, ())
+    	if !isa(t, Tuple)
     		return false
     	end
 
@@ -19,10 +19,25 @@ function getter(name::Symbol, argnames, argtypes, name_mangling, map)
     	local setup_code, convert_code
 
     	if return_type == String
-              setup_code = :(value = Ptr{Uint8}[0])
+            setup_code = :(value = Ptr{Uint8}[0])
     		convert_code = :(value = bytestring(value[1]))
+        elseif return_type == hsa_dim3_t
+            setup_code = :(value = Array(Uint32, 3))
+            convert_code = :(value = convert(hsa_dim3_t, value))
     	elseif isa(return_type, Tuple)
-            if is_type_tuple(return_type)
+            if return_type == ()
+                error("return type spec may not be the empty tuple")
+            elseif is_type_tuple(return_type)
+                if all(x -> x == first(return_type), return_type)
+                    # tuple of all the same types
+                    el_type = first(return_type)
+                    el_count = length(return_type)
+
+                    setup_code = :(value = Array($el_type, $el_count))
+                    convert_code = :(value = tuple(value...))
+                else
+                    error("heterogeneous tuple return type is unsupported")
+                end
     		elseif length(return_type) == 2
     			t = return_type[1]
     			targ = return_type[2]
@@ -33,7 +48,7 @@ function getter(name::Symbol, argnames, argtypes, name_mangling, map)
     			end
     		end
     	else
-    		setup_code = :(value = $return_type[0])
+    		setup_code = :(value = Array($return_type,1))
     		convert_code = :(value = value[1])
     	end
 
@@ -76,7 +91,9 @@ function getter(name::Symbol, argnames, argtypes, name_mangling, map)
     				return value
     			end
     		)
-        if endswith(getter_name, "name")
+
+        # Debug output of generated code
+        if endswith(getter_name, "max_dim")
             println(getter_code)
         end
 
@@ -106,7 +123,7 @@ getter(:hsa_agent_get_info,
     :HSA_AGENT_INFO_VENDOR_NAME => (String,64),
     :HSA_AGENT_INFO_FEATURE => hsa_agent_feature_t,
     :HSA_AGENT_INFO_WAVEFRONT_SIZE => Uint32,
-#   :HSA_AGENT_INFO_WORKGROUP_MAX_DIM => (Uint16, Uint16, Uint16)
+    :HSA_AGENT_INFO_WORKGROUP_MAX_DIM => (Uint16, Uint16, Uint16),
     :HSA_AGENT_INFO_WORKGROUP_MAX_SIZE => Uint32,
     :HSA_AGENT_INFO_GRID_MAX_DIM => hsa_dim3_t,
     :HSA_AGENT_INFO_GRID_MAX_SIZE => Uint32,
@@ -116,7 +133,7 @@ getter(:hsa_agent_get_info,
     :HSA_AGENT_INFO_QUEUE_TYPE => hsa_queue_type_t,
     :HSA_AGENT_INFO_NODE => Uint32,
     :HSA_AGENT_INFO_DEVICE => hsa_device_type_t,
-#   :HSA_AGENT_INFO_CACHE_SIZE => (Uint32, Uint32, Uint32, Uint32),
+    :HSA_AGENT_INFO_CACHE_SIZE => (Uint32, Uint32, Uint32, Uint32),
     :HSA_EXT_AGENT_INFO_IMAGE1D_MAX_DIM => hsa_dim3_t,
     :HSA_EXT_AGENT_INFO_IMAGE2D_MAX_DIM => hsa_dim3_t,
     :HSA_EXT_AGENT_INFO_IMAGE3D_MAX_DIM => hsa_dim3_t,
@@ -126,6 +143,16 @@ getter(:hsa_agent_get_info,
     :HSA_EXT_AGENT_INFO_SAMPLER_MAX => Uint32,
     )
 )
+
+import Base.convert
+
+function convert(::Type{hsa_dim3_t}, values :: Vector{Uint32})
+    if length(values) != 3
+        error("invalid input argument)")
+    end
+
+    hsa_dim3_t(values...)
+end
 
 function status_string(status::hsa_status_t)
     string = Ptr{Uint8}[0]

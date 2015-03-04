@@ -61,6 +61,25 @@ facts("The Agents") do
 		context("property by property") do
 			name = HSA.agent_info_name(a)
             @fact length(name) => greater_than(1)
+	        @fact HSA.agent_info_name(a) => anything
+	        @fact HSA.agent_info_vendor_name(a) => anything
+	        @fact HSA.agent_info_feature(a) => anything
+	        @fact HSA.agent_info_wavefront_size(a) => anything
+
+            wg_dim = HSA.agent_info_workgroup_max_dim(a)
+	        @fact wg_dim => anything
+            @fact typeof(wg_dim) => (Uint16, Uint16, Uint16)
+
+	        @fact HSA.agent_info_workgroup_max_size(a) => anything
+	        @fact HSA.agent_info_grid_max_dim(a) => anything
+	        @fact HSA.agent_info_grid_max_size(a) => anything
+	        @fact HSA.agent_info_fbarrier_max_size(a) => anything
+	        @fact HSA.agent_info_queues_max(a) => anything
+	        @fact HSA.agent_info_queue_max_size(a) => anything
+	        @fact HSA.agent_info_queue_type(a) => anything
+	        @fact HSA.agent_info_node(a) => anything
+	        @fact HSA.agent_info_device(a) => anything
+	        @fact HSA.agent_info_cache_size(a) => anything
 		end
 
 		context("collectively for all basic agent info") do

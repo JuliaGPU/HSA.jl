@@ -103,7 +103,7 @@ function AgentInfo(a :: Agent)
 		agent_info_grid_max_size(a),
 		agent_info_fbarrier_max_size(a),
 		agent_info_queues_max(a),
-		agent_info_queues_max_size(a),
+		agent_info_queue_max_size(a),
 		agent_info_queue_type(a),
 		agent_info_node(a),
 		agent_info_device(a),
