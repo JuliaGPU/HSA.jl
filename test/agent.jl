@@ -8,7 +8,7 @@ facts("The Agents") do
         agents = Array(HSA.Agent,0)
 
 		context("with a callback returning true to continue") do
-			HSA.iterate_agents(a -> begin
+			HSA.iterate_agents(rt, a -> begin
 				push!(agents, a)
 				true # continue
 			end)
@@ -21,7 +21,7 @@ facts("The Agents") do
 		context("with a callback returning anything to continue") do
             count = 0
 
-			HSA.iterate_agents(a -> begin
+			HSA.iterate_agents(rt, a -> begin
                 count += 1
 			end)
 
@@ -31,7 +31,7 @@ facts("The Agents") do
 		context("with a callback returning false to terminate early") do
             count = 0
 
-			HSA.iterate_agents(a -> begin count += 1; return false end)
+			HSA.iterate_agents(rt, a -> begin count += 1; return false end)
 
             if size(agents,1) > 0
 				@fact count => 1
@@ -41,22 +41,22 @@ facts("The Agents") do
 		end
 
 		context("rethrowing exceptions from the callback") do
-		    @fact_throws HSA.iterate_agents(a -> error("testerror"))
+		    @fact_throws HSA.iterate_agents(rt, a -> error("testerror"))
 		end
 	end
 
 	context("can all be retrieved as an array") do
         count = 0
 
-		HSA.iterate_agents(a -> begin count += 1 end)
+		HSA.iterate_agents(rt, a -> begin count += 1 end)
 
-		agents = HSA.all_agents()
+		agents = HSA.all_agents(rt)
 
         @fact size(agents,1) => count
 	end
 
 	context("can be queried for information") do
-        a = HSA.all_agents()[1]
+        a = HSA.all_agents(rt)[1]
 
 		context("property by property") do
 			name = HSA.agent_info_name(a)

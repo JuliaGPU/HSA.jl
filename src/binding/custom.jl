@@ -1,59 +1,71 @@
-function getter(name::Symbol, argnames, argtypes, name_mangling, map)
-    function is_type_tuple(t)
-    	if !isa(t, Tuple)
-    		return false
-    	end
+function getter_code_for(var :: Symbol, return_type)
+    local setup_code, convert_code
 
-    	for x in t
-    		if !isa(x, DataType)
-    			return false
-    		end
-    	end
-    	return true
+    if return_type == String
+        setup_code = :($var = Ptr{Uint8}[0])
+        convert_code = :($var = bytestring($var[1]))
+    elseif return_type == hsa_dim3_t
+        setup_code = :($var = Array(Uint32, 3))
+        convert_code = :($var = convert(hsa_dim3_t, $var))
+    elseif isa(return_type, Tuple)
+        if return_type == ()
+            error("return type spec may not be the empty tuple")
+        elseif is_type_tuple(return_type)
+            if all(x -> x == first(return_type), return_type)
+                # tuple of all the same types
+                el_type = first(return_type)
+                el_count = length(return_type)
+
+                setup_code = :($var = Array($el_type, $el_count))
+                convert_code = :($var = tuple($var...))
+            else
+                error("heterogeneous tuple return type is unsupported")
+            end
+        elseif length(return_type) == 2
+            t = return_type[1]
+            targ = return_type[2]
+
+            if t == String # max length string
+                setup_code = :($var = Array(Uint8, $targ))
+                convert_code = :($var = ascii($var))
+            end
+        end
+    else
+        setup_code = :($var = Array($return_type,1))
+        convert_code = :($var = $var[1])
     end
 
-    for key in keys(map)
-    	getter_name = name_mangling(key)
+    return setup_code, convert_code
+end
+
+function is_type_tuple(t)
+    if !isa(t, Tuple)
+        return false
+    end
+
+    for x in t
+        if !isa(x, DataType)
+            return false
+        end
+    end
+    return true
+end
+
+function getter_name(discrim :: Symbol)
+    replace(lowercase(string(discrim)), "hsa_", "")
+end
+
+const getter_arg_type_map = Dict{DataType, DataType}()
+
+function getter(c_name::Symbol, argnames, argtypes, map)
+   for key in keys(map)
+    	jl_name = getter_name(key)
         return_type = map[key]
 
-    	local setup_code, convert_code
-
-    	if return_type == String
-            setup_code = :(value = Ptr{Uint8}[0])
-    		convert_code = :(value = bytestring(value[1]))
-        elseif return_type == hsa_dim3_t
-            setup_code = :(value = Array(Uint32, 3))
-            convert_code = :(value = convert(hsa_dim3_t, value))
-    	elseif isa(return_type, Tuple)
-            if return_type == ()
-                error("return type spec may not be the empty tuple")
-            elseif is_type_tuple(return_type)
-                if all(x -> x == first(return_type), return_type)
-                    # tuple of all the same types
-                    el_type = first(return_type)
-                    el_count = length(return_type)
-
-                    setup_code = :(value = Array($el_type, $el_count))
-                    convert_code = :(value = tuple(value...))
-                else
-                    error("heterogeneous tuple return type is unsupported")
-                end
-    		elseif length(return_type) == 2
-    			t = return_type[1]
-    			targ = return_type[2]
-
-    			if t == String # max length string
-    				setup_code = :(value = Array(Uint8, $targ))
-             		convert_code = :(value = ascii(value))
-    			end
-    		end
-    	else
-    		setup_code = :(value = Array($return_type,1))
-    		convert_code = :(value = value[1])
-    	end
+        setup_code, convert_code = getter_code_for(:value, return_type)
 
         ccall_args = [
-    	    Expr(:tuple, Expr(:quote, name), :libhsa),
+    	    Expr(:tuple, Expr(:quote, c_name), :libhsa),
     		:hsa_status_t,
     		Expr(:tuple, argtypes...)
     	]
@@ -64,6 +76,7 @@ function getter(name::Symbol, argnames, argtypes, name_mangling, map)
     	for i in 1:size(argnames,1)-2
     		arg_name = argnames[i]
     		arg_type = argtypes[i]
+            arg_type = get(getter_arg_type_map, arg_type, arg_type)
 
     		arg_exp = :($arg_name :: $arg_type)
 
@@ -76,7 +89,7 @@ function getter(name::Symbol, argnames, argtypes, name_mangling, map)
     	getter_ccall = Expr(:ccall, ccall_args...)
 
         getter_code = Expr(:function,
-    		    Expr(:call, symbol(getter_name), getter_args...),
+    		    Expr(:call, symbol(jl_name), getter_args...),
     			quote
     				local value
 
@@ -93,7 +106,7 @@ function getter(name::Symbol, argnames, argtypes, name_mangling, map)
     		)
 
         # Debug output of generated code
-        if endswith(getter_name, "max_dim")
+        if false && endswith(jl_name, "max_dim")
             println(getter_code)
         end
 
@@ -104,7 +117,6 @@ end
 getter(:hsa_system_get_info,
     (:info, :data),
     (hsa_system_info_t, Ptr{Void}),
-    n -> replace(lowercase(string(n)), "hsa_", ""),
     Dict(
     :HSA_SYSTEM_INFO_VERSION_MAJOR => Cushort,
     :HSA_SYSTEM_INFO_VERSION_MINOR => Cushort,
@@ -114,35 +126,7 @@ getter(:hsa_system_get_info,
     )
 )
 
-getter(:hsa_agent_get_info,
-    (:agent, :info, :data),
-    (hsa_agent_t, hsa_agent_info_t, Ptr{Void}),
-    n -> replace(lowercase(string(n)), "hsa_", ""),
-    Dict(
-    :HSA_AGENT_INFO_NAME => (String,64),
-    :HSA_AGENT_INFO_VENDOR_NAME => (String,64),
-    :HSA_AGENT_INFO_FEATURE => hsa_agent_feature_t,
-    :HSA_AGENT_INFO_WAVEFRONT_SIZE => Uint32,
-    :HSA_AGENT_INFO_WORKGROUP_MAX_DIM => (Uint16, Uint16, Uint16),
-    :HSA_AGENT_INFO_WORKGROUP_MAX_SIZE => Uint32,
-    :HSA_AGENT_INFO_GRID_MAX_DIM => hsa_dim3_t,
-    :HSA_AGENT_INFO_GRID_MAX_SIZE => Uint32,
-    :HSA_AGENT_INFO_FBARRIER_MAX_SIZE => Uint32,
-    :HSA_AGENT_INFO_QUEUES_MAX => Uint32,
-    :HSA_AGENT_INFO_QUEUE_MAX_SIZE => Uint32,
-    :HSA_AGENT_INFO_QUEUE_TYPE => hsa_queue_type_t,
-    :HSA_AGENT_INFO_NODE => Uint32,
-    :HSA_AGENT_INFO_DEVICE => hsa_device_type_t,
-    :HSA_AGENT_INFO_CACHE_SIZE => (Uint32, Uint32, Uint32, Uint32),
-    :HSA_EXT_AGENT_INFO_IMAGE1D_MAX_DIM => hsa_dim3_t,
-    :HSA_EXT_AGENT_INFO_IMAGE2D_MAX_DIM => hsa_dim3_t,
-    :HSA_EXT_AGENT_INFO_IMAGE3D_MAX_DIM => hsa_dim3_t,
-    :HSA_EXT_AGENT_INFO_IMAGE_ARRAY_MAX_SIZE => Uint32,
-    :HSA_EXT_AGENT_INFO_IMAGE_RD_MAX => Uint32,
-    :HSA_EXT_AGENT_INFO_IMAGE_RDWR_MAX => Uint32,
-    :HSA_EXT_AGENT_INFO_SAMPLER_MAX => Uint32,
-    )
-)
+
 
 import Base.convert
 

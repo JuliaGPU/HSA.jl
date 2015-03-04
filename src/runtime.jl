@@ -12,8 +12,10 @@ type Runtime
 end
 
 function finalize_runtime(r::Runtime)
-    r.is_alive = false
-    hsa_shut_down()
+    if r.is_alive
+        hsa_shut_down()
+        r.is_alive = false
+    end
 end
 
 
