@@ -71,19 +71,28 @@ function iterate_agents(rt::Runtime, callback::Function)
 	    iterate_agents_cb_ptr, state_ptr)
 
 	if !isnull(state.err)
-		throw(err)
+		rethrow(err)
 	end
 
 	test_status(err)
 end
 
-function all_agents(rt :: Runtime)
+function all_agents(rt :: Runtime;
+	feat :: hsa_agent_feature_t = (hsa_agent_feature_t)(0),
+	dev :: hsa_device_type_t = (hsa_device_type_t)(0))
 	agents = Array(HSA.Agent,0)
 
-	HSA.iterate_agents(rt, a -> begin
-		push!(agents, a)
+    filter_agents = a -> begin
+	    a_feat = HSA.agent_info_feature(a)
+		a_dev = HSA.agent_info_device(a)
+	    if a_feat & feat == feat &&
+	     	a_dev & dev == dev
+		    push!(agents, a)
+	    end
 		true # continue
-	end)
+	end
+
+ 	HSA.iterate_agents(rt, filter_agents)
 
 	return agents
 end

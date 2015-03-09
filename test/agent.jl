@@ -55,6 +55,21 @@ facts("The Agents") do
         @fact size(agents,1) => count
 	end
 
+	context("can be retrieved by device type") do
+		count = 0
+		t = HSA.HSA_DEVICE_TYPE_CPU
+
+		HSA.iterate_agents(rt, a -> begin
+			if HSA.agent_info_device(a) & t == t
+	            count += 1
+		    end
+    	end)
+
+		agents = HSA.all_agents(rt, dev = t)
+
+        @fact size(agents,1) => count
+	end
+
 	context("can be queried for information") do
         a = HSA.all_agents(rt)[1]
 

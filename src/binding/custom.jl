@@ -114,6 +114,31 @@ function getter(c_name::Symbol, argnames, argtypes, map)
     end
 end
 
+function field_getter(
+    prefix :: Symbol,
+    struct_type :: DataType,
+    map :: Dict{Symbol, (DataType, Int64)})
+    for key in keys(map)
+    	jl_name = symbol(prefix, key)
+        field_type, field_offset = map[key]
+        field_offset = convert(Uint64, field_offset)
+
+        getter_code = quote
+            function $jl_name(ptr::Ptr{$struct_type})
+                field_ptr = convert(Ptr{$field_type}, ptr + $field_offset)
+                return unsafe_load(field_ptr)
+   			end
+        end
+
+        # Debug output of generated code
+        if false && endswith(string(jl_name), "size")
+            println(getter_code)
+        end
+
+    	eval(getter_code)
+    end
+end
+
 getter(:hsa_system_get_info,
     (:info, :data),
     (hsa_system_info_t, Ptr{Void}),
@@ -140,6 +165,7 @@ end
 
 function status_string(status::hsa_status_t)
     string = Ptr{Uint8}[0]
+
     err = ccall((:hsa_status_string,libhsa),hsa_status_t,(hsa_status_t,Ptr{Ptr{Uint8}}),status,string)
 
     # manually test for error
