@@ -138,11 +138,11 @@ function load(signal::Signal,::Type{Val{Acquire}})
     ccall((:hsa_signal_load_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
 end
 
-function store(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_store_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function store(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_store_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
@@ -154,115 +154,115 @@ function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hs
     ccall((:hsa_signal_wait_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_expectancy_t),signal,condition,compare_value,timeout_hint,wait_expectancy_hint)
 end
 
-function and(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_and_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function and(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_and_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function and(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_and_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function and(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_and_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function or(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_or_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function or(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_or_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function or(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_or_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function or(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_or_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_xor_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_xor_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_xor_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_xor_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function add(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_add_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function add(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_add_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function add(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_add_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function add(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_add_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_subtract_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_subtract_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_subtract_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_subtract_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_exchange_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_exchange_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_exchange_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_exchange_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_cas_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_cas_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_cas_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_cas_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
 end
 
@@ -278,40 +278,40 @@ function load(signal::Signal)
     load(signal,Val{Acquire})
 end
 
-function store(signal::Signal,value::hsa_signal_value_t)
-    store(signal,value,Val{Release})
+function store!(signal::Signal,value::hsa_signal_value_t)
+    store!(signal,value,Val{Release})
 end
 
 function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_expectancy_hint::hsa_wait_expectancy_t)
     wait(signal,condition,compare_value,timeout_hint,wait_expectancy_hint,Val{Acquire})
 end
 
-function and(signal::Signal,value::hsa_signal_value_t)
-    and(signal,value,Val{AcquRel})
+function and!(signal::Signal,value::hsa_signal_value_t)
+    and!(signal,value,Val{AcquRel})
 end
 
-function or(signal::Signal,value::hsa_signal_value_t)
-    or(signal,value,Val{AcquRel})
+function or!(signal::Signal,value::hsa_signal_value_t)
+    or!(signal,value,Val{AcquRel})
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t)
-    xor(signal,value,Val{AcquRel})
+function xor!(signal::Signal,value::hsa_signal_value_t)
+    xor!(signal,value,Val{AcquRel})
 end
 
-function add(signal::Signal,value::hsa_signal_value_t)
-    add(signal,value,Val{AcquRel})
+function add!(signal::Signal,value::hsa_signal_value_t)
+    add!(signal,value,Val{AcquRel})
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t)
-    subtract(signal,value,Val{AcquRel})
+function subtract!(signal::Signal,value::hsa_signal_value_t)
+    subtract!(signal,value,Val{AcquRel})
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t)
-    exchange(signal,value,Val{AcquRel})
+function exchange!(signal::Signal,value::hsa_signal_value_t)
+    exchange!(signal,value,Val{AcquRel})
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t)
-    cas(signal,expected,value,Val{AcquRel})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t)
+    cas!(signal,expected,value,Val{AcquRel})
 end
 # Julia wrapper for header: ../runtime/inc/hsa_ext_finalize.h
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
@@ -576,11 +576,11 @@ function load(signal::Signal,::Type{Val{Acquire}})
     ccall((:hsa_signal_load_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
 end
 
-function store(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_store_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function store(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_store_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
@@ -592,115 +592,115 @@ function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hs
     ccall((:hsa_signal_wait_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_expectancy_t),signal,condition,compare_value,timeout_hint,wait_expectancy_hint)
 end
 
-function and(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_and_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function and(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_and_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function and(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_and_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function and(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_and_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function or(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_or_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function or(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_or_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function or(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_or_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function or(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_or_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_xor_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_xor_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_xor_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_xor_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function add(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_add_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function add(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_add_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function add(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_add_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function add(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_add_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_subtract_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_subtract_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_subtract_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_subtract_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_exchange_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_exchange_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_exchange_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_exchange_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_cas_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_cas_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_cas_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_cas_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
 end
 
@@ -768,40 +768,40 @@ function load(signal::Signal)
     load(signal,Val{Acquire})
 end
 
-function store(signal::Signal,value::hsa_signal_value_t)
-    store(signal,value,Val{Release})
+function store!(signal::Signal,value::hsa_signal_value_t)
+    store!(signal,value,Val{Release})
 end
 
 function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_expectancy_hint::hsa_wait_expectancy_t)
     wait(signal,condition,compare_value,timeout_hint,wait_expectancy_hint,Val{Acquire})
 end
 
-function and(signal::Signal,value::hsa_signal_value_t)
-    and(signal,value,Val{AcquRel})
+function and!(signal::Signal,value::hsa_signal_value_t)
+    and!(signal,value,Val{AcquRel})
 end
 
-function or(signal::Signal,value::hsa_signal_value_t)
-    or(signal,value,Val{AcquRel})
+function or!(signal::Signal,value::hsa_signal_value_t)
+    or!(signal,value,Val{AcquRel})
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t)
-    xor(signal,value,Val{AcquRel})
+function xor!(signal::Signal,value::hsa_signal_value_t)
+    xor!(signal,value,Val{AcquRel})
 end
 
-function add(signal::Signal,value::hsa_signal_value_t)
-    add(signal,value,Val{AcquRel})
+function add!(signal::Signal,value::hsa_signal_value_t)
+    add!(signal,value,Val{AcquRel})
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t)
-    subtract(signal,value,Val{AcquRel})
+function subtract!(signal::Signal,value::hsa_signal_value_t)
+    subtract!(signal,value,Val{AcquRel})
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t)
-    exchange(signal,value,Val{AcquRel})
+function exchange!(signal::Signal,value::hsa_signal_value_t)
+    exchange!(signal,value,Val{AcquRel})
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t)
-    cas(signal,expected,value,Val{AcquRel})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t)
+    cas!(signal,expected,value,Val{AcquRel})
 end
 # Julia wrapper for header: ../runtime/inc/hsa_ext_amd.h
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
@@ -943,11 +943,11 @@ function load(signal::Signal,::Type{Val{Acquire}})
     ccall((:hsa_signal_load_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
 end
 
-function store(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_store_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function store(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_store_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
@@ -959,115 +959,115 @@ function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hs
     ccall((:hsa_signal_wait_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_expectancy_t),signal,condition,compare_value,timeout_hint,wait_expectancy_hint)
 end
 
-function and(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_and_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function and(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_and_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function and(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_and_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function and(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_and_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function or(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_or_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function or(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_or_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function or(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_or_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function or(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_or_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_xor_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_xor_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_xor_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_xor_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function add(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_add_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function add(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_add_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function add(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_add_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function add(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_add_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_subtract_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_subtract_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_subtract_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_subtract_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_exchange_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_exchange_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_exchange_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_exchange_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
     ccall((:hsa_signal_cas_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
     ccall((:hsa_signal_cas_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
     ccall((:hsa_signal_cas_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
     ccall((:hsa_signal_cas_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
 end
 
@@ -1299,38 +1299,38 @@ function load(signal::Signal)
     load(signal,Val{Acquire})
 end
 
-function store(signal::Signal,value::hsa_signal_value_t)
-    store(signal,value,Val{Release})
+function store!(signal::Signal,value::hsa_signal_value_t)
+    store!(signal,value,Val{Release})
 end
 
 function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_expectancy_hint::hsa_wait_expectancy_t)
     wait(signal,condition,compare_value,timeout_hint,wait_expectancy_hint,Val{Acquire})
 end
 
-function and(signal::Signal,value::hsa_signal_value_t)
-    and(signal,value,Val{AcquRel})
+function and!(signal::Signal,value::hsa_signal_value_t)
+    and!(signal,value,Val{AcquRel})
 end
 
-function or(signal::Signal,value::hsa_signal_value_t)
-    or(signal,value,Val{AcquRel})
+function or!(signal::Signal,value::hsa_signal_value_t)
+    or!(signal,value,Val{AcquRel})
 end
 
-function xor(signal::Signal,value::hsa_signal_value_t)
-    xor(signal,value,Val{AcquRel})
+function xor!(signal::Signal,value::hsa_signal_value_t)
+    xor!(signal,value,Val{AcquRel})
 end
 
-function add(signal::Signal,value::hsa_signal_value_t)
-    add(signal,value,Val{AcquRel})
+function add!(signal::Signal,value::hsa_signal_value_t)
+    add!(signal,value,Val{AcquRel})
 end
 
-function subtract(signal::Signal,value::hsa_signal_value_t)
-    subtract(signal,value,Val{AcquRel})
+function subtract!(signal::Signal,value::hsa_signal_value_t)
+    subtract!(signal,value,Val{AcquRel})
 end
 
-function exchange(signal::Signal,value::hsa_signal_value_t)
-    exchange(signal,value,Val{AcquRel})
+function exchange!(signal::Signal,value::hsa_signal_value_t)
+    exchange!(signal,value,Val{AcquRel})
 end
 
-function cas(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t)
-    cas(signal,expected,value,Val{AcquRel})
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t)
+    cas!(signal,expected,value,Val{AcquRel})
 end

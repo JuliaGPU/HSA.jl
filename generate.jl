@@ -80,16 +80,16 @@ function map_signalfuncs(obuf)
     # known operations on signals
     # and corresponding default memory consistency
     const signal_op = Dict(
-        "load" => :Acquire,
-        "store" => :Release,
-        "exchange" => :AcquRel,
-        "cas" => :AcquRel,
-        "add" => :AcquRel,
-        "subtract" => :AcquRel,
-        "and" => :AcquRel,
-        "or" => :AcquRel,
-        "xor" => :AcquRel,
-        "wait" => :Acquire
+        "load" => (false, :Acquire),
+        "store" => (true, :Release),
+        "exchange" => (true, :AcquRel),
+        "cas" => (true, :AcquRel),
+        "add" => (true, :AcquRel),
+        "subtract" => (true, :AcquRel),
+        "and" => (true, :AcquRel),
+        "or" => (true, :AcquRel),
+        "xor" => (true, :AcquRel),
+        "wait" => (false, :Acquire)
         )
 
     const signal_memspec = Dict(
@@ -119,8 +119,12 @@ function map_signalfuncs(obuf)
                 mem = suffix_parts[2]
 
                 if haskey(signal_op, op) && haskey(signal_memspec, mem)
-                    # update method name to only the op
-                    sig.args[1] = symbol(op)
+                    is_mutator, default_memspec = signal_op[op]
+
+                    method_name = (!is_mutator) ? op : op * "!"
+
+                    # update method name
+                    sig.args[1] = symbol(method_name)
 
                     if !in(op, found_ops)
                         # upon encountering the first method of an op,
@@ -129,12 +133,11 @@ function map_signalfuncs(obuf)
 
                         arg_specs = sig.args[2:end]
 
-                        default_memspec = signal_op[op]
                         default_impl = copy(exu)
 
                         default_impl.args[2] =
                         Expr(:block,
-                        Expr(:call, symbol(op), [a.args[1] for a in arg_specs]..., :(Val{$default_memspec}))
+                        Expr(:call, symbol(method_name), [a.args[1] for a in arg_specs]..., :(Val{$default_memspec}))
                         )
                         println(default_impl) #debug
 
