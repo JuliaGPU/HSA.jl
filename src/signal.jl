@@ -1,3 +1,4 @@
+export WaitShort, WaitLong, WaitUnknown
 type Signal
     runtime :: Runtime
     handle :: hsa_signal_t
@@ -15,10 +16,10 @@ type Signal
     end
 end
 
-const Relaxed = 0
-const Acquire = 1
-const AcquRel = 2
-const Release = 3
+# Wait Expectancy Hints
+const WaitShort = HSA_WAIT_EXPECTANCY_SHORT
+const WaitLong = HSA_WAIT_EXPECTANCY_LONG
+const WaitUnknown = HSA_WAIT_EXPECTANCY_UNKNOWN
 
 function Signal(rt::Runtime; value::hsa_signal_value_t = 0, consumers = Set{Agent}())
     if !rt.is_alive
@@ -67,4 +68,28 @@ function signal_create(initial_value::hsa_signal_value_t, consumers)
     test_status(err)
 
     return res[1]
+end
+
+import Base.wait
+
+function wait(s::Signal, cond::Symbol, compare_value::hsa_signal_value_t;
+    timeout_hint = typemax(Uint64),
+    wait_hint::hsa_wait_expectancy_t = WaitUnknown
+    )
+    const cond_map = Dict(
+        :(==) => HSA_EQ,
+        :(!=) => HSA_NE,
+        :(<) => HSA_LT,
+        :(>=) => HSA_GTE
+        )
+
+    if !haskey(cond_map, cond)
+        error("unsupported signal wait condition $cond")
+    end
+
+    hsa_cond = cond_map[cond]
+
+    timeout_hint = convert(Uint64, timeout_hint)
+
+    return wait(s, hsa_cond, compare_value, timeout_hint, wait_hint)
 end
