@@ -4,12 +4,14 @@ type Signal
 
     consumers :: Set{Agent}
 
+    is_alive :: Bool
+
     function Signal(rt::Runtime, h::hsa_signal_t, consumers::Set{Agent})
         if !rt.is_alive
             error("invalid runtime reference")
         end
 
-        new(rt, h, consumers)
+        new(rt, h, consumers, true)
     end
 end
 
@@ -19,14 +21,28 @@ function Signal(rt::Runtime; value::hsa_signal_value_t = 0, consumers = Set{Agen
     end
     h = signal_create(value, consumers)
     c = Set{Agent}(consumers)
-    return Signal(rt, h, c)
+
+	s = Signal(rt, h, c)
+
+	finalizer(s, finalize_signal)
+
+	return s
 end
+
+function finalize_signal(s :: Signal)
+	if s.is_alive
+		hsa_signal_destroy(s)
+		s.is_alive = false
+	end
+end
+
+import Base.convert
+
+convert(::Type{hsa_signal_t}, s::Signal) = s.handle
 
 import Base.get
 
-function get(s::Signal)
-    hsa_signal_load_acquire(s.handle)
-end
+get(s::Signal) = hsa_signal_load_acquire(s)
 
 function signal_create(initial_value::hsa_signal_value_t, consumers)
     local num_consumers, consumer_arr
@@ -47,5 +63,3 @@ function signal_create(initial_value::hsa_signal_value_t, consumers)
 
     return res[1]
 end
-
-

@@ -97,8 +97,6 @@ function all_agents(rt :: Runtime;
 	return agents
 end
 
-getter_arg_type_map[hsa_agent_t] = Agent
-
 getter(:hsa_agent_get_info,
     (:agent, :info, :data),
     (hsa_agent_t, hsa_agent_info_t, Ptr{Void}),

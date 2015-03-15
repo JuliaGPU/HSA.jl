@@ -1,3 +1,5 @@
+
+
 function getter_code_for(var :: Symbol, return_type)
     local setup_code, convert_code
 
@@ -55,62 +57,61 @@ function getter_name(discrim :: Symbol)
     replace(lowercase(string(discrim)), "hsa_", "")
 end
 
-const getter_arg_type_map = Dict{DataType, DataType}()
 
 function getter(c_name::Symbol, argnames, argtypes, map)
    for key in keys(map)
-    	jl_name = getter_name(key)
+        jl_name = getter_name(key)
         return_type = map[key]
 
         setup_code, convert_code = getter_code_for(:value, return_type)
 
         ccall_args = [
-    	    Expr(:tuple, Expr(:quote, c_name), :libhsa),
-    		:hsa_status_t,
-    		Expr(:tuple, argtypes...)
-    	]
-    	getter_args = []
+            Expr(:tuple, Expr(:quote, c_name), :libhsa),
+            :hsa_status_t,
+            Expr(:tuple, argtypes...)
+        ]
+        getter_args = []
 
-    	# The last 2 arguments are discriminator and
-    	# return arg respectively
-    	for i in 1:size(argnames,1)-2
-    		arg_name = argnames[i]
-    		arg_type = argtypes[i]
-            arg_type = get(getter_arg_type_map, arg_type, arg_type)
+        # The last 2 arguments are discriminator and
+        # return arg respectively
+        for i in 1:size(argnames,1)-2
+            arg_name = argnames[i]
+            arg_type = argtypes[i]
+            arg_type = get(argtype_map, arg_type, arg_type)
 
-    		arg_exp = :($arg_name :: $arg_type)
+            arg_exp = :($arg_name :: $arg_type)
 
-    		push!(ccall_args, arg_name)
-    		push!(getter_args, arg_exp)
-    	end
+            push!(ccall_args, arg_name)
+            push!(getter_args, arg_exp)
+        end
 
-    	push!(ccall_args, key, :value)
+        push!(ccall_args, key, :value)
 
-    	getter_ccall = Expr(:ccall, ccall_args...)
+        getter_ccall = Expr(:ccall, ccall_args...)
 
         getter_code = Expr(:function,
-    		    Expr(:call, symbol(jl_name), getter_args...),
-    			quote
-    				local value
+                Expr(:call, symbol(jl_name), getter_args...),
+                quote
+                    local value
 
-    				$setup_code
+                    $setup_code
 
-    				err = $getter_ccall
+                    err = $getter_ccall
 
-    				test_status(err)
+                    test_status(err)
 
-    				$convert_code
+                    $convert_code
 
-    				return value
-    			end
-    		)
+                    return value
+                end
+            )
 
         # Debug output of generated code
         if false && endswith(jl_name, "max_dim")
             println(getter_code)
         end
 
-    	eval(getter_code)
+        eval(getter_code)
     end
 end
 
@@ -119,7 +120,7 @@ function field_getter(
     struct_type :: DataType,
     map :: Dict{Symbol, (DataType, Int64)})
     for key in keys(map)
-    	jl_name = symbol(prefix, key)
+        jl_name = symbol(prefix, key)
         field_type, field_offset = map[key]
         field_offset = convert(Uint64, field_offset)
 
@@ -127,7 +128,7 @@ function field_getter(
             function $jl_name(ptr::Ptr{$struct_type})
                 field_ptr = convert(Ptr{$field_type}, ptr + $field_offset)
                 return unsafe_load(field_ptr)
-   			end
+               end
         end
 
         # Debug output of generated code
@@ -135,46 +136,8 @@ function field_getter(
             println(getter_code)
         end
 
-    	eval(getter_code)
+        eval(getter_code)
     end
-end
-
-getter(:hsa_system_get_info,
-    (:info, :data),
-    (hsa_system_info_t, Ptr{Void}),
-    Dict(
-    :HSA_SYSTEM_INFO_VERSION_MAJOR => Cushort,
-    :HSA_SYSTEM_INFO_VERSION_MINOR => Cushort,
-    :HSA_SYSTEM_INFO_TIMESTAMP => Culonglong,
-    :HSA_SYSTEM_INFO_TIMESTAMP_FREQUENCY => Cushort,
-    :HSA_SYSTEM_INFO_SIGNAL_MAX_WAIT => Culonglong
-    )
-)
-
-
-
-import Base.convert
-
-function convert(::Type{hsa_dim3_t}, values :: Vector{Uint32})
-    if length(values) != 3
-        error("invalid input argument)")
-    end
-
-    hsa_dim3_t(values...)
-end
-
-function status_string(status::hsa_status_t)
-    string = Ptr{Uint8}[0]
-
-    err = ccall((:hsa_status_string,libhsa),hsa_status_t,(hsa_status_t,Ptr{Ptr{Uint8}}),status,string)
-
-    # manually test for error
-    if err & HSA_STATUS_ERROR == HSA_STATUS_ERROR
-    	# throw regular error to avoid recursion to HSAError
-    	error("could not retrieve status string")
-    end
-
-    return bytestring(string[1])
 end
 
 
