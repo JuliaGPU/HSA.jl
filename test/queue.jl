@@ -3,9 +3,10 @@ using FactCheck
 
 facts("A Queue") do
     rt = NewRT()
-    a = HSA.all_agents(rt)[1]
+    agents = HSA.all_agents(rt)
 
-    context("Can be created") do
+    @with_agents context("Can be created") do
+        a = agents[1]
         q = HSA.Queue(a, 0x04)
 
         @fact q.runtime => rt
@@ -20,7 +21,8 @@ facts("A Queue") do
         @pending q.service_queue => anything
     end
 
-    context("Can be destroyed") do
+    @with_agents context("Can be destroyed") do
+        a = agents[1]
         q = HSA.Queue(a, 0x04)
 
         finalize(q)
@@ -29,7 +31,8 @@ facts("A Queue") do
         @fact q.is_active => false
     end
 
-    context("Can be inactivated") do
+    @with_agents context("Can be inactivated") do
+        a = agents[1]
         q = HSA.Queue(a, 0x04)
 
         HSA.queue_inactivate(q)
@@ -37,7 +40,8 @@ facts("A Queue") do
         @fact q.is_active => false
     end
 
-    context("Can have their indexes manipulated") do
+    @with_agents context("Can have their indexes manipulated") do
+        a = agents[1]
         q = HSA.Queue(a, 0x04)
 
         @fact HSA.queue_load_read_index(q) => 0

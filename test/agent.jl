@@ -1,12 +1,21 @@
 using HSA
 using FactCheck
 
+macro with_agents(args...)
+	quote
+    if size(agents,1) > 0
+		$(esc(args))
+	else
+		@pending x => y #no agents
+	end
+    end
+end
+
 facts("The Agents") do
     rt = NewRT()
+    agents = Array(HSA.Agent,0)
 
 	context("Can be iterated over") do
-        agents = Array(HSA.Agent,0)
-
 		context("with a callback returning true to continue") do
 			HSA.iterate_agents(rt, a -> begin
 				push!(agents, a)
@@ -33,15 +42,11 @@ facts("The Agents") do
 
 			HSA.iterate_agents(rt, a -> begin count += 1; return false end)
 
-            if size(agents,1) > 0
-				@fact count => 1
-			else
-				@pending count => 1 "no agents"
-			end
+            @with_agents @fact count => 1
 		end
 
 		context("rethrowing exceptions from the callback") do
-		    @fact_throws HSA.iterate_agents(rt, a -> error("testerror"))
+		    @with_agents @fact_throws HSA.iterate_agents(rt, a -> error("testerror"))
 		end
 	end
 
@@ -71,9 +76,10 @@ facts("The Agents") do
 	end
 
 	context("can be queried for information") do
-        a = HSA.all_agents(rt)[1]
 
-		context("property by property") do
+		@with_agents context("property by property") do
+            a = agents[1]
+
 			name = HSA.agent_info_name(a)
             @fact length(name) => greater_than(1)
 	        @fact HSA.agent_info_name(a) => anything
@@ -97,8 +103,10 @@ facts("The Agents") do
 	        @fact HSA.agent_info_cache_size(a) => anything
 		end
 
-		context("collectively for all basic agent info") do
-		    @fact typeof(HSA.agent_info(a)) => HSA.AgentInfo
+		@with_agents context("collectively for all basic agent info") do
+            a = agents[1]
+
+			@fact typeof(HSA.agent_info(a)) => HSA.AgentInfo
 	    end
 	end
 
