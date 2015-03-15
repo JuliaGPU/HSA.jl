@@ -15,6 +15,11 @@ type Signal
     end
 end
 
+const Relaxed = 0
+const Acquire = 1
+const AcquRel = 2
+const Release = 3
+
 function Signal(rt::Runtime; value::hsa_signal_value_t = 0, consumers = Set{Agent}())
     if !rt.is_alive
         error("invalid runtime reference")
@@ -42,7 +47,7 @@ convert(::Type{hsa_signal_t}, s::Signal) = s.handle
 
 import Base.get
 
-get(s::Signal) = hsa_signal_load_acquire(s)
+get(s::Signal) = load(s)
 
 function signal_create(initial_value::hsa_signal_value_t, consumers)
     local num_consumers, consumer_arr

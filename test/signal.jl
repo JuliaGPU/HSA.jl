@@ -34,6 +34,7 @@ facts("A Signal") do
 	end
 
 	context("can be manipulated") do
+        s = HSA.Signal(rt)
 
 
 	end

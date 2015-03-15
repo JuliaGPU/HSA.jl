@@ -58,16 +58,14 @@ end
 
 wc.headers = hsa_hdrs
 
-include("src/def.jl") # pull in type mappings
-
-wc.rewriter = function(obuf)
+function map_argtypes(obuf)
     for exu in obuf
         if isa(exu, Expr) && exu.head == :function
             sig = exu.args[1]
             args = sig.args[2:end]
 
             for a in args
-                 a_type = a.args[2]
+                a_type = a.args[2]
 
                 if haskey(argtype_map, a_type)
                     a.args[2] = argtype_map[a_type]
@@ -75,6 +73,90 @@ wc.rewriter = function(obuf)
             end
         end
     end
+end
+
+function map_signalfuncs(obuf)
+    const signal_prefix = "hsa_signal_"
+    # known operations on signals
+    # and corresponding default memory consistency
+    const signal_op = Dict(
+        "load" => :Acquire,
+        "store" => :Release,
+        "exchange" => :AcquRel,
+        "cas" => :AcquRel,
+        "add" => :AcquRel,
+        "subtract" => :AcquRel,
+        "and" => :AcquRel,
+        "or" => :AcquRel,
+        "xor" => :AcquRel,
+        "wait" => :Acquire
+        )
+
+    const signal_memspec = Dict(
+        "acquire" => :Acquire,
+        "acq_rel" => :AcquRel,
+        "relaxed" => :Relaxed,
+        "release" => :Release
+        )
+
+    const found_ops = Set{String}()
+
+    for exu in obuf
+        if isa(exu, Expr) && exu.head == :function
+            sig = exu.args[1]
+            name = string(sig.args[1])
+
+
+            if startswith(name, signal_prefix)
+                suffix = replace(name, signal_prefix, "")
+                suffix_parts = split(suffix, "_", limit = 2)
+
+                if length(suffix_parts) < 2
+                    continue
+                end
+
+                op = suffix_parts[1]
+                mem = suffix_parts[2]
+
+                if haskey(signal_op, op) && haskey(signal_memspec, mem)
+                    # update method name to only the op
+                    sig.args[1] = symbol(op)
+
+                    if !in(op, found_ops)
+                        # upon encountering the first method of an op,
+                        # emit overload with default mem consistency
+                        union!(found_ops, [op])
+
+                        arg_specs = sig.args[2:end]
+
+                        default_memspec = signal_op[op]
+                        default_impl = copy(exu)
+
+                        default_impl.args[2] =
+                        Expr(:block,
+                        Expr(:call, symbol(op), [a.args[1] for a in arg_specs]..., :(Val{$default_memspec}))
+                        )
+                        println(default_impl) #debug
+
+                        push!(obuf, default_impl)
+                    end
+
+                    # add memspec argument as the last one
+                    memspec_constant = signal_memspec[mem]
+                    memspec_arg = :(::Type{Val{$memspec_constant}})
+
+                    push!(sig.args, memspec_arg)
+                end
+            end
+        end
+    end
+end
+
+include("src/def.jl") # pull in type mappings
+
+wc.rewriter = function(obuf)
+    map_argtypes(obuf)
+    map_signalfuncs(obuf)
 
     return obuf
 end
