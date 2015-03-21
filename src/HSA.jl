@@ -8,6 +8,7 @@ include("error.jl")
 include("runtime.jl")
 include("agent.jl")
 include("signal.jl")
+include("aql.jl")
 include("queue.jl")
 
 include("binding/hsa_h.jl")
