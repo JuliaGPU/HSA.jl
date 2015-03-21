@@ -15,10 +15,10 @@ facts("A Queue") do
         @fact q.typ => anything
         @fact q.features => not((HSA.hsa_queue_feature_t)(0))
         @fact q.base_address => not(Uint64(0))
-        @pending q.doorbell_signal => anything
+        @fact q.doorbell_signal => anything
         @fact q.size => (Uint32)(4)
         @fact q.id => anything
-        @pending q.service_queue => anything
+        @fact q.service_queue => nothing
     end
 
     @with_agents context("Can be destroyed") do

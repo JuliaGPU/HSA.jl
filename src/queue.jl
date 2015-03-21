@@ -1,3 +1,5 @@
+const queue_by_id = Dict{Uint32, WeakRef}()
+
 type Queue
     runtime :: Runtime
     handle :: Ptr{hsa_queue_t}
@@ -6,10 +8,10 @@ type Queue
     typ :: hsa_queue_type_t
     features :: hsa_queue_feature_t
     base_address :: Uint64
-    doorbell_signal
+    doorbell_signal :: Signal
     size :: Uint32
     id :: Uint32
-    service_queue
+    service_queue :: Queue
 
     function Queue(rt :: Runtime, q_ptr :: Ptr{hsa_queue_t})
         if !rt.is_alive
@@ -19,15 +21,36 @@ type Queue
             error("invalid queue pointer")
         end
 
+        q_id = queue_info_id(q_ptr)
+
+        # check for an existing wrapper object
+        if haskey(queue_by_id, q_id)
+            existing = queue_by_id[q_id].value
+
+            if existing != nothing
+               return existing :: Queue
+            end
+        end
+
+        # there is no existing wrapper for this queue
+        # -> construct a new one
         q_typ = queue_info_type(q_ptr)
         q_feat = queue_info_features(q_ptr)
         q_base = queue_info_base_address(q_ptr)
+        q_bell = Signal(rt, queue_info_doorbell_signal(q_ptr))
         q_size = queue_info_size(q_ptr)
-        q_id = queue_info_id(q_ptr)
 
-        q = new(rt, q_ptr, true, q_typ, q_feat, q_base, nothing, q_size, q_id, nothing)
+        q = new(rt, q_ptr, true, q_typ, q_feat, q_base, q_bell, q_size, q_id, nothing)
 
         finalizer(q, queue_destroy)
+
+        queue_by_id[q_id] = WeakRef(q)
+
+        # retrieve reference to the service queue, if any
+        svc_q_ptr = queue_info_service_queue(q_ptr)
+        if svc_q_ptr != C_NULL
+            q.servics_queue = Queue(rt, svc_q_ptr)
+        end
 
         return q
     end
@@ -143,7 +166,7 @@ field_getter(
         :type => (hsa_queue_type_t, 0),
         :features => (hsa_queue_feature_t, 4),
         :base_address => (Uint64, 8),
-        :doorbell_signal => (Uint64, 16),
+        :doorbell_signal => (hsa_signal_t, 16),
         :size => (Uint32, 24),
         :id => (Uint32, 28),
         :service_queue => (Ptr{hsa_queue_t}, 32)
