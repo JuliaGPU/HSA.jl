@@ -1,4 +1,7 @@
 export WaitShort, WaitLong, WaitUnknown
+
+const signal_by_id = Dict{hsa_signal_t, WeakRef}()
+
 type Signal
     runtime :: Runtime
     handle :: hsa_signal_t
@@ -7,12 +10,23 @@ type Signal
 
     is_alive :: Bool
 
-    function Signal(rt::Runtime, h::hsa_signal_t, consumers::Set{Agent})
+    function Signal(rt::Runtime, h::hsa_signal_t, consumers::Set{Agent} = Set{Agent}())
         if !rt.is_alive
             error("invalid runtime reference")
         end
 
-        new(rt, h, consumers, true)
+        if haskey(signal_by_id, h)
+            existing = signal_by_id[h].value
+            if existing != nothing
+                return existing
+            end
+        end
+
+        s = new(rt, h, consumers, true)
+
+        signal_by_id[h] = WeakRef(s)
+
+        return s
     end
 end
 
@@ -28,18 +42,18 @@ function Signal(rt::Runtime; value::hsa_signal_value_t = 0, consumers = Set{Agen
     h = signal_create(value, consumers)
     c = Set{Agent}(consumers)
 
-	s = Signal(rt, h, c)
+    s = Signal(rt, h, c)
 
-	finalizer(s, finalize_signal)
+    finalizer(s, finalize_signal)
 
-	return s
+    return s
 end
 
 function finalize_signal(s :: Signal)
-	if s.is_alive
-		hsa_signal_destroy(s)
-		s.is_alive = false
-	end
+    if s.is_alive
+        hsa_signal_destroy(s)
+        s.is_alive = false
+    end
 end
 
 import Base.convert
