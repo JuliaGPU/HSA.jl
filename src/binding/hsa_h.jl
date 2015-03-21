@@ -22,79 +22,79 @@ function hsa_agent_get_info(agent::Agent,attribute::hsa_agent_info_t,value::Ptr{
     ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,attribute,value)
 end
 
-function hsa_queue_create(agent::Agent,size::Cint,_type::hsa_queue_type_t,callback::Ptr{Void},service_queue::Ptr{hsa_queue_t},queue::Ptr{Ptr{hsa_queue_t}})
+function hsa_queue_create(agent::Agent,size::Cint,_type::hsa_queue_type_t,callback::Ptr{Void},service_queue::Queue,queue::Ptr{Ptr{hsa_queue_t}})
     ccall((:hsa_queue_create,libhsa),hsa_status_t,(hsa_agent_t,Cint,hsa_queue_type_t,Ptr{Void},Ptr{hsa_queue_t},Ptr{Ptr{hsa_queue_t}}),agent,size,_type,callback,service_queue,queue)
 end
 
-function hsa_queue_destroy(queue::Ptr{hsa_queue_t})
+function hsa_queue_destroy(queue::Queue)
     ccall((:hsa_queue_destroy,libhsa),hsa_status_t,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_inactivate(queue::Ptr{hsa_queue_t})
+function hsa_queue_inactivate(queue::Queue)
     ccall((:hsa_queue_inactivate,libhsa),hsa_status_t,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_load_read_index_acquire(queue::Ptr{hsa_queue_t})
+function hsa_queue_load_read_index_acquire(queue::Queue)
     ccall((:hsa_queue_load_read_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_load_read_index_relaxed(queue::Ptr{hsa_queue_t})
+function hsa_queue_load_read_index_relaxed(queue::Queue)
     ccall((:hsa_queue_load_read_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_load_write_index_acquire(queue::Ptr{hsa_queue_t})
+function hsa_queue_load_write_index_acquire(queue::Queue)
     ccall((:hsa_queue_load_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_load_write_index_relaxed(queue::Ptr{hsa_queue_t})
+function hsa_queue_load_write_index_relaxed(queue::Queue)
     ccall((:hsa_queue_load_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_store_write_index_relaxed(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_store_write_index_relaxed(queue::Queue,value::Uint64)
     ccall((:hsa_queue_store_write_index_relaxed,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_store_write_index_release(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_store_write_index_release(queue::Queue,value::Uint64)
     ccall((:hsa_queue_store_write_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_cas_write_index_acq_rel(queue::Ptr{hsa_queue_t},expected::Uint64,value::Uint64)
+function hsa_queue_cas_write_index_acq_rel(queue::Queue,expected::Uint64,value::Uint64)
     ccall((:hsa_queue_cas_write_index_acq_rel,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
 end
 
-function hsa_queue_cas_write_index_acquire(queue::Ptr{hsa_queue_t},expected::Uint64,value::Uint64)
+function hsa_queue_cas_write_index_acquire(queue::Queue,expected::Uint64,value::Uint64)
     ccall((:hsa_queue_cas_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
 end
 
-function hsa_queue_cas_write_index_relaxed(queue::Ptr{hsa_queue_t},expected::Uint64,value::Uint64)
+function hsa_queue_cas_write_index_relaxed(queue::Queue,expected::Uint64,value::Uint64)
     ccall((:hsa_queue_cas_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
 end
 
-function hsa_queue_cas_write_index_release(queue::Ptr{hsa_queue_t},expected::Uint64,value::Uint64)
+function hsa_queue_cas_write_index_release(queue::Queue,expected::Uint64,value::Uint64)
     ccall((:hsa_queue_cas_write_index_release,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
 end
 
-function hsa_queue_add_write_index_acq_rel(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_add_write_index_acq_rel(queue::Queue,value::Uint64)
     ccall((:hsa_queue_add_write_index_acq_rel,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_add_write_index_acquire(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_add_write_index_acquire(queue::Queue,value::Uint64)
     ccall((:hsa_queue_add_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_add_write_index_relaxed(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_add_write_index_relaxed(queue::Queue,value::Uint64)
     ccall((:hsa_queue_add_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_add_write_index_release(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_add_write_index_release(queue::Queue,value::Uint64)
     ccall((:hsa_queue_add_write_index_release,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_store_read_index_relaxed(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_store_read_index_relaxed(queue::Queue,value::Uint64)
     ccall((:hsa_queue_store_read_index_relaxed,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_store_read_index_release(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_store_read_index_release(queue::Queue,value::Uint64)
     ccall((:hsa_queue_store_read_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
@@ -460,79 +460,79 @@ function hsa_agent_get_info(agent::Agent,attribute::hsa_agent_info_t,value::Ptr{
     ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,attribute,value)
 end
 
-function hsa_queue_create(agent::Agent,size::Cint,_type::hsa_queue_type_t,callback::Ptr{Void},service_queue::Ptr{hsa_queue_t},queue::Ptr{Ptr{hsa_queue_t}})
+function hsa_queue_create(agent::Agent,size::Cint,_type::hsa_queue_type_t,callback::Ptr{Void},service_queue::Queue,queue::Ptr{Ptr{hsa_queue_t}})
     ccall((:hsa_queue_create,libhsa),hsa_status_t,(hsa_agent_t,Cint,hsa_queue_type_t,Ptr{Void},Ptr{hsa_queue_t},Ptr{Ptr{hsa_queue_t}}),agent,size,_type,callback,service_queue,queue)
 end
 
-function hsa_queue_destroy(queue::Ptr{hsa_queue_t})
+function hsa_queue_destroy(queue::Queue)
     ccall((:hsa_queue_destroy,libhsa),hsa_status_t,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_inactivate(queue::Ptr{hsa_queue_t})
+function hsa_queue_inactivate(queue::Queue)
     ccall((:hsa_queue_inactivate,libhsa),hsa_status_t,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_load_read_index_acquire(queue::Ptr{hsa_queue_t})
+function hsa_queue_load_read_index_acquire(queue::Queue)
     ccall((:hsa_queue_load_read_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_load_read_index_relaxed(queue::Ptr{hsa_queue_t})
+function hsa_queue_load_read_index_relaxed(queue::Queue)
     ccall((:hsa_queue_load_read_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_load_write_index_acquire(queue::Ptr{hsa_queue_t})
+function hsa_queue_load_write_index_acquire(queue::Queue)
     ccall((:hsa_queue_load_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_load_write_index_relaxed(queue::Ptr{hsa_queue_t})
+function hsa_queue_load_write_index_relaxed(queue::Queue)
     ccall((:hsa_queue_load_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_store_write_index_relaxed(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_store_write_index_relaxed(queue::Queue,value::Uint64)
     ccall((:hsa_queue_store_write_index_relaxed,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_store_write_index_release(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_store_write_index_release(queue::Queue,value::Uint64)
     ccall((:hsa_queue_store_write_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_cas_write_index_acq_rel(queue::Ptr{hsa_queue_t},expected::Uint64,value::Uint64)
+function hsa_queue_cas_write_index_acq_rel(queue::Queue,expected::Uint64,value::Uint64)
     ccall((:hsa_queue_cas_write_index_acq_rel,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
 end
 
-function hsa_queue_cas_write_index_acquire(queue::Ptr{hsa_queue_t},expected::Uint64,value::Uint64)
+function hsa_queue_cas_write_index_acquire(queue::Queue,expected::Uint64,value::Uint64)
     ccall((:hsa_queue_cas_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
 end
 
-function hsa_queue_cas_write_index_relaxed(queue::Ptr{hsa_queue_t},expected::Uint64,value::Uint64)
+function hsa_queue_cas_write_index_relaxed(queue::Queue,expected::Uint64,value::Uint64)
     ccall((:hsa_queue_cas_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
 end
 
-function hsa_queue_cas_write_index_release(queue::Ptr{hsa_queue_t},expected::Uint64,value::Uint64)
+function hsa_queue_cas_write_index_release(queue::Queue,expected::Uint64,value::Uint64)
     ccall((:hsa_queue_cas_write_index_release,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
 end
 
-function hsa_queue_add_write_index_acq_rel(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_add_write_index_acq_rel(queue::Queue,value::Uint64)
     ccall((:hsa_queue_add_write_index_acq_rel,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_add_write_index_acquire(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_add_write_index_acquire(queue::Queue,value::Uint64)
     ccall((:hsa_queue_add_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_add_write_index_relaxed(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_add_write_index_relaxed(queue::Queue,value::Uint64)
     ccall((:hsa_queue_add_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_add_write_index_release(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_add_write_index_release(queue::Queue,value::Uint64)
     ccall((:hsa_queue_add_write_index_release,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_store_read_index_relaxed(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_store_read_index_relaxed(queue::Queue,value::Uint64)
     ccall((:hsa_queue_store_read_index_relaxed,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_store_read_index_release(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_store_read_index_release(queue::Queue,value::Uint64)
     ccall((:hsa_queue_store_read_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
@@ -827,79 +827,79 @@ function hsa_agent_get_info(agent::Agent,attribute::hsa_agent_info_t,value::Ptr{
     ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,attribute,value)
 end
 
-function hsa_queue_create(agent::Agent,size::Cint,_type::hsa_queue_type_t,callback::Ptr{Void},service_queue::Ptr{hsa_queue_t},queue::Ptr{Ptr{hsa_queue_t}})
+function hsa_queue_create(agent::Agent,size::Cint,_type::hsa_queue_type_t,callback::Ptr{Void},service_queue::Queue,queue::Ptr{Ptr{hsa_queue_t}})
     ccall((:hsa_queue_create,libhsa),hsa_status_t,(hsa_agent_t,Cint,hsa_queue_type_t,Ptr{Void},Ptr{hsa_queue_t},Ptr{Ptr{hsa_queue_t}}),agent,size,_type,callback,service_queue,queue)
 end
 
-function hsa_queue_destroy(queue::Ptr{hsa_queue_t})
+function hsa_queue_destroy(queue::Queue)
     ccall((:hsa_queue_destroy,libhsa),hsa_status_t,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_inactivate(queue::Ptr{hsa_queue_t})
+function hsa_queue_inactivate(queue::Queue)
     ccall((:hsa_queue_inactivate,libhsa),hsa_status_t,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_load_read_index_acquire(queue::Ptr{hsa_queue_t})
+function hsa_queue_load_read_index_acquire(queue::Queue)
     ccall((:hsa_queue_load_read_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_load_read_index_relaxed(queue::Ptr{hsa_queue_t})
+function hsa_queue_load_read_index_relaxed(queue::Queue)
     ccall((:hsa_queue_load_read_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_load_write_index_acquire(queue::Ptr{hsa_queue_t})
+function hsa_queue_load_write_index_acquire(queue::Queue)
     ccall((:hsa_queue_load_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_load_write_index_relaxed(queue::Ptr{hsa_queue_t})
+function hsa_queue_load_write_index_relaxed(queue::Queue)
     ccall((:hsa_queue_load_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
 end
 
-function hsa_queue_store_write_index_relaxed(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_store_write_index_relaxed(queue::Queue,value::Uint64)
     ccall((:hsa_queue_store_write_index_relaxed,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_store_write_index_release(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_store_write_index_release(queue::Queue,value::Uint64)
     ccall((:hsa_queue_store_write_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_cas_write_index_acq_rel(queue::Ptr{hsa_queue_t},expected::Uint64,value::Uint64)
+function hsa_queue_cas_write_index_acq_rel(queue::Queue,expected::Uint64,value::Uint64)
     ccall((:hsa_queue_cas_write_index_acq_rel,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
 end
 
-function hsa_queue_cas_write_index_acquire(queue::Ptr{hsa_queue_t},expected::Uint64,value::Uint64)
+function hsa_queue_cas_write_index_acquire(queue::Queue,expected::Uint64,value::Uint64)
     ccall((:hsa_queue_cas_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
 end
 
-function hsa_queue_cas_write_index_relaxed(queue::Ptr{hsa_queue_t},expected::Uint64,value::Uint64)
+function hsa_queue_cas_write_index_relaxed(queue::Queue,expected::Uint64,value::Uint64)
     ccall((:hsa_queue_cas_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
 end
 
-function hsa_queue_cas_write_index_release(queue::Ptr{hsa_queue_t},expected::Uint64,value::Uint64)
+function hsa_queue_cas_write_index_release(queue::Queue,expected::Uint64,value::Uint64)
     ccall((:hsa_queue_cas_write_index_release,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
 end
 
-function hsa_queue_add_write_index_acq_rel(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_add_write_index_acq_rel(queue::Queue,value::Uint64)
     ccall((:hsa_queue_add_write_index_acq_rel,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_add_write_index_acquire(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_add_write_index_acquire(queue::Queue,value::Uint64)
     ccall((:hsa_queue_add_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_add_write_index_relaxed(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_add_write_index_relaxed(queue::Queue,value::Uint64)
     ccall((:hsa_queue_add_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_add_write_index_release(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_add_write_index_release(queue::Queue,value::Uint64)
     ccall((:hsa_queue_add_write_index_release,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_store_read_index_relaxed(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_store_read_index_relaxed(queue::Queue,value::Uint64)
     ccall((:hsa_queue_store_read_index_relaxed,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_queue_store_read_index_release(queue::Ptr{hsa_queue_t},value::Uint64)
+function hsa_queue_store_read_index_release(queue::Queue,value::Uint64)
     ccall((:hsa_queue_store_read_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
@@ -1259,7 +1259,7 @@ function hsa_ext_set_memory_type(agent::Agent,_type::hsa_amd_memory_type_t)
     ccall((:hsa_ext_set_memory_type,libhsa),hsa_status_t,(hsa_agent_t,hsa_amd_memory_type_t),agent,_type)
 end
 
-function hsa_ext_set_profiling(queue::Ptr{hsa_queue_t},enable::Cint)
+function hsa_ext_set_profiling(queue::Queue,enable::Cint)
     ccall((:hsa_ext_set_profiling,libhsa),hsa_status_t,(Ptr{hsa_queue_t},Cint),queue,enable)
 end
 
