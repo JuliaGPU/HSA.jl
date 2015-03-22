@@ -115,5 +115,15 @@ facts("AQL Packets") do
 			@fact ad.arg[4] => 0x0000000000000002
 			@fact ad.completion_signal => 0x0000000000000100
 		end
+
+		context("can be stored") do
+			pkt_bytes = Array(Uint8, 64)
+			pkt_ptr = convert(Ptr{Void}, pkt_bytes)
+
+			ad = HSA.load(HSA.AQLPacket, agent_ptr)
+			HSA.store!(pkt_ptr, ad)
+
+			@fact pkt_bytes => agent_bytes
+		end
 	end
 end

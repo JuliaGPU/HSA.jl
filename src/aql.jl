@@ -128,6 +128,21 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeAgentDispatch}}, ptr :: Pt
     return AgentDispatchPacket(p_hdr, p_type, p_retu, Uint64[p_arg1, p_arg2, p_arg3, p_arg4], p_comp)
 end
 
+function store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)
+    unsafe_store!(convert(Ptr{Uint16}, ptr + 2), ad.typ)
+    unsafe_store!(convert(Ptr{Uint32}, ptr + 4), 0x00000000) # Uint32 reserved
+    unsafe_store!(convert(Ptr{Uint64}, ptr + 8), ad.return_address)
+    unsafe_copy!(
+	    convert(Ptr{Uint64}, ptr + 16),
+		convert(Ptr{Uint64}, ad.arg),
+		8 * 4 # Bytes
+		)
+    unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0x0000000000000000)    # Uint64 reserved
+    unsafe_store!(convert(Ptr{Uint64}, ptr + 56), ad.completion_signal)
+
+    store!(ptr, ad.header)
+end
+
 type BarrierPacket <: AQLPacket
     header :: PacketHeader
     const dep_signal = Array(Signal, 5)
