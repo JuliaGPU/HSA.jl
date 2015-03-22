@@ -2,7 +2,9 @@ using HSA
 using FactCheck
 
 facts("Memory Management") do
-	agents = HSA.all_agents()
+    rt = NewRT()
+
+	agents = HSA.all_agents(rt)
 
     @with_agents context("Regions") do
 		a = agents[1]
