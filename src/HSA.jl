@@ -12,6 +12,8 @@ include("signal.jl")
 include("aql.jl")
 include("queue.jl")
 
+include("ext_amd.jl")
+
 include("binding/hsa_h.jl")
 include("binding.jl")
 
