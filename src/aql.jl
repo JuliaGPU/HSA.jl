@@ -1,8 +1,13 @@
+export PacketTypeAlwaysReserved, PacketTypeInvalid, PacketTypeDispatch,
+    PacketTypeBarrier, PacketTypeAgentDispatch
+
 const PacketTypeAlwaysReserved =  convert(Uint8, HSA_PACKET_TYPE_ALWAYS_RESERVED)
 const PacketTypeInvalid = convert(Uint8, HSA_PACKET_TYPE_INVALID)
 const PacketTypeDispatch = convert(Uint8, HSA_PACKET_TYPE_DISPATCH)
 const PacketTypeBarrier = convert(Uint8, HSA_PACKET_TYPE_BARRIER)
 const PacketTypeAgentDispatch = convert(Uint8, HSA_PACKET_TYPE_AGENT_DISPATCH)
+
+export FenceScopeNone, FenceScopeComponent, FenceScopeSystem
 
 const FenceScopeNone = convert(Uint8, HSA_FENCE_SCOPE_NONE)
 const FenceScopeComponent = convert(Uint8, HSA_FENCE_SCOPE_COMPONENT)
