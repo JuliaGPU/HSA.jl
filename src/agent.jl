@@ -18,52 +18,14 @@ import Base.convert
 convert(::Type{hsa_agent_t}, a :: Agent) = a.handle
 
 # Iterate Agents
-
-type IterAgentsState
-	runtime :: Runtime
-	inner_cb::Function
-	err::Nullable{Exception}
-
-	IterAgentsState(rt, cb) = new(rt,cb, Nullable{Exception}())
-end
-
-function iterate_agents_cb(a::hsa_agent_t, state_ptr::Ptr{Void})
-    if state_ptr == C_NULL
-	    return HSA_STATUS_ERROR_INVALID_ARGUMENT
-	else
-		state = unsafe_pointer_to_objref(state_ptr)
-
-		if !isa(state, IterAgentsState)
-            return HSA_STATUS_ERROR_INVALID_ARGUMENT
-		end
-	end
-
-	callback = state.inner_cb
-
-    local cont
-
- 	try
-        agent = Agent(state.runtime, a)
-		cont = callback(agent)
-		if !isa(cont, Bool)
-			cont = true
-		end
-	catch err
-		state.err = err
-		cont = false
-	end
-
-	if cont
-		return HSA_STATUS_SUCCESS
-	else
-		return HSA_STATUS_INFO_BREAK
-	end
-end
-
-const iterate_agents_cb_ptr = cfunction(iterate_agents_cb, hsa_status_t, (hsa_agent_t, Ptr{Void}))
+const iterate_agents_cb_ptr = cfunction(iterate_cb, hsa_status_t, (hsa_agent_t, Ptr{Void}))
 
 function iterate_agents(rt::Runtime, callback::Function)
-    state = IterAgentsState(rt, callback)
+    state = IterState(
+	    function(x)
+			a = Agent(rt, x)
+			callback(a)
+		end)
 
 	state_ptr = pointer_from_objref(state)
 
@@ -71,7 +33,7 @@ function iterate_agents(rt::Runtime, callback::Function)
 	    iterate_agents_cb_ptr, state_ptr)
 
 	if !isnull(state.err)
-		rethrow(err)
+		rethrow(state.err)
 	end
 
 	test_status(err)
