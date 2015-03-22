@@ -1,5 +1,10 @@
 const queue_by_id = Dict{Uint32, WeakRef}()
 
+export QueueTypeSingle, QueueTypeMulti
+
+const QueueTypeSingle = HSA_QUEUE_TYPE_SINGLE
+const QueueTypeMulti = HSA_QUEUE_TYPE_MULTI
+
 type Queue
     runtime :: Runtime
     handle :: Ptr{hsa_queue_t}

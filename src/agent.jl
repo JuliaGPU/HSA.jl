@@ -1,3 +1,9 @@
+export DeviceTypeCPU, DeviceTypeGPU, DeviceTypeDSP
+
+const DeviceTypeCPU = HSA_DEVICE_TYPE_CPU
+const DeviceTypeGPU = HSA_DEVICE_TYPE_GPU
+const DeviceTypeDSP = HSA_DEVICE_TYPE_DSP
+
 export Agent
 
 type Agent
@@ -100,7 +106,7 @@ type AgentInfo
 	grid_max_size :: Uint32
 	fbarrier_max_size :: Uint32
 	queues_max :: Uint32
-	queues_max_size :: Uint32
+	queue_max_size :: Uint32
 	queue_type :: hsa_queue_type_t
 	node :: Uint32
 	device :: hsa_device_type_t
