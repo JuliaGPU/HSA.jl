@@ -44,6 +44,24 @@ facts("AQL Packets") do
     ]
     agent_ptr = convert(Ptr{Void}, agent_bytes)
 
+   	barrier_bytes = Uint8[
+        HSA.PacketTypeBarrier,
+        (0x00 << 7) | # Barrier Bit
+        (HSA.FenceScopeNone << 5) | # Acquire Scope
+        (HSA.FenceScopeNone << 3), # Release Scope
+        # Barrier Packet
+        0x00, 0x00, # Uint16 reserved
+		0x00, 0x00, 0x00, 0x00, # Uint32 reserved
+        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # dep1
+        0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # dep2
+        0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # dep3
+        0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # dep4
+        0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # dep5
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # reserved
+        0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # completion_signal
+    ]
+    barrier_ptr = convert(Ptr{Void}, barrier_bytes)
+
     context("PacketHeader") do
         context("can be loaded") do
             header = HSA.load(HSA.PacketHeader, dispatch_ptr)
@@ -124,6 +142,33 @@ facts("AQL Packets") do
 			HSA.store!(pkt_ptr, ad)
 
 			@fact pkt_bytes => agent_bytes
+		end
+	end
+
+	context("BarrierPacket") do
+		context("can be loaded") do
+			bp = HSA.load(HSA.AQLPacket, barrier_ptr)
+
+			@fact isa(bp, HSA.BarrierPacket) => true
+
+		    @fact bp.header.typ => HSA.PacketTypeBarrier
+
+			@fact bp.dep_signal[1] => 0x0000000000000001
+			@fact bp.dep_signal[2] => 0x0000000000000002
+			@fact bp.dep_signal[3] => 0x0000000000000003
+			@fact bp.dep_signal[4] => 0x0000000000000004
+			@fact bp.dep_signal[5] => 0x0000000000000005
+			@fact bp.completion_signal => 0x0000000000000100
+		end
+
+		context("can be stored") do
+			pkt_bytes = Array(Uint8, 64)
+			pkt_ptr = convert(Ptr{Void}, pkt_bytes)
+
+			b = HSA.load(HSA.AQLPacket, barrier_ptr)
+			HSA.store!(pkt_ptr, b)
+
+			@fact pkt_bytes => barrier_bytes
 		end
 	end
 end

@@ -135,7 +135,7 @@ function store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)
     unsafe_copy!(
 	    convert(Ptr{Uint64}, ptr + 16),
 		convert(Ptr{Uint64}, ad.arg),
-		8 * 4 # Bytes
+		8 # Bytes
 		)
     unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0x0000000000000000)    # Uint64 reserved
     unsafe_store!(convert(Ptr{Uint64}, ptr + 56), ad.completion_signal)
@@ -145,8 +145,34 @@ end
 
 type BarrierPacket <: AQLPacket
     header :: PacketHeader
-    const dep_signal = Array(Signal, 5)
-    completion_signal :: Signal
+    dep_signal :: Array{Uint64, 1}
+    completion_signal :: hsa_signal_t
+end
+
+function load(::Type{AQLPacket}, ::Type{Val{PacketTypeBarrier}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
+    p_dep = Array(Uint64, 5)
+    p_dep_ptr = convert(Ptr{Uint64}, p_dep)
+
+	unsafe_copy!(p_dep_ptr, convert(Ptr{Uint64}, ptr + 8), 5)
+	p_comp = unsafe_load(convert(Ptr{Uint64}, ptr + 56))
+
+	return BarrierPacket(p_hdr, p_dep, p_comp)
+end
+
+function store!(ptr :: Ptr{Void}, bp :: BarrierPacket)
+	p_dep_ptr = convert(Ptr{Uint64}, bp.dep_signal)
+
+	unsafe_store!(convert(Ptr{Uint16}, ptr + 2), 0)
+	unsafe_store!(convert(Ptr{Uint32}, ptr + 4), 0)
+	unsafe_copy!(
+	    convert(Ptr{Uint64}, ptr + 8),
+		p_dep_ptr,
+		5
+	)
+	unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0)
+	unsafe_store!(convert(Ptr{Uint64}, ptr + 56), bp.completion_signal)
+
+	store!(ptr, bp.header)
 end
 
 function load(::Type{AQLPacket}, ptr :: Ptr{Void})
