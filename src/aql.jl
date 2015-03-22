@@ -59,7 +59,7 @@ type DispatchPacket <: AQLPacket
     completion_signal :: hsa_signal_t
 end
 
-function load(::Type{AQLPacket}, ptr :: Ptr{Void}, ::Type{Val{PacketTypeDispatch}}, p_hdr :: PacketHeader)
+function load(::Type{AQLPacket}, ::Type{Val{PacketTypeDispatch}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
     if ptr == C_NULL
         error("invalid packet pointer")
     end
@@ -111,7 +111,21 @@ type AgentDispatchPacket <: AQLPacket
     typ :: Uint16
     return_address :: Uint64
     arg :: Array{Uint64, 1}
-    completion_signal :: Signal
+    completion_signal :: hsa_signal_t
+end
+
+function load(::Type{AQLPacket}, ::Type{Val{PacketTypeAgentDispatch}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
+    p_type = unsafe_load(convert(Ptr{Uint16}, ptr + 2))
+	# Uint32 reserved
+	p_retu = unsafe_load(convert(Ptr{Uint64}, ptr + 8))
+	p_arg1 = unsafe_load(convert(Ptr{Uint64}, ptr + 16))
+	p_arg2 = unsafe_load(convert(Ptr{Uint64}, ptr + 24))
+	p_arg3 = unsafe_load(convert(Ptr{Uint64}, ptr + 32))
+	p_arg4 = unsafe_load(convert(Ptr{Uint64}, ptr + 40))
+	# Uint64 reserved
+	p_comp = unsafe_load(convert(Ptr{Uint64}, ptr + 56))
+
+    return AgentDispatchPacket(p_hdr, p_type, p_retu, Uint64[p_arg1, p_arg2, p_arg3, p_arg4], p_comp)
 end
 
 type BarrierPacket <: AQLPacket
@@ -123,7 +137,7 @@ end
 function load(::Type{AQLPacket}, ptr :: Ptr{Void})
     hdr = load(PacketHeader, ptr)
 
-    packet = load(AQLPacket, ptr, Val{hdr.typ}, hdr)
+    packet = load(AQLPacket, Val{hdr.typ}, ptr, hdr)
 
     return packet
 end

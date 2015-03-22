@@ -26,6 +26,24 @@ facts("AQL Packets") do
     ]
     dispatch_ptr = convert(Ptr{Void}, dispatch_bytes)
 
+	agent_bytes = Uint8[
+        HSA.PacketTypeAgentDispatch,
+        (0x00 << 7) | # Barrier Bit
+        (HSA.FenceScopeNone << 5) | # Acquire Scope
+        (HSA.FenceScopeNone << 3), # Release Scope
+        # Agent Dispatch Packet
+        0xFF, 0xFF, # type
+		0x00, 0x00, 0x00, 0x00, # reserved
+        0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # return_address
+        0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # arg1
+        0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # arg2
+        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # arg3
+        0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # arg4
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # reserved
+        0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # completion_signal
+    ]
+    agent_ptr = convert(Ptr{Void}, agent_bytes)
+
     context("PacketHeader") do
         context("can be loaded") do
             header = HSA.load(HSA.PacketHeader, dispatch_ptr)
@@ -78,4 +96,24 @@ facts("AQL Packets") do
         end
     end
 
+	context("AgentDispatchPackets") do
+        context("can be loaded") do
+			ad = HSA.load(HSA.AQLPacket, agent_ptr)
+
+			@fact isa(ad, HSA.AgentDispatchPacket) => true
+
+			@fact ad.header.typ => HSA.PacketTypeAgentDispatch
+			@fact ad.header.barrier => false
+			@fact ad.header.acquire_fence_scope => HSA.FenceScopeNone
+			@fact ad.header.release_fence_scope => HSA.FenceScopeNone
+
+			@fact ad.typ => 0xFFFF
+			@fact ad.return_address => 0x0000000000000002
+			@fact ad.arg[1] => 0x0000000000000003
+			@fact ad.arg[2] => 0x0000000000000004
+			@fact ad.arg[3] => 0x0000000000000001
+			@fact ad.arg[4] => 0x0000000000000002
+			@fact ad.completion_signal => 0x0000000000000100
+		end
+	end
 end
