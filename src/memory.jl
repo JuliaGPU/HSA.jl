@@ -34,7 +34,7 @@ function iterate_regions(a :: Agent, callback :: Function)
 	            a, iterate_regions_cb_ptr, state_ptr)
 
 	if !isnull(state.err)
-		rethrow(state.err)
+		rethrow(state.err.value)
 	end
 
 	test_status(err)

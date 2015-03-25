@@ -39,7 +39,7 @@ function iterate_agents(rt::Runtime, callback::Function)
 	    iterate_agents_cb_ptr, state_ptr)
 
 	if !isnull(state.err)
-		rethrow(state.err)
+		rethrow(state.err.value)
 	end
 
 	test_status(err)
