@@ -7,15 +7,12 @@ const DeviceTypeDSP = HSA_DEVICE_TYPE_DSP
 export Agent
 
 type Agent
-	runtime :: Runtime
     handle :: hsa_agent_t
 
-    function Agent(r :: Runtime, h :: hsa_agent_t)
-		if !r.is_alive
-			error("Invalid Runtime reference")
-		end
+    function Agent(h :: hsa_agent_t)
+        assert_runtime_alive()
 
-		new(r, h)
+		new(h)
 	end
 end
 
@@ -26,10 +23,10 @@ convert(::Type{hsa_agent_t}, a :: Agent) = a.handle
 # Iterate Agents
 const iterate_agents_cb_ptr = cfunction(iterate_cb, hsa_status_t, (hsa_agent_t, Ptr{Void}))
 
-function iterate_agents(rt::Runtime, callback::Function)
+function iterate_agents(callback::Function)
     state = IterState(
 	    function(x)
-			a = Agent(rt, x)
+			a = Agent(x)
 			callback(a)
 		end)
 
@@ -45,7 +42,7 @@ function iterate_agents(rt::Runtime, callback::Function)
 	test_status(err)
 end
 
-function all_agents(rt :: Runtime;
+function all_agents(;
 	feat :: hsa_agent_feature_t = (hsa_agent_feature_t)(0),
 	dev :: hsa_device_type_t = (hsa_device_type_t)(0))
 	agents = Array(HSA.Agent,0)
@@ -60,7 +57,7 @@ function all_agents(rt :: Runtime;
 		true # continue
 	end
 
- 	iterate_agents(rt, filter_agents)
+ 	iterate_agents(filter_agents)
 
 	return agents
 end

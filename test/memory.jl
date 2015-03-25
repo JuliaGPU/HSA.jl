@@ -4,7 +4,7 @@ using FactCheck
 facts("Memory Management") do
     rt = NewRT()
 
-	agents = HSA.all_agents(rt)
+	agents = HSA.all_agents()
 
     @with_agents context("Regions") do
 		a = agents[1]
@@ -12,7 +12,7 @@ facts("Memory Management") do
         context("can be enumerated") do
             regions = Array(HSA.Region, 0)
 
-            HSA.agent_iterate_regions(a, function (r)
+            HSA.iterate_regions(a, function (r)
                 push!(regions, r)
 			end)
 
@@ -23,7 +23,7 @@ facts("Memory Management") do
 			@fact length(regions2) => length(regions)
 			for r in regions
 				@fact in(r, regions2) => true
-				@fact isa(r, HSA.Region)
+				@fact isa(r, HSA.Region) => true
 			end
 		end
 	end

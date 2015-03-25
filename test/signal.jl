@@ -5,28 +5,27 @@ facts("A Signal") do
     rt = NewRT()
 
     context("can be created") do
-        s = HSA.Signal(rt)
-        s2 = HSA.Signal(rt, value = 2)
+        s = HSA.Signal()
+        s2 = HSA.Signal(value = 2)
 
-        @fact s.runtime => rt
 		@fact s.is_alive => true
         @fact s.handle => anything
         @fact get(s) => 0
         @fact get(s2) => 2
 	end
 
-    agents = HSA.all_agents(rt)
+    agents = HSA.all_agents()
     @with_agents context("can be created with specific consumer agents") do
         a = agents[1]
 
-		s3 = HSA.Signal(rt, consumers = [a])
+		s3 = HSA.Signal(consumers = [a])
 
 		@fact length(s3.consumers) => 1
         @fact in(a, s3.consumers) => true
 	end
 
 	context("can be destroyed") do
-		s = HSA.Signal(rt)
+		s = HSA.Signal()
 
 		finalize(s)
 
@@ -34,7 +33,7 @@ facts("A Signal") do
 	end
 
 	context("can be manipulated") do
-        s = HSA.Signal(rt, value = 2)
+        s = HSA.Signal(value = 2)
 
         @fact HSA.load(s) => 2
         @fact HSA.load(s, Val{Acquire}) => 2
@@ -67,7 +66,7 @@ facts("A Signal") do
     end
 
     context("can be waited on") do
-       s = HSA.Signal(rt, value = 2)
+       s = HSA.Signal(value = 2)
 
        @fact wait(s, :(==), 2) => 2
        @fact wait(s, :<, 3; timeout_hint = 10, wait_hint = WaitLong) => 2

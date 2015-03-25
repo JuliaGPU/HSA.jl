@@ -6,7 +6,6 @@ const QueueTypeSingle = HSA_QUEUE_TYPE_SINGLE
 const QueueTypeMulti = HSA_QUEUE_TYPE_MULTI
 
 type Queue
-    runtime :: Runtime
     handle :: Ptr{hsa_queue_t}
     is_active :: Bool
 
@@ -16,13 +15,12 @@ type Queue
     doorbell_signal :: Signal
     size :: Uint32
     id :: Uint32
-    service_queue :: Queue
+    service_queue :: Nullable{Queue}
 
-    function Queue(rt :: Runtime, q_ptr :: Ptr{hsa_queue_t})
-        if !rt.is_alive
-            error("invalid runtime reference")
-        end
-        if q_ptr == C_NULL
+    function Queue(q_ptr :: Ptr{hsa_queue_t})
+        assert_runtime_alive()
+
+		if q_ptr == C_NULL
             error("invalid queue pointer")
         end
 
@@ -42,10 +40,11 @@ type Queue
         q_typ = queue_info_type(q_ptr)
         q_feat = queue_info_features(q_ptr)
         q_base = queue_info_base_address(q_ptr)
-        q_bell = Signal(rt, queue_info_doorbell_signal(q_ptr))
+        q_bell = Signal(queue_info_doorbell_signal(q_ptr))
         q_size = queue_info_size(q_ptr)
 
-        q = new(rt, q_ptr, true, q_typ, q_feat, q_base, q_bell, q_size, q_id, nothing)
+
+        q = new(q_ptr, true, q_typ, q_feat, q_base, q_bell, q_size, q_id, nothing)
 
         finalizer(q, queue_destroy)
 
@@ -54,7 +53,7 @@ type Queue
         # retrieve reference to the service queue, if any
         svc_q_ptr = queue_info_service_queue(q_ptr)
         if svc_q_ptr != C_NULL
-            q.servics_queue = Queue(rt, svc_q_ptr)
+            q.servics_queue = Queue(svc_q_ptr)
         end
 
         return q
@@ -65,16 +64,12 @@ function Queue(a :: Agent, size;
     typ :: hsa_queue_type_t = HSA_QUEUE_TYPE_SINGLE,
     callback :: Nullable{Function} = Nullable{Function}(),
     service_queue :: Nullable{Queue} = Nullable{Queue}())
-    rt = a.runtime
     size = convert(Uint32, size)
-
-    if !rt.is_alive
-        error("invalid runtime reference")
-    end
+	assert_runtime_alive()
 
     h = HSA.queue_create(a, size, typ, callback, service_queue)
 
-    return Queue(rt, h)
+    return Queue(h)
 end
 
 function queue_err_cb(status :: hsa_status_t, queue_ptr :: Ptr{hsa_queue_t})
@@ -96,10 +91,10 @@ function queue_create(a :: Agent, size :: Uint32, typ :: hsa_queue_type_t, callb
 end
 
 function queue_destroy(q :: Queue)
-    if q.runtime.is_alive
-        queue_destroy(q.handle)
-        q.handle = C_NULL
-        q.is_active = false
+	if q.handle != C_NULL
+		queue_destroy(q.handle)
+		q.handle = C_NULL
+		q.is_active = false
     end
 end
 

@@ -3,17 +3,14 @@ export WaitShort, WaitLong, WaitUnknown
 const signal_by_id = Dict{hsa_signal_t, WeakRef}()
 
 type Signal
-    runtime :: Runtime
     handle :: hsa_signal_t
 
     consumers :: Set{Agent}
 
     is_alive :: Bool
 
-    function Signal(rt::Runtime, h::hsa_signal_t, consumers::Set{Agent} = Set{Agent}())
-        if !rt.is_alive
-            error("invalid runtime reference")
-        end
+    function Signal(h::hsa_signal_t, consumers::Set{Agent} = Set{Agent}())
+        assert_runtime_alive()
 
         if haskey(signal_by_id, h)
             existing = signal_by_id[h].value
@@ -22,7 +19,7 @@ type Signal
             end
         end
 
-        s = new(rt, h, consumers, true)
+        s = new(h, consumers, true)
 
         signal_by_id[h] = WeakRef(s)
 
@@ -35,14 +32,11 @@ const WaitShort = HSA_WAIT_EXPECTANCY_SHORT
 const WaitLong = HSA_WAIT_EXPECTANCY_LONG
 const WaitUnknown = HSA_WAIT_EXPECTANCY_UNKNOWN
 
-function Signal(rt::Runtime; value::hsa_signal_value_t = 0, consumers = Set{Agent}())
-    if !rt.is_alive
-        error("invalid runtime reference")
-    end
+function Signal(; value::hsa_signal_value_t = 0, consumers = Set{Agent}())
     h = signal_create(value, consumers)
     c = Set{Agent}(consumers)
 
-    s = Signal(rt, h, c)
+    s = Signal(h, c)
 
     finalizer(s, finalize_signal)
 

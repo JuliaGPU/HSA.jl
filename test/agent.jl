@@ -3,8 +3,8 @@ using FactCheck
 
 macro with_agents(args...)
 	quote
-    if size(agents,1) > 0
-		$(esc(args))
+    if size(HSA.all_agents(),1) > 0
+		$(esc(args...))
 	else
 		@pending x => y #no agents
 	end
@@ -17,7 +17,7 @@ facts("The Agents") do
 
 	context("Can be iterated over") do
 		context("with a callback returning true to continue") do
-			HSA.iterate_agents(rt, a -> begin
+			HSA.iterate_agents(a -> begin
 				push!(agents, a)
 				true # continue
 			end)
@@ -30,7 +30,7 @@ facts("The Agents") do
 		context("with a callback returning anything to continue") do
             count = 0
 
-			HSA.iterate_agents(rt, a -> begin
+			HSA.iterate_agents(a -> begin
                 count += 1
 			end)
 
@@ -40,7 +40,7 @@ facts("The Agents") do
 		context("with a callback returning false to terminate early") do
             count = 0
 
-			HSA.iterate_agents(rt, a -> begin count += 1; return false end)
+			HSA.iterate_agents(a -> begin count += 1; return false end)
 
             @with_agents @fact count => 1
 		end
@@ -53,9 +53,9 @@ facts("The Agents") do
 	context("can all be retrieved as an array") do
         count = 0
 
-		HSA.iterate_agents(rt, a -> begin count += 1 end)
+		HSA.iterate_agents(a -> begin count += 1 end)
 
-		agents = HSA.all_agents(rt)
+		agents = HSA.all_agents()
 
         @fact size(agents,1) => count
 	end
@@ -64,13 +64,13 @@ facts("The Agents") do
 		count = 0
 		t = HSA.HSA_DEVICE_TYPE_CPU
 
-		HSA.iterate_agents(rt, a -> begin
+		HSA.iterate_agents(a -> begin
 			if HSA.agent_info_device(a) & t == t
 	            count += 1
 		    end
     	end)
 
-		agents = HSA.all_agents(rt, dev = t)
+		agents = HSA.all_agents(dev = t)
 
         @fact size(agents,1) => count
 	end

@@ -3,13 +3,12 @@ using FactCheck
 
 facts("A Queue") do
     rt = NewRT()
-    agents = HSA.all_agents(rt)
+    agents = HSA.all_agents()
 
     @with_agents context("Can be created") do
         a = agents[1]
         q = HSA.Queue(a, 0x04)
 
-        @fact q.runtime => rt
         @fact q.handle => x -> x != C_NULL
         @fact q.is_active => true
         @fact q.typ => anything
@@ -18,7 +17,7 @@ facts("A Queue") do
         @fact q.doorbell_signal => anything
         @fact q.size => (Uint32)(4)
         @fact q.id => anything
-        @fact q.service_queue => nothing
+        @fact isnull(q.service_queue) => true
     end
 
     @with_agents context("Can be destroyed") do
@@ -47,4 +46,6 @@ facts("A Queue") do
         @fact HSA.queue_load_read_index(q) => 0
         @fact HSA.queue_load_read_index(q, relaxed = true) => 0
     end
+
+	finalize(rt)
 end

@@ -9,6 +9,7 @@ facts("The Runtime") do
         rt = NewRT()
 
         @fact HSA.system_info_version_major() => anything
+		assert_runtime_alive()
 
         finalize(rt)
 

@@ -23,7 +23,7 @@ const iterate_regions_cb_ptr = cfunction(iterate_cb, hsa_status_t, (hsa_region_t
 
 function iterate_regions(a :: Agent, callback :: Function)
 	state = IterState(
-	    function(x)
+	    function(x::hsa_region_t)
 			r = Region(x)
 			callback(r)
 		end)
