@@ -77,7 +77,7 @@ function getter(c_name::Symbol, argnames, argtypes, map)
         for i in 1:size(argnames,1)-2
             arg_name = argnames[i]
             arg_type = argtypes[i]
-            arg_type = get(argtype_map, arg_type, arg_type)
+            arg_type = get(argtype_map, symbol(arg_type), arg_type)
 
             arg_exp = :($arg_name :: $arg_type)
 

@@ -51,8 +51,8 @@ function all_agents(rt :: Runtime;
 	agents = Array(HSA.Agent,0)
 
     filter_agents = a -> begin
-	    a_feat = HSA.agent_info_feature(a)
-		a_dev = HSA.agent_info_device(a)
+	    a_feat = agent_info_feature(a)
+		a_dev = agent_info_device(a)
 	    if a_feat & feat == feat &&
 	     	a_dev & dev == dev
 		    push!(agents, a)
@@ -60,14 +60,14 @@ function all_agents(rt :: Runtime;
 		true # continue
 	end
 
- 	HSA.iterate_agents(rt, filter_agents)
+ 	iterate_agents(rt, filter_agents)
 
 	return agents
 end
 
 getter(:hsa_agent_get_info,
     (:agent, :info, :data),
-    (hsa_agent_t, hsa_agent_info_t, Ptr{Void}),
+    (:hsa_agent_t, :hsa_agent_info_t, Ptr{Void}),
     Dict(
     :HSA_AGENT_INFO_NAME => (String,64),
     :HSA_AGENT_INFO_VENDOR_NAME => (String,64),
