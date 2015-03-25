@@ -19,6 +19,14 @@ import Base.convert
 
 convert(::Type{Uint64}, r::Region) = r.handle
 
+import Base.==
+
+(==)(a::Region, b::Region) = a.handle == b.handle
+
+import Base.hash
+
+hash(r::Region) = r.handle
+
 const iterate_regions_cb_ptr = cfunction(iterate_cb, hsa_status_t, (hsa_region_t, Ptr{Void}))
 
 function iterate_regions(a :: Agent, callback :: Function)

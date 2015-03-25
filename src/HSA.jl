@@ -12,6 +12,7 @@ include("agent.jl")
 include("signal.jl")
 include("aql.jl")
 include("queue.jl")
+include("memory.jl")
 
 include("ext_amd.jl")
 

@@ -10,7 +10,7 @@ facts("Memory Management") do
 		a = agents[1]
 
         context("can be enumerated") do
-            regions = Array(HSA.Region, 0)
+            regions = Array(Any, 0)
 
             HSA.iterate_regions(a, function (r)
                 push!(regions, r)
