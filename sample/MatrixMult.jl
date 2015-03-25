@@ -52,8 +52,8 @@ k_stream = open(k_file)
 k_bytes = readbytes(k_stream)
 close(k_stream)
 
-k_code_unit = HSA.Ext.AMD.code_unit_load(k_bytes)
-k_code = HSA.Ext.AMD.code_unit_get_code(k_code_unit)
+k_code_unit = HSA.ExtAMD.code_unit_load(k_bytes)
+k_code = HSA.ExtAMD.code_unit_get_code(k_code_unit)
 
 matrix_a = Matrix{Int}(HEIGHT, WIDTH)
 rand!(matrix_a)
