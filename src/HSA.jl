@@ -1,5 +1,6 @@
 module HSA
 
+include("binding/def.jl") # library path definitions
 include("binding/hsa_common.jl") # generated type definitions
 include("binding/custom.jl") # wrapper generators
 
