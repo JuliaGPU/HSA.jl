@@ -33,7 +33,7 @@ const k_file = "MatMul.cl.o"
 
 rt = Runtime()
 
-gpu_agents = HSA.all_agents(rt, dev = DeviceTypeGPU)
+gpu_agents = HSA.all_agents(dev = DeviceTypeGPU)
 
 if length(gpu_agents) == 0
 	error("No GPU Agent")
@@ -61,23 +61,24 @@ matrix_b = Matrix{Int}(WIDTH, HEIGHT)
 rand!(matrix_b)
 matrix_c = Matrix{Int}(HEIGHT, HEIGHT)
 
-args = Args()
-args.global_size_x = HEIGHT
-args.global_size_y = HEIGHT
-args.global_size_z = 1
-args.workgroup_count_x = HEIGHT
-args.workgroup_count_y = HEIGHT
-args.workgroup_count_z = 1
-args.workgroup_size_x = 1
-args.workgroup_size_y = 1
-args.workgroup_size_z = 1
-args.input_matrix_a = convert(Ptr{Int}, matrix_a)
-args.input_matrix_b = convert(Ptr{Int}, matrix_b)
-args.output_matrix_c = convert(Ptr{Int}, matrix_c)
-args.width_a = WIDTH
-args.width_b = HEIGHT
+args = Args(
+HEIGHT,# global_size_x
+HEIGHT,# global_size_y
+1,     # global_size_z
+HEIGHT,# workgroup_count_x
+HEIGHT,# workgroup_count_y
+1,     # workgroup_count_z
+1,# workgroup_size_x
+1,# workgroup_size_y
+1,# workgroup_size_z
+convert(Ptr{Int}, matrix_a),# input_matrix_a
+convert(Ptr{Int}, matrix_b),# input_matrix_b
+convert(Ptr{Int}, matrix_c),# output_matrix_c
+WIDTH, # width_a
+HEIGHT,# width_b
+)
 
-completion_signal = Signal(rt, 1)
+completion_signal = Signal(value = 1)
 
 aqp = DispatchPacket()
 

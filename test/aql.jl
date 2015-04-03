@@ -80,6 +80,29 @@ facts("AQL Packets") do
 
             @fact hdr_bytes => dispatch_bytes[1:2]
         end
+
+		context("can be created in various ways") do
+            ph1 = HSA.PacketHeader(
+			    1, # type
+				barrier = true,
+				acquire = HSA.FenceScopeSystem,
+				release = HSA.FenceScopeNone
+			)
+
+			@fact ph1.typ => 1
+			@fact ph1.barrier => true
+			@fact ph1.acquire_fence_scope => HSA.FenceScopeSystem
+			@fact ph1.release_fence_scope => HSA.FenceScopeNone
+
+			ph2 = HSA.PacketHeader(
+                HSA.PacketTypeInvalid
+			)
+
+			@fact ph2.typ => HSA.PacketTypeInvalid
+			@fact ph2.barrier => false
+			@fact ph2.acquire_fence_scope => HSA.FenceScopeNone
+			@fact ph2.release_fence_scope => HSA.FenceScopeNone
+		end
     end
 
     context("DispatchPackets") do
@@ -94,8 +117,12 @@ facts("AQL Packets") do
             @fact dp.header.release_fence_scope => HSA.FenceScopeSystem
 
             @fact dp.dimensions => 0x0003
-            @fact dp.workgroup_size => (0x000A, 0x0009, 0x0008)
-            @fact dp.grid_size => (0x00000014, 0x00000012, 0x00000010)
+            @fact dp.workgroup_size_x => 0x000A
+			@fact dp.workgroup_size_y => 0x0009
+			@fact dp.workgroup_size_z => 0x0008
+            @fact dp.grid_size_x => 0x00000014
+			@fact dp.grid_size_y => 0x00000012
+			@fact dp.grid_size_z => 0x00000010
             @fact dp.private_segment_size => 0x00000020
             @fact dp.group_segment_size => 0x00000030
             @fact dp.kernel_object_address => 0x0000000000000001
@@ -112,6 +139,25 @@ facts("AQL Packets") do
 
             @fact pkt_bytes => dispatch_bytes
         end
+
+		context("can be created in various ways") do
+            @fact_throws HSA.DispatchPacket{0}()
+			@fact_throws HSA.DispatchPacket{4}(1,2,3,4,5,6,7,8)
+
+			dp1 = HSA.DispatchPacket{1}(2)
+			@fact dp1.dimensions => 1
+			@fact dp1.workgroup_size_x => 1
+			@fact dp1.workgroup_size_y => 1
+			@fact dp1.workgroup_size_z => 1
+			@fact dp1.grid_size_x => 2
+			@fact dp1.grid_size_y => 1
+			@fact dp1.grid_size_z => 1
+			@fact dp1.private_segment_size => 0
+			@fact dp1.group_segment_size => 0
+			@fact dp1.kernel_object_address => 0
+			@fact dp1.kernarg_address => 0
+			@fact dp1.completion_signal => 0
+		end
     end
 
 	context("AgentDispatchPackets") do

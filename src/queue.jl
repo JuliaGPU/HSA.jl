@@ -5,6 +5,8 @@ export QueueTypeSingle, QueueTypeMulti
 const QueueTypeSingle = HSA_QUEUE_TYPE_SINGLE
 const QueueTypeMulti = HSA_QUEUE_TYPE_MULTI
 
+export Queue
+
 type Queue
     handle :: Ptr{hsa_queue_t}
     is_active :: Bool

@@ -2,6 +2,8 @@ export WaitShort, WaitLong, WaitUnknown
 
 const signal_by_id = Dict{hsa_signal_t, WeakRef}()
 
+export Signal
+
 type Signal
     handle :: hsa_signal_t
 

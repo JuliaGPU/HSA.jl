@@ -13,12 +13,25 @@ const FenceScopeNone = convert(Uint8, HSA_FENCE_SCOPE_NONE)
 const FenceScopeComponent = convert(Uint8, HSA_FENCE_SCOPE_COMPONENT)
 const FenceScopeSystem = convert(Uint8, HSA_FENCE_SCOPE_SYSTEM)
 
+export PacketHeader
 
 type PacketHeader
     typ :: Uint8 # hsa_packet_type_t
     barrier :: Bool
     acquire_fence_scope :: Uint8 # hsa_fence_scope_t
     release_fence_scope :: Uint8 # hsa_fence_scope_t
+end
+
+function PacketHeader(typ;
+	barrier::Bool = false,
+	acquire = FenceScopeNone,
+	release = FenceScopeNone
+	)
+	typ = convert(Uint8, typ)
+	acquire = convert(Uint8, acquire)
+	release = convert(Uint8, release)
+
+	return PacketHeader(typ, barrier, acquire, release)
 end
 
 function load(::Type{PacketHeader}, ptr :: Ptr{Void})
@@ -52,16 +65,86 @@ end
 
 abstract AQLPacket
 
-type DispatchPacket <: AQLPacket
+export DispatchPacket
+
+type DispatchPacket{N} <: AQLPacket
     header :: PacketHeader
     dimensions :: Uint16
-    workgroup_size :: (Uint16, Uint16, Uint16)
-    grid_size :: (Uint32, Uint32, Uint32)
+    workgroup_size_x :: Uint16
+    workgroup_size_y :: Uint16
+    workgroup_size_z :: Uint16
+    grid_size_x :: Uint32
+    grid_size_y :: Uint32
+    grid_size_z :: Uint32
     private_segment_size :: Uint32
     group_segment_size :: Uint32
     kernel_object_address :: Uint64
     kernarg_address :: Uint64
     completion_signal :: hsa_signal_t
+
+    function DispatchPacket(sizes::Integer...;
+		header :: PacketHeader = PacketHeader(
+				PacketTypeDispatch,
+				barrier = false,
+				# acquire
+				# release
+			),
+		private_segment_size = 0,
+		group_segment_size = 0,
+		completion_signal = 0
+		)
+
+		if !isa(N, Uint8)
+			newN = convert(Uint8, N)
+			return DispatchPacket{newN}(
+			sizes...;
+			header = header,
+			private_segment_size = private_segment_size,
+			group_segment_size = group_segment_size,
+			completion_signal = completion_signal
+			)
+		end
+
+        if N < 1 || N > 3
+			error("dimensions out of range, expected 1-3, got $N")
+		end
+
+		argc = length(sizes)
+
+		if (argc != 2 * N) && (argc != N)
+			error("incorrect number of dimension arguments, expected either $N or $(2*N)")
+		end
+
+		grid_size = [1,1,1]
+
+		for i = 1:N
+			grid_size[i] = sizes[i]
+		end
+
+		wg_size = [1,1,1]
+
+		if argc > N
+			for i = 1:N
+				wg_size[i] = sizes[N + i]
+			end
+		end
+
+		return new(
+		    header,
+			N, # dimensions
+			wg_size[1],
+			wg_size[2],
+			wg_size[3],
+			grid_size[1],
+			grid_size[2],
+			grid_size[3],
+			private_segment_size, # private_segment_size
+			group_segment_size, # group_segment_size
+			0, # kernel_object_address
+			0, # kernarg_address
+			completion_signal, # completion_signal
+		)
+    end
 end
 
 function load(::Type{AQLPacket}, ::Type{Val{PacketTypeDispatch}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
@@ -70,37 +153,48 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeDispatch}}, ptr :: Ptr{Voi
     end
 
     p_dims = unsafe_load(convert(Ptr{Uint16}, ptr + 2)) >> 14
-    p_wg_size = (
-        unsafe_load(convert(Ptr{Uint16}, ptr + 4)),
-        unsafe_load(convert(Ptr{Uint16}, ptr + 6)),
-        unsafe_load(convert(Ptr{Uint16}, ptr + 8))
-        )
+    p_wg_x = unsafe_load(convert(Ptr{Uint16}, ptr + 4))
+    p_wg_y= unsafe_load(convert(Ptr{Uint16}, ptr + 6))
+    p_wg_z = unsafe_load(convert(Ptr{Uint16}, ptr + 8))
     # Uint16 reserved
-    p_gr_size = (
-        unsafe_load(convert(Ptr{Uint32}, ptr + 12)),
-        unsafe_load(convert(Ptr{Uint32}, ptr + 16)),
-        unsafe_load(convert(Ptr{Uint32}, ptr + 20))
-        )
-    p_pseg_size = unsafe_load(convert(Ptr{Uint32}, ptr + 24))
+    p_gr_x = unsafe_load(convert(Ptr{Uint32}, ptr + 12))
+    p_gr_y = unsafe_load(convert(Ptr{Uint32}, ptr + 16))
+    p_gr_z = unsafe_load(convert(Ptr{Uint32}, ptr + 20))
+
+	p_pseg_size = unsafe_load(convert(Ptr{Uint32}, ptr + 24))
     p_gseg_size = unsafe_load(convert(Ptr{Uint32}, ptr + 28))
     p_kobj_addr = unsafe_load(convert(Ptr{Uint64}, ptr + 32))
     p_karg_addr = unsafe_load(convert(Ptr{Uint64}, ptr + 40))
     # Uint64 reserved
     p_comp_sign = unsafe_load(convert(Ptr{hsa_signal_t}, ptr + 56))
 
-    return DispatchPacket(p_hdr, p_dims, p_wg_size, p_gr_size, p_pseg_size, p_gseg_size,
-        p_kobj_addr, p_karg_addr, p_comp_sign)
+    res = DispatchPacket{p_dims}(
+	    p_gr_x, p_gr_y, p_gr_z,
+	    p_wg_x, p_wg_y, p_wg_z;
+		header = p_hdr,
+		private_segment_size = p_pseg_size,
+		group_segment_size = p_gseg_size,
+		completion_signal = p_comp_sign
+		)
+	res.kernel_object_address = p_kobj_addr
+	res.kernarg_address = p_karg_addr
+
+    return res
 end
 
 function store!(ptr :: Ptr{Void}, dp :: DispatchPacket)
+    if dp.header.typ != PacketTypeDispatch
+		error("not a dispatch packet")
+	end
+
     unsafe_store!(convert(Ptr{Uint16}, ptr + 2), convert(Uint16, dp.dimensions) << 14)
-    unsafe_store!(convert(Ptr{Uint16}, ptr + 4), dp.workgroup_size[1])
-    unsafe_store!(convert(Ptr{Uint16}, ptr + 6), dp.workgroup_size[2])
-    unsafe_store!(convert(Ptr{Uint16}, ptr + 8), dp.workgroup_size[3])
+    unsafe_store!(convert(Ptr{Uint16}, ptr + 4), dp.workgroup_size_x)
+    unsafe_store!(convert(Ptr{Uint16}, ptr + 6), dp.workgroup_size_y)
+    unsafe_store!(convert(Ptr{Uint16}, ptr + 8), dp.workgroup_size_z)
     unsafe_store!(convert(Ptr{Uint16}, ptr + 10), 0x0000)    # Uint16 reserved
-    unsafe_store!(convert(Ptr{Uint32}, ptr + 12), dp.grid_size[1])
-    unsafe_store!(convert(Ptr{Uint32}, ptr + 16), dp.grid_size[2])
-    unsafe_store!(convert(Ptr{Uint32}, ptr + 20), dp.grid_size[3])
+    unsafe_store!(convert(Ptr{Uint32}, ptr + 12), dp.grid_size_x)
+    unsafe_store!(convert(Ptr{Uint32}, ptr + 16), dp.grid_size_y)
+    unsafe_store!(convert(Ptr{Uint32}, ptr + 20), dp.grid_size_z)
     unsafe_store!(convert(Ptr{Uint32}, ptr + 24), dp.private_segment_size)
     unsafe_store!(convert(Ptr{Uint32}, ptr + 28), dp.group_segment_size)
     unsafe_store!(convert(Ptr{Uint64}, ptr + 32), dp.kernel_object_address)
@@ -110,6 +204,8 @@ function store!(ptr :: Ptr{Void}, dp :: DispatchPacket)
 
     store!(ptr, dp.header)
 end
+
+export AgentDispatchPacket
 
 type AgentDispatchPacket <: AQLPacket
     header :: PacketHeader
@@ -147,6 +243,8 @@ function store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)
 
     store!(ptr, ad.header)
 end
+
+export BarrierPacket
 
 type BarrierPacket <: AQLPacket
     header :: PacketHeader
