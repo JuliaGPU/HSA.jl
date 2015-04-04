@@ -89,7 +89,8 @@ aql.header.release_fence_scope = HSA.FenceScopeSystem
 aql.header.barrier = true
 aql.kernel_object_address = k_code
 aql.completion_signal = completion_signal
-aql.kernarg_address = pointer(args)
+argref = Ref{Args}(args)
+aql.kernarg_address = Base.unsafe_convert(Ptr{Void}, argref)
 
 push!(q, aql)
 

@@ -30,6 +30,24 @@ facts("A Queue") do
         @fact q.is_active => false
     end
 
+	@with_agents context("Can have their error callback invoked") do
+		local called_with_q, called_with_s
+
+		a = agents[1]
+		q = HSA.Queue(a, 0x04, error_callback = function(s,q_arg)
+			called_with_q = q_arg
+			called_with_s = s
+		end)
+
+		HSA.queue_err_cb(HSA.HSA_STATUS_ERROR, q.handle)
+
+		@fact called_with_q => q
+		@fact called_with_s => HSA.HSA_STATUS_ERROR
+	end
+
+
+
+
     @with_agents context("Can be inactivated") do
         a = agents[1]
         q = HSA.Queue(a, 0x04)

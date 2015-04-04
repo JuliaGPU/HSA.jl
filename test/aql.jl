@@ -24,7 +24,7 @@ facts("AQL Packets") do
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # reserved
         0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # completion_signal
     ]
-    dispatch_ptr = convert(Ptr{Void}, dispatch_bytes)
+    dispatch_ptr = convert(Ptr{Void}, pointer(dispatch_bytes))
 
 	agent_bytes = Uint8[
         HSA.PacketTypeAgentDispatch,
@@ -42,7 +42,7 @@ facts("AQL Packets") do
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # reserved
         0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # completion_signal
     ]
-    agent_ptr = convert(Ptr{Void}, agent_bytes)
+    agent_ptr = convert(Ptr{Void}, pointer(agent_bytes))
 
    	barrier_bytes = Uint8[
         HSA.PacketTypeBarrier,
@@ -60,7 +60,7 @@ facts("AQL Packets") do
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # reserved
         0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # completion_signal
     ]
-    barrier_ptr = convert(Ptr{Void}, barrier_bytes)
+    barrier_ptr = convert(Ptr{Void}, pointer(barrier_bytes))
 
     context("PacketHeader") do
         context("can be loaded") do
@@ -73,7 +73,7 @@ facts("AQL Packets") do
 
         context("can be stored") do
             hdr_bytes = Array(Uint8, 2)
-            hdr_ptr = convert(Ptr{Void}, hdr_bytes)
+            hdr_ptr = convert(Ptr{Void}, pointer(hdr_bytes))
 
             hdr = HSA.load(HSA.PacketHeader, dispatch_ptr)
             HSA.store!(hdr_ptr, hdr)
@@ -132,7 +132,7 @@ facts("AQL Packets") do
 
         context("can be stored") do
             pkt_bytes = Array(Uint8, 64)
-            pkt_ptr = convert(Ptr{Void}, pkt_bytes)
+            pkt_ptr = convert(Ptr{Void}, pointer(pkt_bytes))
 
             dp = HSA.load(HSA.AQLPacket, dispatch_ptr)
             HSA.store!(pkt_ptr, dp)
@@ -182,7 +182,7 @@ facts("AQL Packets") do
 
 		context("can be stored") do
 			pkt_bytes = Array(Uint8, 64)
-			pkt_ptr = convert(Ptr{Void}, pkt_bytes)
+			pkt_ptr = convert(Ptr{Void}, pointer(pkt_bytes))
 
 			ad = HSA.load(HSA.AQLPacket, agent_ptr)
 			HSA.store!(pkt_ptr, ad)
@@ -209,7 +209,7 @@ facts("AQL Packets") do
 
 		context("can be stored") do
 			pkt_bytes = Array(Uint8, 64)
-			pkt_ptr = convert(Ptr{Void}, pkt_bytes)
+			pkt_ptr = convert(Ptr{Void}, pointer(pkt_bytes))
 
 			b = HSA.load(HSA.AQLPacket, barrier_ptr)
 			HSA.store!(pkt_ptr, b)

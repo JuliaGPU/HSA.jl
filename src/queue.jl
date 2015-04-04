@@ -18,6 +18,7 @@ type Queue
     size :: Uint32
     id :: Uint32
     service_queue :: Nullable{Queue}
+	error_callback :: Nullable{Function}
 
     function Queue(q_ptr :: Ptr{hsa_queue_t})
         assert_runtime_alive()
@@ -45,8 +46,7 @@ type Queue
         q_bell = Signal(queue_info_doorbell_signal(q_ptr))
         q_size = queue_info_size(q_ptr)
 
-
-        q = new(q_ptr, true, q_typ, q_feat, q_base, q_bell, q_size, q_id, nothing)
+        q = new(q_ptr, true, q_typ, q_feat, q_base, q_bell, q_size, q_id, nothing, nothing)
 
         finalizer(q, queue_destroy)
 
@@ -55,7 +55,7 @@ type Queue
         # retrieve reference to the service queue, if any
         svc_q_ptr = queue_info_service_queue(q_ptr)
         if svc_q_ptr != C_NULL
-            q.servics_queue = Queue(svc_q_ptr)
+            q.service_queue = Queue(svc_q_ptr)
         end
 
         return q
@@ -64,25 +64,42 @@ end
 
 function Queue(a :: Agent, size;
     typ :: hsa_queue_type_t = HSA_QUEUE_TYPE_SINGLE,
-    callback :: Nullable{Function} = Nullable{Function}(),
-    service_queue :: Nullable{Queue} = Nullable{Queue}())
+    error_callback = Nullable{Function}(),
+    service_queue = Nullable{Queue}())
     size = convert(Uint32, size)
 	assert_runtime_alive()
 
-    h = HSA.queue_create(a, size, typ, callback, service_queue)
+    h = HSA.queue_create(a, size, typ, register_callback = !isnull(Nullable{Function}(error_callback)), service_queue = Nullable{Queue}(service_queue))
 
-    return Queue(h)
+    queue = Queue(h)
+	queue.error_callback = error_callback
+
+	return queue
 end
 
 function queue_err_cb(status :: hsa_status_t, queue_ptr :: Ptr{hsa_queue_t})
+	if queue_ptr == C_NULL
+		error("null queue ptr passed to error callback")
+	end
+
+	queue = Queue(queue_ptr)
+
+	cb = queue.error_callback
+	if !isnull(cb)
+		cb.value(status, queue)
+	end
+
+	return
 end
 
 const queue_err_cb_ptr = cfunction(queue_err_cb, Void, (hsa_status_t, Ptr{hsa_queue_t}))
 
-function queue_create(a :: Agent, size :: Uint32, typ :: hsa_queue_type_t, callback :: Nullable{Function}, service_queue :: Nullable{Queue})
+function queue_create(a :: Agent, size :: Uint32, typ :: hsa_queue_type_t;
+	register_callback :: Bool = false,
+	service_queue = Nullable{Queue}())
     res = Ptr{hsa_queue_t}[C_NULL]
-    cb_ptr = (isnull(callback)) ? C_NULL : queue_err_cb_ptr
-    sq_ptr = (isnull(service_queue)) ? C_NULL : service_queue.handle
+    cb_ptr = (register_callback) ? C_NULL : queue_err_cb_ptr
+    sq_ptr = (isnull(service_queue)) ? C_NULL : service_queue.value.handle
 
     err = ccall((:hsa_queue_create, libhsa), hsa_status_t, (hsa_agent_t, Uint32, hsa_queue_type_t, Ptr{Void}, Ptr{hsa_queue_t}, Ptr{Ptr{hsa_queue_t}}),
                 a.handle, size, typ, cb_ptr, sq_ptr, res)
@@ -144,7 +161,7 @@ function queue_destroy(q_ptr :: Ptr{hsa_queue_t})
 end
 
 function queue_inactivate(q::Queue)
-    queue_inactivate(convert(Ptr{hsa_queue_t}, q))
+    queue_inactivate(unsafe_convert(Ptr{hsa_queue_t}, q))
     q.is_active = false
 end
 
@@ -157,9 +174,9 @@ function queue_inactivate(q_ptr :: Ptr{hsa_queue_t})
     end
 end
 
-import Base.convert
+import Base.unsafe_convert
 
-convert(::Type{Ptr{hsa_queue_t}}, q::Queue) = q.handle
+unsafe_convert(::Type{Ptr{hsa_queue_t}}, q::Queue) = q.handle
 
 field_getter(
     :queue_info_,

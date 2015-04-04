@@ -235,7 +235,7 @@ function store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)
     unsafe_store!(convert(Ptr{Uint64}, ptr + 8), ad.return_address)
     unsafe_copy!(
 	    convert(Ptr{Uint64}, ptr + 16),
-		convert(Ptr{Uint64}, ad.arg),
+		convert(Ptr{Uint64}, pointer(ad.arg)),
 		8 # Bytes
 		)
     unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0x0000000000000000)    # Uint64 reserved
@@ -254,7 +254,7 @@ end
 
 function load(::Type{AQLPacket}, ::Type{Val{PacketTypeBarrier}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
     p_dep = Array(Uint64, 5)
-    p_dep_ptr = convert(Ptr{Uint64}, p_dep)
+    p_dep_ptr = convert(Ptr{Uint64}, pointer(p_dep))
 
 	unsafe_copy!(p_dep_ptr, convert(Ptr{Uint64}, ptr + 8), 5)
 	p_comp = unsafe_load(convert(Ptr{Uint64}, ptr + 56))
@@ -263,7 +263,7 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeBarrier}}, ptr :: Ptr{Void
 end
 
 function store!(ptr :: Ptr{Void}, bp :: BarrierPacket)
-	p_dep_ptr = convert(Ptr{Uint64}, bp.dep_signal)
+	p_dep_ptr = convert(Ptr{Uint64}, pointer(bp.dep_signal))
 
 	unsafe_store!(convert(Ptr{Uint16}, ptr + 2), 0)
 	unsafe_store!(convert(Ptr{Uint32}, ptr + 4), 0)
