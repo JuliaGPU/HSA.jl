@@ -154,7 +154,7 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeDispatch}}, ptr :: Ptr{Voi
 
     p_dims = unsafe_load(convert(Ptr{Uint16}, ptr + 2)) >> 14
     p_wg_x = unsafe_load(convert(Ptr{Uint16}, ptr + 4))
-    p_wg_y= unsafe_load(convert(Ptr{Uint16}, ptr + 6))
+    p_wg_y = unsafe_load(convert(Ptr{Uint16}, ptr + 6))
     p_wg_z = unsafe_load(convert(Ptr{Uint16}, ptr + 8))
     # Uint16 reserved
     p_gr_x = unsafe_load(convert(Ptr{Uint32}, ptr + 12))
@@ -213,6 +213,25 @@ type AgentDispatchPacket <: AQLPacket
     return_address :: Uint64
     arg :: Array{Uint64, 1}
     completion_signal :: hsa_signal_t
+
+	function AgentDispatchPacket(typ;
+		return_address = 0,
+		header :: PacketHeader = PacketHeader(PacketTypeAgentDispatch),
+		args :: Array{Uint64,1} = Array(Uint64, 4),
+		completion_signal = 0
+		)
+
+        assert(header.typ == PacketTypeAgentDispatch)
+		assert(length(args) == 4)
+
+		new(
+			header,
+			typ,
+			return_address,
+		    args,
+			completion_signal
+		)
+	end
 end
 
 function load(::Type{AQLPacket}, ::Type{Val{PacketTypeAgentDispatch}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
@@ -226,7 +245,11 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeAgentDispatch}}, ptr :: Pt
 	# Uint64 reserved
 	p_comp = unsafe_load(convert(Ptr{Uint64}, ptr + 56))
 
-    return AgentDispatchPacket(p_hdr, p_type, p_retu, Uint64[p_arg1, p_arg2, p_arg3, p_arg4], p_comp)
+    return AgentDispatchPacket(p_type;
+		header = p_hdr,
+		return_address = p_retu,
+		args = Uint64[p_arg1, p_arg2, p_arg3, p_arg4],
+		completion_signal = p_comp)
 end
 
 function store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)

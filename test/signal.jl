@@ -32,6 +32,13 @@ facts("A Signal") do
 		@fact s.is_alive => false
 	end
 
+	context("can wrap doorbell signals") do
+		fake_handle = HSA.hsa_signal_t(10101)
+        s = HSA.Signal(fake_handle)
+
+		# does not destroy the signal upon being finalized
+		finalize(s)
+	end
 	context("can be manipulated") do
         s = HSA.Signal(value = 2)
 

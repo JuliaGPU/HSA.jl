@@ -45,8 +45,29 @@ facts("A Queue") do
 		@fact called_with_s => HSA.HSA_STATUS_ERROR
 	end
 
+    @with_agents context("Can have their indexes manipulated") do
+        a = agents[1]
+        q = HSA.Queue(a, 0x04)
 
+        @fact HSA.load_read_index(q) => 0
+        @fact HSA.load_read_index(q, Val{HSA.Relaxed}) => 0
 
+		@fact HSA.load_write_index(q) => 0
+		HSA.store_write_index!(q, Uint64(1))
+		@fact HSA.load_write_index(q) => 1
+    end
+
+	@with_agents context("Can submit new packets via push") do
+       a = agents[1]
+	   q = HSA.Queue(a, 0x04)
+
+	   p = HSA.AgentDispatchPacket(0x8000)
+
+	   push!(q,p)
+
+	   @fact HSA.queue_load_write_index(q) => 1
+
+	end
 
     @with_agents context("Can be inactivated") do
         a = agents[1]
@@ -55,14 +76,6 @@ facts("A Queue") do
         HSA.queue_inactivate(q)
 
         @fact q.is_active => false
-    end
-
-    @with_agents context("Can have their indexes manipulated") do
-        a = agents[1]
-        q = HSA.Queue(a, 0x04)
-
-        @fact HSA.queue_load_read_index(q) => 0
-        @fact HSA.queue_load_read_index(q, relaxed = true) => 0
     end
 
 	finalize(rt)

@@ -77,6 +77,16 @@ function Queue(a :: Agent, size;
 	return queue
 end
 
+import Base.push!
+
+function push!(q :: Queue, p :: AQLPacket)
+	idx = add_write_index!(q,Uint64(1))
+
+	q[idx] = p
+
+	store!(q.doorbell_signal, idx)
+end
+
 function queue_err_cb(status :: hsa_status_t, queue_ptr :: Ptr{hsa_queue_t})
 	if queue_ptr == C_NULL
 		error("null queue ptr passed to error callback")

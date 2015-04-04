@@ -75,91 +75,125 @@ function map_argtypes(obuf)
     end
 end
 
-function map_signalfuncs(obuf)
-    const signal_prefix = "hsa_signal_"
-    # known operations on signals
-    # and corresponding default memory consistency
-    const signal_op = Dict(
-        "load" => (false, :Acquire),
-        "store" => (true, :Release),
-        "exchange" => (true, :AcquRel),
-        "cas" => (true, :AcquRel),
-        "add" => (true, :AcquRel),
-        "subtract" => (true, :AcquRel),
-        "and" => (true, :AcquRel),
-        "or" => (true, :AcquRel),
-        "xor" => (true, :AcquRel),
-        "wait" => (false, :Acquire)
-        )
+function map_memspec_funcs(obuf)
+	# The op dictionaries map an operation name
+	# to a tuple of (is_mutator, default_memspec)
+	const signal_prefix = "hsa_signal_"
+	const signal_op = Dict(
+	"load" => (false, :Acquire),
+	"store" => (true, :Release),
+	"exchange" => (true, :AcquRel),
+	"cas" => (true, :AcquRel),
+	"add" => (true, :AcquRel),
+	"subtract" => (true, :AcquRel),
+	"and" => (true, :AcquRel),
+	"or" => (true, :AcquRel),
+	"xor" => (true, :AcquRel),
+	"wait" => (false, :Acquire)
+	)
 
-    const signal_memspec = Dict(
-        "acquire" => :Acquire,
-        "acq_rel" => :AcquRel,
-        "relaxed" => :Relaxed,
-        "release" => :Release
-        )
+	const queue_prefix = "hsa_queue_"
+	const queue_op = Dict(
+	"load" => (false, :Acquire),
+	"store" => (true, :Release),
+	"cas" => ( true, :AcquRel),
+	"add" => ( true, :AcquRel),
+    )
 
-    const found_ops = Set{String}()
+	const prefix_ops = Dict(
+	signal_prefix => signal_op,
+	queue_prefix => queue_op
+	)
 
-    for exu in obuf
-        if isa(exu, Expr) && exu.head == :function
-            sig = exu.args[1]
-            name = string(sig.args[1])
+	const memspec_suffixes = Dict(
+	"acquire" => :Acquire,
+	"acq_rel" => :AcquRel,
+	"relaxed" => :Relaxed,
+	"release" => :Release
+	)
 
+	# maps each prefix to the ops that have been
+	# found for it so far
+	const prefix_found_ops = Dict{String,Set{String}}()
 
-            if startswith(name, signal_prefix)
-                suffix = replace(name, signal_prefix, "")
-                suffix_parts = split(suffix, "_", limit = 2)
+	for exu in obuf
+		if isa(exu, Expr) && exu.head == :function
+			sig = exu.args[1]
+			name = string(sig.args[1])
 
-                if length(suffix_parts) < 2
-                    continue
-                end
+			for prefix in keys(prefix_ops)
+				if startswith(name, prefix)
+					ops = get(prefix_ops, prefix, [])
+					found_methods = get!(prefix_found_ops, prefix, Set{String}())
+					suffixes = filter((x) -> endswith(name, x), keys(memspec_suffixes))
 
-                op = suffix_parts[1]
-                mem = suffix_parts[2]
+					if isempty(suffixes) || isempty(ops)
+						continue
+					end
 
-                if haskey(signal_op, op) && haskey(signal_memspec, mem)
-                    is_mutator, default_memspec = signal_op[op]
+					suffix = first(suffixes)
 
-                    method_name = (!is_mutator) ? op : op * "!"
+					rest = replace(name, prefix, "")
+					rest = replace(rest, suffix, "")
 
-                    # update method name
-                    sig.args[1] = symbol(method_name)
+					op_erand = split(rest, "_", limit = 2)
 
-                    if !in(op, found_ops)
-                        # upon encountering the first method of an op,
-                        # emit overload with default mem consistency
-                        union!(found_ops, [op])
+					op = op_erand[1]
+					operand = (length(op_erand) == 2) ? strip(op_erand[2],'_') : ""
 
-                        arg_specs = sig.args[2:end]
+					if haskey(ops, op)
+						is_mutator, default_memspec = ops[op]
 
-                        default_impl = copy(exu)
+						method_name = op
 
-                        default_impl.args[2] =
-                        Expr(:block,
-                        Expr(:call, symbol(method_name), [a.args[1] for a in arg_specs]..., :(Val{$default_memspec}))
-                        )
-                        println(default_impl) #debug
+						if operand != ""
+							method_name *= "_" * operand
+						end
 
-                        push!(obuf, default_impl)
-                    end
+						if is_mutator
+							method_name *= "!"
+						end
 
-                    # add memspec argument as the last one
-                    memspec_constant = signal_memspec[mem]
-                    memspec_arg = :(::Type{Val{$memspec_constant}})
+                        # println("$name -> $prefix / $op / $operand / $suffix -> $method_name") # debug
 
-                    push!(sig.args, memspec_arg)
-                end
-            end
-        end
-    end
+						# update method name
+						sig.args[1] = symbol(method_name)
+
+						if !in(method_name, found_methods)
+							# upon encountering the first method of an op,
+							# emit overload with default mem consistency
+							union!(found_methods, [method_name])
+
+							arg_specs = sig.args[2:end]
+
+							default_impl = copy(exu)
+
+							default_impl.args[2] =
+							Expr(:block,
+							Expr(:call, symbol(method_name), [a.args[1] for a in arg_specs]..., :(Val{$default_memspec}))
+							)
+							println(default_impl) #debug
+
+							push!(obuf, default_impl)
+						end
+
+						# add memspec argument as the last one
+						memspec_constant = memspec_suffixes[suffix]
+						memspec_arg = :(::Type{Val{$memspec_constant}})
+
+						push!(sig.args, memspec_arg)
+					end
+				end
+			end
+		end
+	end
 end
 
 include("src/def.jl") # pull in type mappings
 
 wc.rewriter = function(obuf)
     map_argtypes(obuf)
-    map_signalfuncs(obuf)
+    map_memspec_funcs(obuf)
 
     return obuf
 end
