@@ -71,28 +71,25 @@ HEIGHT,# workgroup_count_y
 1,# workgroup_size_x
 1,# workgroup_size_y
 1,# workgroup_size_z
-convert(Ptr{Int}, matrix_a),# input_matrix_a
-convert(Ptr{Int}, matrix_b),# input_matrix_b
-convert(Ptr{Int}, matrix_c),# output_matrix_c
+convert(Ptr{Int}, pointer(matrix_a)),# input_matrix_a
+convert(Ptr{Int}, pointer(matrix_b)),# input_matrix_b
+convert(Ptr{Int}, pointer(matrix_c)),# output_matrix_c
 WIDTH, # width_a
 HEIGHT,# width_b
 )
 
 completion_signal = Signal(value = 1)
 
-aqp = DispatchPacket()
+aql = DispatchPacket{2}(
+HEIGHT, HEIGHT
+)
 
-aql.dimensions = 2;
-aql.workgroup_size = (1, 1, 1)
-aql.grid_size = (HEIGHT, HEIGHT, 1)
 aql.header.acquire_fence_scope = HSA.FenceScopeSystem
 aql.header.release_fence_scope = HSA.FenceScopeSystem
 aql.header.barrier = true
-aql.group_segment_size = 0
-aql.private_segment_size = 0
 aql.kernel_object_address = k_code
 aql.completion_signal = completion_signal
-aql.kernarg_address = convert(Ptr{Void}, args)
+aql.kernarg_address = pointer(args)
 
 push!(q, aql)
 
