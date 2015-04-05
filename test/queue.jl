@@ -57,6 +57,16 @@ facts("A Queue") do
 		@fact HSA.load_write_index(q) => 1
     end
 
+	@with_agents context("Can be accessed by index") do
+		a = agents[1]
+		q = HSA.Queue(a, 0x04)
+	    p = HSA.AgentDispatchPacket(0x8000)
+
+		@fact_throws q[5] = p
+		q[1] = p
+		@fact q[1] => p
+	end
+
 	@with_agents context("Can submit new packets via push") do
        a = agents[1]
 	   q = HSA.Queue(a, 0x04)

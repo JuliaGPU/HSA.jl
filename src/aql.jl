@@ -34,7 +34,18 @@ function PacketHeader(typ;
 	return PacketHeader(typ, barrier, acquire, release)
 end
 
-function load(::Type{PacketHeader}, ptr :: Ptr{Void})
+import Base.==
+
+function ==(h1 :: PacketHeader, h2 :: PacketHeader)
+	return h1.typ == h2.typ &&
+		h1.barrier == h2.barrier &&
+		h1.acquire_fence_scope == h2.acquire_fence_scope &&
+		h1.release_fence_scope == h2.release_fence_scope
+end
+
+import Base.unsafe_convert
+
+function unsafe_convert(::Type{PacketHeader}, ptr :: Ptr{Void})
     if ptr == C_NULL
         error("invalid packet pointer")
     end
@@ -50,7 +61,9 @@ function load(::Type{PacketHeader}, ptr :: Ptr{Void})
     return PacketHeader(h_type, h_barrier, h_acq_fen, h_rel_fen)
 end
 
-function store!(ptr :: Ptr{Void}, hdr :: PacketHeader)
+import Base.unsafe_store!
+
+function unsafe_store!(ptr :: Ptr{Void}, hdr :: PacketHeader)
     h_ptr = convert(Ptr{Uint8}, ptr)
 
     h_byte2 =
@@ -64,6 +77,20 @@ function store!(ptr :: Ptr{Void}, hdr :: PacketHeader)
 end
 
 abstract AQLPacket
+
+import Base.==
+
+function ==(p1 :: AQLPacket, p2 :: AQLPacket)
+	bytes1 = Array(Uint8, 64)
+	bytes2 = Array(Uint8, 64)
+	bytes1_ptr = convert(Ptr{Void}, pointer(bytes1))
+	bytes2_ptr = convert(Ptr{Void}, pointer(bytes2))
+
+	unsafe_store!(bytes1_ptr, p1)
+	unsafe_store!(bytes2_ptr, p2)
+
+	return bytes1 == bytes2
+end
 
 export DispatchPacket
 
@@ -182,7 +209,7 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeDispatch}}, ptr :: Ptr{Voi
     return res
 end
 
-function store!(ptr :: Ptr{Void}, dp :: DispatchPacket)
+function unsafe_store!(ptr :: Ptr{Void}, dp :: DispatchPacket)
     if dp.header.typ != PacketTypeDispatch
 		error("not a dispatch packet")
 	end
@@ -202,7 +229,7 @@ function store!(ptr :: Ptr{Void}, dp :: DispatchPacket)
     unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0x00)    # Uint64 reserved
     unsafe_store!(convert(Ptr{Uint64}, ptr + 56), dp.completion_signal)
 
-    store!(ptr, dp.header)
+    unsafe_store!(ptr, dp.header)
 end
 
 export AgentDispatchPacket
@@ -252,7 +279,7 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeAgentDispatch}}, ptr :: Pt
 		completion_signal = p_comp)
 end
 
-function store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)
+function unsafe_store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)
     unsafe_store!(convert(Ptr{Uint16}, ptr + 2), ad.typ)
     unsafe_store!(convert(Ptr{Uint32}, ptr + 4), 0x00000000) # Uint32 reserved
     unsafe_store!(convert(Ptr{Uint64}, ptr + 8), ad.return_address)
@@ -264,7 +291,7 @@ function store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)
     unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0x0000000000000000)    # Uint64 reserved
     unsafe_store!(convert(Ptr{Uint64}, ptr + 56), ad.completion_signal)
 
-    store!(ptr, ad.header)
+    unsafe_store!(ptr, ad.header)
 end
 
 export BarrierPacket
@@ -285,7 +312,7 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeBarrier}}, ptr :: Ptr{Void
 	return BarrierPacket(p_hdr, p_dep, p_comp)
 end
 
-function store!(ptr :: Ptr{Void}, bp :: BarrierPacket)
+function unsafe_store!(ptr :: Ptr{Void}, bp :: BarrierPacket)
 	p_dep_ptr = convert(Ptr{Uint64}, pointer(bp.dep_signal))
 
 	unsafe_store!(convert(Ptr{Uint16}, ptr + 2), 0)
@@ -298,11 +325,11 @@ function store!(ptr :: Ptr{Void}, bp :: BarrierPacket)
 	unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0)
 	unsafe_store!(convert(Ptr{Uint64}, ptr + 56), bp.completion_signal)
 
-	store!(ptr, bp.header)
+	unsafe_store!(ptr, bp.header)
 end
 
-function load(::Type{AQLPacket}, ptr :: Ptr{Void})
-    hdr = load(PacketHeader, ptr)
+function unsafe_convert(::Type{AQLPacket}, ptr :: Ptr{Void})
+    hdr = unsafe_convert(PacketHeader, ptr)
 
     packet = load(AQLPacket, Val{hdr.typ}, ptr, hdr)
 

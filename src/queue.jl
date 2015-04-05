@@ -77,14 +77,34 @@ function Queue(a :: Agent, size;
 	return queue
 end
 
+import Base.getindex
+
+function getindex(q :: Queue, i)
+	assert(i > 0 && i <= q.size)
+
+	p_ptr = convert(Ptr{Void}, q.base_address + 64 * (i - 1))
+
+	return unsafe_convert(AQLPacket, p_ptr)
+end
+
+import Base.setindex!
+
+function setindex!(q :: Queue, p :: AQLPacket, i)
+	assert(i > 0 && i <= q.size)
+
+	p_ptr = convert(Ptr{Void}, q.base_address + 64 * (i - 1))
+
+	unsafe_store!(p_ptr, p)
+end
+
 import Base.push!
 
 function push!(q :: Queue, p :: AQLPacket)
-	idx = add_write_index!(q,Uint64(1))
+	idx = add_write_index!(q,Uint64(1)) + 1
 
 	q[idx] = p
 
-	store!(q.doorbell_signal, idx)
+	store!(q.doorbell_signal, hsa_signal_value_t(idx))
 end
 
 function queue_err_cb(status :: hsa_status_t, queue_ptr :: Ptr{hsa_queue_t})
