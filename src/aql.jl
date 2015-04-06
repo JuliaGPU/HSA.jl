@@ -1,16 +1,17 @@
-export PacketTypeAlwaysReserved, PacketTypeInvalid, PacketTypeDispatch,
-    PacketTypeBarrier, PacketTypeAgentDispatch
+export PacketTypeVendorSpecific, PacketTypeInvalid, PacketTypeKernelDispatch,
+    PacketTypeBarrierAndAnd, PacketTypeAgentDispatch, PacketTypeBarrierAndOr
 
-const PacketTypeAlwaysReserved =  convert(Uint8, HSA_PACKET_TYPE_ALWAYS_RESERVED)
+const PacketTypeVendorSpecific =  convert(Uint8, HSA_PACKET_TYPE_VENDOR_SPECIFIC)
 const PacketTypeInvalid = convert(Uint8, HSA_PACKET_TYPE_INVALID)
-const PacketTypeDispatch = convert(Uint8, HSA_PACKET_TYPE_DISPATCH)
-const PacketTypeBarrier = convert(Uint8, HSA_PACKET_TYPE_BARRIER)
+const PacketTypeKernelDispatch = convert(Uint8, HSA_PACKET_TYPE_KERNEL_DISPATCH)
+const PacketTypeBarrierAnd = convert(Uint8, HSA_PACKET_TYPE_BARRIER_AND)
 const PacketTypeAgentDispatch = convert(Uint8, HSA_PACKET_TYPE_AGENT_DISPATCH)
+const PacketTypeBarrierAndOr = convert(Uint8, HSA_PACKET_TYPE_BARRIER_OR)
 
-export FenceScopeNone, FenceScopeComponent, FenceScopeSystem
+export FenceScopeNone, FenceScopeAgent, FenceScopeSystem
 
 const FenceScopeNone = convert(Uint8, HSA_FENCE_SCOPE_NONE)
-const FenceScopeComponent = convert(Uint8, HSA_FENCE_SCOPE_COMPONENT)
+const FenceScopeAgent = convert(Uint8, HSA_FENCE_SCOPE_AGENT)
 const FenceScopeSystem = convert(Uint8, HSA_FENCE_SCOPE_SYSTEM)
 
 export PacketHeader
@@ -92,9 +93,9 @@ function ==(p1 :: AQLPacket, p2 :: AQLPacket)
 	return bytes1 == bytes2
 end
 
-export DispatchPacket
+export KernelDispatchPacket
 
-type DispatchPacket{N} <: AQLPacket
+type KernelDispatchPacket{N} <: AQLPacket
     header :: PacketHeader
     dimensions :: Uint16
     workgroup_size_x :: Uint16
@@ -109,9 +110,9 @@ type DispatchPacket{N} <: AQLPacket
     kernarg_address :: Uint64
     completion_signal :: hsa_signal_t
 
-    function DispatchPacket(sizes::Integer...;
+    function KernelDispatchPacket(sizes::Integer...;
 		header :: PacketHeader = PacketHeader(
-				PacketTypeDispatch,
+				PacketTypeKernelDispatch,
 				barrier = false,
 				# acquire
 				# release
@@ -123,7 +124,7 @@ type DispatchPacket{N} <: AQLPacket
 
 		if !isa(N, Uint8)
 			newN = convert(Uint8, N)
-			return DispatchPacket{newN}(
+			return KernelDispatchPacket{newN}(
 			sizes...;
 			header = header,
 			private_segment_size = private_segment_size,
@@ -174,7 +175,7 @@ type DispatchPacket{N} <: AQLPacket
     end
 end
 
-function load(::Type{AQLPacket}, ::Type{Val{PacketTypeDispatch}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
+function load(::Type{AQLPacket}, ::Type{Val{PacketTypeKernelDispatch}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
     if ptr == C_NULL
         error("invalid packet pointer")
     end
@@ -195,7 +196,7 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeDispatch}}, ptr :: Ptr{Voi
     # Uint64 reserved
     p_comp_sign = unsafe_load(convert(Ptr{hsa_signal_t}, ptr + 56))
 
-    res = DispatchPacket{p_dims}(
+    res = KernelDispatchPacket{p_dims}(
 	    p_gr_x, p_gr_y, p_gr_z,
 	    p_wg_x, p_wg_y, p_wg_z;
 		header = p_hdr,
@@ -209,8 +210,8 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeDispatch}}, ptr :: Ptr{Voi
     return res
 end
 
-function unsafe_store!(ptr :: Ptr{Void}, dp :: DispatchPacket)
-    if dp.header.typ != PacketTypeDispatch
+function unsafe_store!(ptr :: Ptr{Void}, dp :: KernelDispatchPacket)
+    if dp.header.typ != PacketTypeKernelDispatch
 		error("not a dispatch packet")
 	end
 
@@ -302,7 +303,7 @@ type BarrierPacket <: AQLPacket
     completion_signal :: hsa_signal_t
 end
 
-function load(::Type{AQLPacket}, ::Type{Val{PacketTypeBarrier}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
+function load(::Type{AQLPacket}, ::Type{Val{PacketTypeBarrierAnd}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
     p_dep = Array(Uint64, 5)
     p_dep_ptr = convert(Ptr{Uint64}, pointer(p_dep))
 

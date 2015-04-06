@@ -2,6 +2,10 @@
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
+function hsa_status_string(status::hsa_status_t,status_string::Ptr{Ptr{Uint8}})
+    ccall((:hsa_status_string,libhsa),hsa_status_t,(hsa_status_t,Ptr{Ptr{Uint8}}),status,status_string)
+end
+
 function hsa_init()
     ccall((:hsa_init,libhsa),hsa_status_t,())
 end
@@ -14,16 +18,180 @@ function hsa_system_get_info(attribute::hsa_system_info_t,value::Ptr{Void})
     ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),attribute,value)
 end
 
-function hsa_iterate_agents(callback::Ptr{Void},data::Ptr{Void})
-    ccall((:hsa_iterate_agents,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void}),callback,data)
+function hsa_system_extension_supported(extension::Uint16,version_major::Uint16,version_minor::Uint16,result::Ptr{Bool})
+    ccall((:hsa_system_extension_supported,libhsa),hsa_status_t,(Uint16,Uint16,Uint16,Ptr{Bool}),extension,version_major,version_minor,result)
+end
+
+function hsa_system_get_extension_table(extension::Uint16,version_major::Uint16,version_minor::Uint16,table::Ptr{Void})
+    ccall((:hsa_system_get_extension_table,libhsa),hsa_status_t,(Uint16,Uint16,Uint16,Ptr{Void}),extension,version_major,version_minor,table)
 end
 
 function hsa_agent_get_info(agent::Agent,attribute::hsa_agent_info_t,value::Ptr{Void})
     ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,attribute,value)
 end
 
-function hsa_queue_create(agent::Agent,size::Csize_t,_type::hsa_queue_type_t,callback::Ptr{Void},service_queue::Queue,queue::Ptr{Ptr{hsa_queue_t}})
-    ccall((:hsa_queue_create,libhsa),hsa_status_t,(hsa_agent_t,Csize_t,hsa_queue_type_t,Ptr{Void},Ptr{hsa_queue_t},Ptr{Ptr{hsa_queue_t}}),agent,size,_type,callback,service_queue,queue)
+function hsa_iterate_agents(callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_iterate_agents,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void}),callback,data)
+end
+
+function hsa_agent_get_exception_policies(agent::Agent,profile::hsa_profile_t,mask::Ptr{Uint16})
+    ccall((:hsa_agent_get_exception_policies,libhsa),hsa_status_t,(hsa_agent_t,hsa_profile_t,Ptr{Uint16}),agent,profile,mask)
+end
+
+function hsa_agent_extension_supported(extension::Uint16,agent::Agent,version_major::Uint16,version_minor::Uint16,result::Ptr{Bool})
+    ccall((:hsa_agent_extension_supported,libhsa),hsa_status_t,(Uint16,hsa_agent_t,Uint16,Uint16,Ptr{Bool}),extension,agent,version_major,version_minor,result)
+end
+
+function hsa_signal_create(initial_value::hsa_signal_value_t,num_consumers::Uint32,consumers::Ptr{hsa_agent_t},signal::Ptr{hsa_signal_t})
+    ccall((:hsa_signal_create,libhsa),hsa_status_t,(hsa_signal_value_t,Uint32,Ptr{hsa_agent_t},Ptr{hsa_signal_t}),initial_value,num_consumers,consumers,signal)
+end
+
+function hsa_signal_destroy(signal::Signal)
+    ccall((:hsa_signal_destroy,libhsa),hsa_status_t,(hsa_signal_t,),signal)
+end
+
+function load(signal::Signal,::Type{Val{Acquire}})
+    ccall((:hsa_signal_load_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
+end
+
+function load(signal::Signal,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_load_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
+end
+
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_store_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_store_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_exchange_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_exchange_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_exchange_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_exchange_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_cas_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_cas_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_cas_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_cas_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_add_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_add_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_add_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_add_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_subtract_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_subtract_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_subtract_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_subtract_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_and_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_and_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_and_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_and_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_or_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_or_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_or_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_or_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_xor_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_xor_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_xor_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_xor_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_state_hint::hsa_wait_state_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_wait_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_state_t),signal,condition,compare_value,timeout_hint,wait_state_hint)
+end
+
+function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_state_hint::hsa_wait_state_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_wait_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_state_t),signal,condition,compare_value,timeout_hint,wait_state_hint)
+end
+
+function hsa_queue_create(agent::Agent,size::Uint32,_type::hsa_queue_type_t,callback::Ptr{Void},data::Ptr{Void},private_segment_size::Uint32,group_segment_size::Uint32,queue::Ptr{Ptr{hsa_queue_t}})
+    ccall((:hsa_queue_create,libhsa),hsa_status_t,(hsa_agent_t,Uint32,hsa_queue_type_t,Ptr{Void},Ptr{Void},Uint32,Uint32,Ptr{Ptr{hsa_queue_t}}),agent,size,_type,callback,data,private_segment_size,group_segment_size,queue)
+end
+
+function hsa_soft_queue_create(region::hsa_region_t,size::Uint32,_type::hsa_queue_type_t,features::Uint32,doorbell_signal::Signal,queue::Ptr{Ptr{hsa_queue_t}})
+    ccall((:hsa_soft_queue_create,libhsa),hsa_status_t,(hsa_region_t,Uint32,hsa_queue_type_t,Uint32,hsa_signal_t,Ptr{Ptr{hsa_queue_t}}),region,size,_type,features,doorbell_signal,queue)
 end
 
 function hsa_queue_destroy(queue::Queue)
@@ -98,20 +266,12 @@ function store_read_index!(queue::Queue,value::Uint64,::Type{Val{Release}})
     ccall((:hsa_queue_store_read_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_agent_iterate_regions(agent::Agent,callback::Ptr{Void},data::Ptr{Void})
-    ccall((:hsa_agent_iterate_regions,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Ptr{Void}),agent,callback,data)
-end
-
 function hsa_region_get_info(region::hsa_region_t,attribute::hsa_region_info_t,value::Ptr{Void})
     ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,attribute,value)
 end
 
-function hsa_memory_register(address::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Csize_t),address,size)
-end
-
-function hsa_memory_deregister(address::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Csize_t),address,size)
+function hsa_agent_iterate_regions(agent::Agent,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_agent_iterate_regions,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Ptr{Void}),agent,callback,data)
 end
 
 function hsa_memory_allocate(region::hsa_region_t,size::Csize_t,ptr::Ptr{Ptr{Void}})
@@ -122,156 +282,148 @@ function hsa_memory_free(ptr::Ptr{Void})
     ccall((:hsa_memory_free,libhsa),hsa_status_t,(Ptr{Void},),ptr)
 end
 
-function hsa_signal_create(initial_value::hsa_signal_value_t,num_consumers::Uint32,consumers::Ptr{hsa_agent_t},signal::Ptr{hsa_signal_t})
-    ccall((:hsa_signal_create,libhsa),hsa_status_t,(hsa_signal_value_t,Uint32,Ptr{hsa_agent_t},Ptr{hsa_signal_t}),initial_value,num_consumers,consumers,signal)
+function hsa_memory_copy(dst::Ptr{Void},src::Ptr{Void},size::Csize_t)
+    ccall((:hsa_memory_copy,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void},Csize_t),dst,src,size)
 end
 
-function hsa_signal_destroy(signal::Signal)
-    ccall((:hsa_signal_destroy,libhsa),hsa_status_t,(hsa_signal_t,),signal)
+function hsa_memory_assign_agent(ptr::Ptr{Void},agent::Agent,access::hsa_access_permission_t)
+    ccall((:hsa_memory_assign_agent,libhsa),hsa_status_t,(Ptr{Void},hsa_agent_t,hsa_access_permission_t),ptr,agent,access)
 end
 
-function load(signal::Signal,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_load_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
+function hsa_memory_register(ptr::Ptr{Void},size::Csize_t)
+    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
 end
 
-function load(signal::Signal,::Type{Val{Acquire}})
-    ccall((:hsa_signal_load_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
+function hsa_memory_deregister(ptr::Ptr{Void},size::Csize_t)
+    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
 end
 
-function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_store_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_isa_from_name(name::Ptr{Uint8},isa::Ptr{hsa_isa_t})
+    ccall((:hsa_isa_from_name,libhsa),hsa_status_t,(Ptr{Uint8},Ptr{hsa_isa_t}),name,isa)
 end
 
-function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_store_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_isa_get_info(isa::hsa_isa_t,attribute::hsa_isa_info_t,index::Uint32,value::Ptr{Void})
+    ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,Uint32,Ptr{Void}),isa,attribute,index,value)
 end
 
-function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_expectancy_hint::hsa_wait_expectancy_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_wait_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_expectancy_t),signal,condition,compare_value,timeout_hint,wait_expectancy_hint)
+function hsa_isa_compatible(code_object_isa::hsa_isa_t,agent_isa::hsa_isa_t,result::Ptr{Bool})
+    ccall((:hsa_isa_compatible,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_t,Ptr{Bool}),code_object_isa,agent_isa,result)
 end
 
-function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_expectancy_hint::hsa_wait_expectancy_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_wait_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_expectancy_t),signal,condition,compare_value,timeout_hint,wait_expectancy_hint)
+function hsa_code_object_serialize(code_object::hsa_code_object_t,alloc_callback::Ptr{Void},callback_data::hsa_callback_data_t,options::Ptr{Uint8},serialized_code_object::Ptr{Ptr{Void}},serialized_code_object_size::Ptr{Csize_t})
+    ccall((:hsa_code_object_serialize,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},hsa_callback_data_t,Ptr{Uint8},Ptr{Ptr{Void}},Ptr{Csize_t}),code_object,alloc_callback,callback_data,options,serialized_code_object,serialized_code_object_size)
 end
 
-function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_and_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_code_object_deserialize(serialized_code_object::Ptr{Void},serialized_code_object_size::Csize_t,options::Ptr{Uint8},code_object::Ptr{hsa_code_object_t})
+    ccall((:hsa_code_object_deserialize,libhsa),hsa_status_t,(Ptr{Void},Csize_t,Ptr{Uint8},Ptr{hsa_code_object_t}),serialized_code_object,serialized_code_object_size,options,code_object)
 end
 
-function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_and_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_code_object_destroy(code_object::hsa_code_object_t)
+    ccall((:hsa_code_object_destroy,libhsa),hsa_status_t,(hsa_code_object_t,),code_object)
 end
 
-function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_and_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_code_object_get_info(code_object::hsa_code_object_t,attribute::hsa_code_object_info_t,value::Ptr{Void})
+    ccall((:hsa_code_object_get_info,libhsa),hsa_status_t,(hsa_code_object_t,hsa_code_object_info_t,Ptr{Void}),code_object,attribute,value)
 end
 
-function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_and_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_code_object_get_symbol(code_object::hsa_code_object_t,symbol_name::Ptr{Uint8},symbol::Ptr{hsa_code_symbol_t})
+    ccall((:hsa_code_object_get_symbol,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Uint8},Ptr{hsa_code_symbol_t}),code_object,symbol_name,symbol)
 end
 
-function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_or_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_code_symbol_get_info(code_symbol::hsa_code_symbol_t,attribute::hsa_code_symbol_info_t,value::Ptr{Void})
+    ccall((:hsa_code_symbol_get_info,libhsa),hsa_status_t,(hsa_code_symbol_t,hsa_code_symbol_info_t,Ptr{Void}),code_symbol,attribute,value)
 end
 
-function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_or_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_code_object_iterate_symbols(code_object::hsa_code_object_t,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_code_object_iterate_symbols,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},Ptr{Void}),code_object,callback,data)
 end
 
-function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_or_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_create(profile::hsa_profile_t,executable_state::hsa_executable_state_t,options::Ptr{Uint8},executable::Ptr{hsa_executable_t})
+    ccall((:hsa_executable_create,libhsa),hsa_status_t,(hsa_profile_t,hsa_executable_state_t,Ptr{Uint8},Ptr{hsa_executable_t}),profile,executable_state,options,executable)
 end
 
-function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_or_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_destroy(executable::hsa_executable_t)
+    ccall((:hsa_executable_destroy,libhsa),hsa_status_t,(hsa_executable_t,),executable)
 end
 
-function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_xor_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_load_code_object(executable::hsa_executable_t,agent::Agent,code_object::hsa_code_object_t,options::Ptr{Uint8})
+    ccall((:hsa_executable_load_code_object,libhsa),hsa_status_t,(hsa_executable_t,hsa_agent_t,hsa_code_object_t,Ptr{Uint8}),executable,agent,code_object,options)
 end
 
-function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_xor_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_freeze(executable::hsa_executable_t,options::Ptr{Uint8})
+    ccall((:hsa_executable_freeze,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint8}),executable,options)
 end
 
-function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_xor_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_get_info(executable::hsa_executable_t,attribute::hsa_executable_info_t,value::Ptr{Void})
+    ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,attribute,value)
 end
 
-function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_xor_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_global_variable_define(executable::hsa_executable_t,variable_name::Ptr{Uint8},address::Ptr{Void})
+    ccall((:hsa_executable_global_variable_define,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint8},Ptr{Void}),executable,variable_name,address)
 end
 
-function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_add_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_agent_global_variable_define(executable::hsa_executable_t,agent::Agent,variable_name::Ptr{Uint8},address::Ptr{Void})
+    ccall((:hsa_executable_agent_global_variable_define,libhsa),hsa_status_t,(hsa_executable_t,hsa_agent_t,Ptr{Uint8},Ptr{Void}),executable,agent,variable_name,address)
 end
 
-function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_add_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_readonly_variable_define(executable::hsa_executable_t,agent::Agent,variable_name::Ptr{Uint8},address::Ptr{Void})
+    ccall((:hsa_executable_readonly_variable_define,libhsa),hsa_status_t,(hsa_executable_t,hsa_agent_t,Ptr{Uint8},Ptr{Void}),executable,agent,variable_name,address)
 end
 
-function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_add_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_validate(executable::hsa_executable_t,result::Ptr{Uint32})
+    ccall((:hsa_executable_validate,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint32}),executable,result)
 end
 
-function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_add_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_get_symbol(executable::hsa_executable_t,module_name::Ptr{Uint8},symbol_name::Ptr{Uint8},agent::Agent,call_convention::Int32,symbol::Ptr{hsa_executable_symbol_t})
+    ccall((:hsa_executable_get_symbol,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint8},Ptr{Uint8},hsa_agent_t,Int32,Ptr{hsa_executable_symbol_t}),executable,module_name,symbol_name,agent,call_convention,symbol)
 end
 
-function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_subtract_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_symbol_get_info(executable_symbol::hsa_executable_symbol_t,attribute::hsa_executable_symbol_info_t,value::Ptr{Void})
+    ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),executable_symbol,attribute,value)
 end
 
-function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_subtract_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_iterate_symbols(executable::hsa_executable_t,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_executable_iterate_symbols,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Void},Ptr{Void}),executable,callback,data)
 end
 
-function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_subtract_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function load(signal::Signal)
+    load(signal,Val{Acquire})
 end
 
-function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_subtract_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function store!(signal::Signal,value::hsa_signal_value_t)
+    store!(signal,value,Val{Release})
 end
 
-function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_exchange_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function exchange!(signal::Signal,value::hsa_signal_value_t)
+    exchange!(signal,value,Val{AcquRel})
 end
 
-function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_exchange_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t)
+    cas!(signal,expected,value,Val{AcquRel})
 end
 
-function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_exchange_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function add!(signal::Signal,value::hsa_signal_value_t)
+    add!(signal,value,Val{AcquRel})
 end
 
-function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_exchange_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function subtract!(signal::Signal,value::hsa_signal_value_t)
+    subtract!(signal,value,Val{AcquRel})
 end
 
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_cas_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+function and!(signal::Signal,value::hsa_signal_value_t)
+    and!(signal,value,Val{AcquRel})
 end
 
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_cas_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+function or!(signal::Signal,value::hsa_signal_value_t)
+    or!(signal,value,Val{AcquRel})
 end
 
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_cas_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+function xor!(signal::Signal,value::hsa_signal_value_t)
+    xor!(signal,value,Val{AcquRel})
 end
 
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_cas_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
-end
-
-function hsa_status_string(status::hsa_status_t,status_string::Ptr{Ptr{Uint8}})
-    ccall((:hsa_status_string,libhsa),hsa_status_t,(hsa_status_t,Ptr{Ptr{Uint8}}),status,status_string)
-end
-
-function hsa_extension_query(extension::hsa_extension_t,result::Ptr{Cint})
-    ccall((:hsa_extension_query,libhsa),hsa_status_t,(hsa_extension_t,Ptr{Cint}),extension,result)
+function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_state_hint::hsa_wait_state_t)
+    wait(signal,condition,compare_value,timeout_hint,wait_state_hint,Val{Acquire})
 end
 
 function load_read_index(queue::Queue)
@@ -296,565 +448,15 @@ end
 
 function store_read_index!(queue::Queue,value::Uint64)
     store_read_index!(queue,value,Val{Release})
-end
-
-function load(signal::Signal)
-    load(signal,Val{Acquire})
-end
-
-function store!(signal::Signal,value::hsa_signal_value_t)
-    store!(signal,value,Val{Release})
-end
-
-function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_expectancy_hint::hsa_wait_expectancy_t)
-    wait(signal,condition,compare_value,timeout_hint,wait_expectancy_hint,Val{Acquire})
-end
-
-function and!(signal::Signal,value::hsa_signal_value_t)
-    and!(signal,value,Val{AcquRel})
-end
-
-function or!(signal::Signal,value::hsa_signal_value_t)
-    or!(signal,value,Val{AcquRel})
-end
-
-function xor!(signal::Signal,value::hsa_signal_value_t)
-    xor!(signal,value,Val{AcquRel})
-end
-
-function add!(signal::Signal,value::hsa_signal_value_t)
-    add!(signal,value,Val{AcquRel})
-end
-
-function subtract!(signal::Signal,value::hsa_signal_value_t)
-    subtract!(signal,value,Val{AcquRel})
-end
-
-function exchange!(signal::Signal,value::hsa_signal_value_t)
-    exchange!(signal,value,Val{AcquRel})
-end
-
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t)
-    cas!(signal,expected,value,Val{AcquRel})
-end
-# Julia wrapper for header: ../runtime/inc/hsa_ext_finalize.h
-# Automatically generated using Clang.jl wrap_c, version 0.0.0
-
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function hsa_ext_query_finalization_code_descriptor_count()
-    ccall((:hsa_ext_query_finalization_code_descriptor_count,libhsa),Cint,())
-end
-
-function hsa_ext_query_finalization_code_descriptor()
-    ccall((:hsa_ext_query_finalization_code_descriptor,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-
-function HSA_API()
-    ccall((:HSA_API,libhsa),Cint,())
-end
-# Julia wrapper for header: ../runtime/inc/hsa_ext_image.h
-# Automatically generated using Clang.jl wrap_c, version 0.0.0
-
-
-function hsa_init()
-    ccall((:hsa_init,libhsa),hsa_status_t,())
-end
-
-function hsa_shut_down()
-    ccall((:hsa_shut_down,libhsa),hsa_status_t,())
-end
-
-function hsa_system_get_info(attribute::hsa_system_info_t,value::Ptr{Void})
-    ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),attribute,value)
-end
-
-function hsa_iterate_agents(callback::Ptr{Void},data::Ptr{Void})
-    ccall((:hsa_iterate_agents,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void}),callback,data)
-end
-
-function hsa_agent_get_info(agent::Agent,attribute::hsa_agent_info_t,value::Ptr{Void})
-    ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,attribute,value)
-end
-
-function hsa_queue_create(agent::Agent,size::Csize_t,_type::hsa_queue_type_t,callback::Ptr{Void},service_queue::Queue,queue::Ptr{Ptr{hsa_queue_t}})
-    ccall((:hsa_queue_create,libhsa),hsa_status_t,(hsa_agent_t,Csize_t,hsa_queue_type_t,Ptr{Void},Ptr{hsa_queue_t},Ptr{Ptr{hsa_queue_t}}),agent,size,_type,callback,service_queue,queue)
-end
-
-function hsa_queue_destroy(queue::Queue)
-    ccall((:hsa_queue_destroy,libhsa),hsa_status_t,(Ptr{hsa_queue_t},),queue)
-end
-
-function hsa_queue_inactivate(queue::Queue)
-    ccall((:hsa_queue_inactivate,libhsa),hsa_status_t,(Ptr{hsa_queue_t},),queue)
-end
-
-function load_read_index(queue::Queue,::Type{Val{Acquire}})
-    ccall((:hsa_queue_load_read_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
-end
-
-function load_read_index(queue::Queue,::Type{Val{Relaxed}})
-    ccall((:hsa_queue_load_read_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
-end
-
-function load_write_index(queue::Queue,::Type{Val{Acquire}})
-    ccall((:hsa_queue_load_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
-end
-
-function load_write_index(queue::Queue,::Type{Val{Relaxed}})
-    ccall((:hsa_queue_load_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
-end
-
-function store_write_index!(queue::Queue,value::Uint64,::Type{Val{Relaxed}})
-    ccall((:hsa_queue_store_write_index_relaxed,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
-end
-
-function store_write_index!(queue::Queue,value::Uint64,::Type{Val{Release}})
-    ccall((:hsa_queue_store_write_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
-end
-
-function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64,::Type{Val{AcquRel}})
-    ccall((:hsa_queue_cas_write_index_acq_rel,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
-end
-
-function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64,::Type{Val{Acquire}})
-    ccall((:hsa_queue_cas_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
-end
-
-function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64,::Type{Val{Relaxed}})
-    ccall((:hsa_queue_cas_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
-end
-
-function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64,::Type{Val{Release}})
-    ccall((:hsa_queue_cas_write_index_release,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
-end
-
-function add_write_index!(queue::Queue,value::Uint64,::Type{Val{AcquRel}})
-    ccall((:hsa_queue_add_write_index_acq_rel,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
-end
-
-function add_write_index!(queue::Queue,value::Uint64,::Type{Val{Acquire}})
-    ccall((:hsa_queue_add_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
-end
-
-function add_write_index!(queue::Queue,value::Uint64,::Type{Val{Relaxed}})
-    ccall((:hsa_queue_add_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
-end
-
-function add_write_index!(queue::Queue,value::Uint64,::Type{Val{Release}})
-    ccall((:hsa_queue_add_write_index_release,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
-end
-
-function store_read_index!(queue::Queue,value::Uint64,::Type{Val{Relaxed}})
-    ccall((:hsa_queue_store_read_index_relaxed,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
-end
-
-function store_read_index!(queue::Queue,value::Uint64,::Type{Val{Release}})
-    ccall((:hsa_queue_store_read_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
-end
-
-function hsa_agent_iterate_regions(agent::Agent,callback::Ptr{Void},data::Ptr{Void})
-    ccall((:hsa_agent_iterate_regions,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Ptr{Void}),agent,callback,data)
-end
-
-function hsa_region_get_info(region::hsa_region_t,attribute::hsa_region_info_t,value::Ptr{Void})
-    ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,attribute,value)
-end
-
-function hsa_memory_register(address::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Csize_t),address,size)
-end
-
-function hsa_memory_deregister(address::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Csize_t),address,size)
-end
-
-function hsa_memory_allocate(region::hsa_region_t,size::Csize_t,ptr::Ptr{Ptr{Void}})
-    ccall((:hsa_memory_allocate,libhsa),hsa_status_t,(hsa_region_t,Csize_t,Ptr{Ptr{Void}}),region,size,ptr)
-end
-
-function hsa_memory_free(ptr::Ptr{Void})
-    ccall((:hsa_memory_free,libhsa),hsa_status_t,(Ptr{Void},),ptr)
-end
-
-function hsa_signal_create(initial_value::hsa_signal_value_t,num_consumers::Uint32,consumers::Ptr{hsa_agent_t},signal::Ptr{hsa_signal_t})
-    ccall((:hsa_signal_create,libhsa),hsa_status_t,(hsa_signal_value_t,Uint32,Ptr{hsa_agent_t},Ptr{hsa_signal_t}),initial_value,num_consumers,consumers,signal)
-end
-
-function hsa_signal_destroy(signal::Signal)
-    ccall((:hsa_signal_destroy,libhsa),hsa_status_t,(hsa_signal_t,),signal)
-end
-
-function load(signal::Signal,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_load_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
-end
-
-function load(signal::Signal,::Type{Val{Acquire}})
-    ccall((:hsa_signal_load_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
-end
-
-function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_store_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_store_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_expectancy_hint::hsa_wait_expectancy_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_wait_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_expectancy_t),signal,condition,compare_value,timeout_hint,wait_expectancy_hint)
-end
-
-function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_expectancy_hint::hsa_wait_expectancy_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_wait_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_expectancy_t),signal,condition,compare_value,timeout_hint,wait_expectancy_hint)
-end
-
-function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_and_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_and_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_and_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_and_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_or_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_or_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_or_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_or_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_xor_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_xor_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_xor_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_xor_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_add_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_add_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_add_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_add_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_subtract_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_subtract_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_subtract_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_subtract_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_exchange_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_exchange_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_exchange_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_exchange_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_cas_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
-end
-
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_cas_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
-end
-
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_cas_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
-end
-
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_cas_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
-end
-
-function hsa_status_string(status::hsa_status_t,status_string::Ptr{Ptr{Uint8}})
-    ccall((:hsa_status_string,libhsa),hsa_status_t,(hsa_status_t,Ptr{Ptr{Uint8}}),status,status_string)
-end
-
-function hsa_extension_query(extension::hsa_extension_t,result::Ptr{Cint})
-    ccall((:hsa_extension_query,libhsa),hsa_status_t,(hsa_extension_t,Ptr{Cint}),extension,result)
-end
-
-function hsa_ext_get_image_info_max_dim(component::Agent,attribute::hsa_agent_info_t,value::Ptr{Void})
-    ccall((:hsa_ext_get_image_info_max_dim,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),component,attribute,value)
-end
-
-function hsa_ext_image_get_format_capability(agent::Agent,image_format::Ptr{hsa_ext_image_format_t},image_geometry::hsa_ext_image_geometry_t,capability_mask::Ptr{Uint32})
-    ccall((:hsa_ext_image_get_format_capability,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_image_format_t},hsa_ext_image_geometry_t,Ptr{Uint32}),agent,image_format,image_geometry,capability_mask)
-end
-
-function hsa_ext_image_get_info(agent::Agent,image_descriptor::Ptr{hsa_ext_image_descriptor_t},access_permission::hsa_ext_image_access_permission_t,image_info::Ptr{hsa_ext_image_info_t})
-    ccall((:hsa_ext_image_get_info,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_image_descriptor_t},hsa_ext_image_access_permission_t,Ptr{hsa_ext_image_info_t}),agent,image_descriptor,access_permission,image_info)
-end
-
-function hsa_ext_image_create_handle(agent::Agent,image_descriptor::Ptr{hsa_ext_image_descriptor_t},image_data::Ptr{Void},access_permission::hsa_ext_image_access_permission_t,image_handle::Ptr{hsa_ext_image_handle_t})
-    ccall((:hsa_ext_image_create_handle,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_image_descriptor_t},Ptr{Void},hsa_ext_image_access_permission_t,Ptr{hsa_ext_image_handle_t}),agent,image_descriptor,image_data,access_permission,image_handle)
-end
-
-function hsa_ext_image_import(agent::Agent,src_memory::Ptr{Void},src_row_pitch::Csize_t,src_slice_pitch::Csize_t,dst_image_handle::hsa_ext_image_handle_t,image_region::Ptr{hsa_ext_image_region_t},completion_signal::Ptr{hsa_signal_t})
-    ccall((:hsa_ext_image_import,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Csize_t,Csize_t,hsa_ext_image_handle_t,Ptr{hsa_ext_image_region_t},Ptr{hsa_signal_t}),agent,src_memory,src_row_pitch,src_slice_pitch,dst_image_handle,image_region,completion_signal)
-end
-
-function hsa_ext_image_export(agent::Agent,src_image_handle::hsa_ext_image_handle_t,dst_memory::Ptr{Void},dst_row_pitch::Csize_t,dst_slice_pitch::Csize_t,image_region::Ptr{hsa_ext_image_region_t},completion_signal::Ptr{hsa_signal_t})
-    ccall((:hsa_ext_image_export,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_handle_t,Ptr{Void},Csize_t,Csize_t,Ptr{hsa_ext_image_region_t},Ptr{hsa_signal_t}),agent,src_image_handle,dst_memory,dst_row_pitch,dst_slice_pitch,image_region,completion_signal)
-end
-
-function hsa_ext_image_copy(agent::Agent,src_image_handle::hsa_ext_image_handle_t,dst_image_handle::hsa_ext_image_handle_t,image_region::Ptr{hsa_ext_image_region_t},completion_signal::Ptr{hsa_signal_t})
-    ccall((:hsa_ext_image_copy,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_handle_t,hsa_ext_image_handle_t,Ptr{hsa_ext_image_region_t},Ptr{hsa_signal_t}),agent,src_image_handle,dst_image_handle,image_region,completion_signal)
-end
-
-function hsa_ext_image_clear(agent::Agent,image_handle::hsa_ext_image_handle_t,data::Array_4_Cfloat,image_region::Ptr{hsa_ext_image_region_t},completion_signal::Ptr{hsa_signal_t})
-    ccall((:hsa_ext_image_clear,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_handle_t,Array_4_Cfloat,Ptr{hsa_ext_image_region_t},Ptr{hsa_signal_t}),agent,image_handle,data,image_region,completion_signal)
-end
-
-function hsa_ext_image_copy_split_offset(agent::Agent,src_image_handle::hsa_ext_image_handle_t,dst_image_handle::hsa_ext_image_handle_t,src_origin::hsa_dim3_t,dst_origin::hsa_dim3_t,size::hsa_ext_image_range_t,completion_signal::Ptr{hsa_signal_t})
-    ccall((:hsa_ext_image_copy_split_offset,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_handle_t,hsa_ext_image_handle_t,hsa_dim3_t,hsa_dim3_t,hsa_ext_image_range_t,Ptr{hsa_signal_t}),agent,src_image_handle,dst_image_handle,src_origin,dst_origin,size,completion_signal)
-end
-
-function hsa_ext_image_clear_generic_data(agent::Agent,image_handle::hsa_ext_image_handle_t,data::Ptr{Void},image_region::Ptr{hsa_ext_image_region_t},completion_signal::Ptr{hsa_signal_t})
-    ccall((:hsa_ext_image_clear_generic_data,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_handle_t,Ptr{Void},Ptr{hsa_ext_image_region_t},Ptr{hsa_signal_t}),agent,image_handle,data,image_region,completion_signal)
-end
-
-function hsa_ext_image_destroy_handle(agent::Agent,image_handle::Ptr{hsa_ext_image_handle_t})
-    ccall((:hsa_ext_image_destroy_handle,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_image_handle_t}),agent,image_handle)
-end
-
-function hsa_ext_sampler_create_handle(agent::Agent,sampler_descriptor::Ptr{hsa_ext_sampler_descriptor_t},sampler_handle::Ptr{hsa_ext_sampler_handle_t})
-    ccall((:hsa_ext_sampler_create_handle,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_sampler_descriptor_t},Ptr{hsa_ext_sampler_handle_t}),agent,sampler_descriptor,sampler_handle)
-end
-
-function hsa_ext_sampler_destroy_handle(agent::Agent,sampler_handle::Ptr{hsa_ext_sampler_handle_t})
-    ccall((:hsa_ext_sampler_destroy_handle,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_sampler_handle_t}),agent,sampler_handle)
-end
-
-function load_read_index(queue::Queue)
-    load_read_index(queue,Val{Acquire})
-end
-
-function load_write_index(queue::Queue)
-    load_write_index(queue,Val{Acquire})
-end
-
-function store_write_index!(queue::Queue,value::Uint64)
-    store_write_index!(queue,value,Val{Release})
-end
-
-function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64)
-    cas_write_index!(queue,expected,value,Val{AcquRel})
-end
-
-function add_write_index!(queue::Queue,value::Uint64)
-    add_write_index!(queue,value,Val{AcquRel})
-end
-
-function store_read_index!(queue::Queue,value::Uint64)
-    store_read_index!(queue,value,Val{Release})
-end
-
-function load(signal::Signal)
-    load(signal,Val{Acquire})
-end
-
-function store!(signal::Signal,value::hsa_signal_value_t)
-    store!(signal,value,Val{Release})
-end
-
-function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_expectancy_hint::hsa_wait_expectancy_t)
-    wait(signal,condition,compare_value,timeout_hint,wait_expectancy_hint,Val{Acquire})
-end
-
-function and!(signal::Signal,value::hsa_signal_value_t)
-    and!(signal,value,Val{AcquRel})
-end
-
-function or!(signal::Signal,value::hsa_signal_value_t)
-    or!(signal,value,Val{AcquRel})
-end
-
-function xor!(signal::Signal,value::hsa_signal_value_t)
-    xor!(signal,value,Val{AcquRel})
-end
-
-function add!(signal::Signal,value::hsa_signal_value_t)
-    add!(signal,value,Val{AcquRel})
-end
-
-function subtract!(signal::Signal,value::hsa_signal_value_t)
-    subtract!(signal,value,Val{AcquRel})
-end
-
-function exchange!(signal::Signal,value::hsa_signal_value_t)
-    exchange!(signal,value,Val{AcquRel})
-end
-
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t)
-    cas!(signal,expected,value,Val{AcquRel})
 end
 # Julia wrapper for header: ../runtime/inc/hsa_ext_amd.h
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
+function hsa_status_string(status::hsa_status_t,status_string::Ptr{Ptr{Uint8}})
+    ccall((:hsa_status_string,libhsa),hsa_status_t,(hsa_status_t,Ptr{Ptr{Uint8}}),status,status_string)
+end
+
 function hsa_init()
     ccall((:hsa_init,libhsa),hsa_status_t,())
 end
@@ -867,16 +469,180 @@ function hsa_system_get_info(attribute::hsa_system_info_t,value::Ptr{Void})
     ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),attribute,value)
 end
 
-function hsa_iterate_agents(callback::Ptr{Void},data::Ptr{Void})
-    ccall((:hsa_iterate_agents,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void}),callback,data)
+function hsa_system_extension_supported(extension::Uint16,version_major::Uint16,version_minor::Uint16,result::Ptr{Bool})
+    ccall((:hsa_system_extension_supported,libhsa),hsa_status_t,(Uint16,Uint16,Uint16,Ptr{Bool}),extension,version_major,version_minor,result)
+end
+
+function hsa_system_get_extension_table(extension::Uint16,version_major::Uint16,version_minor::Uint16,table::Ptr{Void})
+    ccall((:hsa_system_get_extension_table,libhsa),hsa_status_t,(Uint16,Uint16,Uint16,Ptr{Void}),extension,version_major,version_minor,table)
 end
 
 function hsa_agent_get_info(agent::Agent,attribute::hsa_agent_info_t,value::Ptr{Void})
     ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,attribute,value)
 end
 
-function hsa_queue_create(agent::Agent,size::Csize_t,_type::hsa_queue_type_t,callback::Ptr{Void},service_queue::Queue,queue::Ptr{Ptr{hsa_queue_t}})
-    ccall((:hsa_queue_create,libhsa),hsa_status_t,(hsa_agent_t,Csize_t,hsa_queue_type_t,Ptr{Void},Ptr{hsa_queue_t},Ptr{Ptr{hsa_queue_t}}),agent,size,_type,callback,service_queue,queue)
+function hsa_iterate_agents(callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_iterate_agents,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void}),callback,data)
+end
+
+function hsa_agent_get_exception_policies(agent::Agent,profile::hsa_profile_t,mask::Ptr{Uint16})
+    ccall((:hsa_agent_get_exception_policies,libhsa),hsa_status_t,(hsa_agent_t,hsa_profile_t,Ptr{Uint16}),agent,profile,mask)
+end
+
+function hsa_agent_extension_supported(extension::Uint16,agent::Agent,version_major::Uint16,version_minor::Uint16,result::Ptr{Bool})
+    ccall((:hsa_agent_extension_supported,libhsa),hsa_status_t,(Uint16,hsa_agent_t,Uint16,Uint16,Ptr{Bool}),extension,agent,version_major,version_minor,result)
+end
+
+function hsa_signal_create(initial_value::hsa_signal_value_t,num_consumers::Uint32,consumers::Ptr{hsa_agent_t},signal::Ptr{hsa_signal_t})
+    ccall((:hsa_signal_create,libhsa),hsa_status_t,(hsa_signal_value_t,Uint32,Ptr{hsa_agent_t},Ptr{hsa_signal_t}),initial_value,num_consumers,consumers,signal)
+end
+
+function hsa_signal_destroy(signal::Signal)
+    ccall((:hsa_signal_destroy,libhsa),hsa_status_t,(hsa_signal_t,),signal)
+end
+
+function load(signal::Signal,::Type{Val{Acquire}})
+    ccall((:hsa_signal_load_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
+end
+
+function load(signal::Signal,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_load_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
+end
+
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_store_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_store_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_exchange_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_exchange_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_exchange_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_exchange_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_cas_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_cas_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_cas_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_cas_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_add_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_add_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_add_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_add_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_subtract_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_subtract_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_subtract_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_subtract_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_and_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_and_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_and_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_and_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_or_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_or_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_or_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_or_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_xor_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_xor_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_xor_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_xor_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_state_hint::hsa_wait_state_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_wait_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_state_t),signal,condition,compare_value,timeout_hint,wait_state_hint)
+end
+
+function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_state_hint::hsa_wait_state_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_wait_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_state_t),signal,condition,compare_value,timeout_hint,wait_state_hint)
+end
+
+function hsa_queue_create(agent::Agent,size::Uint32,_type::hsa_queue_type_t,callback::Ptr{Void},data::Ptr{Void},private_segment_size::Uint32,group_segment_size::Uint32,queue::Ptr{Ptr{hsa_queue_t}})
+    ccall((:hsa_queue_create,libhsa),hsa_status_t,(hsa_agent_t,Uint32,hsa_queue_type_t,Ptr{Void},Ptr{Void},Uint32,Uint32,Ptr{Ptr{hsa_queue_t}}),agent,size,_type,callback,data,private_segment_size,group_segment_size,queue)
+end
+
+function hsa_soft_queue_create(region::hsa_region_t,size::Uint32,_type::hsa_queue_type_t,features::Uint32,doorbell_signal::Signal,queue::Ptr{Ptr{hsa_queue_t}})
+    ccall((:hsa_soft_queue_create,libhsa),hsa_status_t,(hsa_region_t,Uint32,hsa_queue_type_t,Uint32,hsa_signal_t,Ptr{Ptr{hsa_queue_t}}),region,size,_type,features,doorbell_signal,queue)
 end
 
 function hsa_queue_destroy(queue::Queue)
@@ -951,20 +717,12 @@ function store_read_index!(queue::Queue,value::Uint64,::Type{Val{Release}})
     ccall((:hsa_queue_store_read_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
 end
 
-function hsa_agent_iterate_regions(agent::Agent,callback::Ptr{Void},data::Ptr{Void})
-    ccall((:hsa_agent_iterate_regions,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Ptr{Void}),agent,callback,data)
-end
-
 function hsa_region_get_info(region::hsa_region_t,attribute::hsa_region_info_t,value::Ptr{Void})
     ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,attribute,value)
 end
 
-function hsa_memory_register(address::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Csize_t),address,size)
-end
-
-function hsa_memory_deregister(address::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Csize_t),address,size)
+function hsa_agent_iterate_regions(agent::Agent,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_agent_iterate_regions,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Ptr{Void}),agent,callback,data)
 end
 
 function hsa_memory_allocate(region::hsa_region_t,size::Csize_t,ptr::Ptr{Ptr{Void}})
@@ -975,328 +733,108 @@ function hsa_memory_free(ptr::Ptr{Void})
     ccall((:hsa_memory_free,libhsa),hsa_status_t,(Ptr{Void},),ptr)
 end
 
-function hsa_signal_create(initial_value::hsa_signal_value_t,num_consumers::Uint32,consumers::Ptr{hsa_agent_t},signal::Ptr{hsa_signal_t})
-    ccall((:hsa_signal_create,libhsa),hsa_status_t,(hsa_signal_value_t,Uint32,Ptr{hsa_agent_t},Ptr{hsa_signal_t}),initial_value,num_consumers,consumers,signal)
+function hsa_memory_copy(dst::Ptr{Void},src::Ptr{Void},size::Csize_t)
+    ccall((:hsa_memory_copy,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void},Csize_t),dst,src,size)
 end
 
-function hsa_signal_destroy(signal::Signal)
-    ccall((:hsa_signal_destroy,libhsa),hsa_status_t,(hsa_signal_t,),signal)
+function hsa_memory_assign_agent(ptr::Ptr{Void},agent::Agent,access::hsa_access_permission_t)
+    ccall((:hsa_memory_assign_agent,libhsa),hsa_status_t,(Ptr{Void},hsa_agent_t,hsa_access_permission_t),ptr,agent,access)
 end
 
-function load(signal::Signal,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_load_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
+function hsa_memory_register(ptr::Ptr{Void},size::Csize_t)
+    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
 end
 
-function load(signal::Signal,::Type{Val{Acquire}})
-    ccall((:hsa_signal_load_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
+function hsa_memory_deregister(ptr::Ptr{Void},size::Csize_t)
+    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
 end
 
-function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_store_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_isa_from_name(name::Ptr{Uint8},isa::Ptr{hsa_isa_t})
+    ccall((:hsa_isa_from_name,libhsa),hsa_status_t,(Ptr{Uint8},Ptr{hsa_isa_t}),name,isa)
 end
 
-function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_store_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_isa_get_info(isa::hsa_isa_t,attribute::hsa_isa_info_t,index::Uint32,value::Ptr{Void})
+    ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,Uint32,Ptr{Void}),isa,attribute,index,value)
 end
 
-function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_expectancy_hint::hsa_wait_expectancy_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_wait_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_expectancy_t),signal,condition,compare_value,timeout_hint,wait_expectancy_hint)
+function hsa_isa_compatible(code_object_isa::hsa_isa_t,agent_isa::hsa_isa_t,result::Ptr{Bool})
+    ccall((:hsa_isa_compatible,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_t,Ptr{Bool}),code_object_isa,agent_isa,result)
 end
 
-function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_expectancy_hint::hsa_wait_expectancy_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_wait_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_expectancy_t),signal,condition,compare_value,timeout_hint,wait_expectancy_hint)
+function hsa_code_object_serialize(code_object::hsa_code_object_t,alloc_callback::Ptr{Void},callback_data::hsa_callback_data_t,options::Ptr{Uint8},serialized_code_object::Ptr{Ptr{Void}},serialized_code_object_size::Ptr{Csize_t})
+    ccall((:hsa_code_object_serialize,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},hsa_callback_data_t,Ptr{Uint8},Ptr{Ptr{Void}},Ptr{Csize_t}),code_object,alloc_callback,callback_data,options,serialized_code_object,serialized_code_object_size)
 end
 
-function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_and_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_code_object_deserialize(serialized_code_object::Ptr{Void},serialized_code_object_size::Csize_t,options::Ptr{Uint8},code_object::Ptr{hsa_code_object_t})
+    ccall((:hsa_code_object_deserialize,libhsa),hsa_status_t,(Ptr{Void},Csize_t,Ptr{Uint8},Ptr{hsa_code_object_t}),serialized_code_object,serialized_code_object_size,options,code_object)
 end
 
-function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_and_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_code_object_destroy(code_object::hsa_code_object_t)
+    ccall((:hsa_code_object_destroy,libhsa),hsa_status_t,(hsa_code_object_t,),code_object)
 end
 
-function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_and_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_code_object_get_info(code_object::hsa_code_object_t,attribute::hsa_code_object_info_t,value::Ptr{Void})
+    ccall((:hsa_code_object_get_info,libhsa),hsa_status_t,(hsa_code_object_t,hsa_code_object_info_t,Ptr{Void}),code_object,attribute,value)
 end
 
-function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_and_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_code_object_get_symbol(code_object::hsa_code_object_t,symbol_name::Ptr{Uint8},symbol::Ptr{hsa_code_symbol_t})
+    ccall((:hsa_code_object_get_symbol,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Uint8},Ptr{hsa_code_symbol_t}),code_object,symbol_name,symbol)
 end
 
-function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_or_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_code_symbol_get_info(code_symbol::hsa_code_symbol_t,attribute::hsa_code_symbol_info_t,value::Ptr{Void})
+    ccall((:hsa_code_symbol_get_info,libhsa),hsa_status_t,(hsa_code_symbol_t,hsa_code_symbol_info_t,Ptr{Void}),code_symbol,attribute,value)
 end
 
-function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_or_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_code_object_iterate_symbols(code_object::hsa_code_object_t,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_code_object_iterate_symbols,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},Ptr{Void}),code_object,callback,data)
 end
 
-function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_or_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_create(profile::hsa_profile_t,executable_state::hsa_executable_state_t,options::Ptr{Uint8},executable::Ptr{hsa_executable_t})
+    ccall((:hsa_executable_create,libhsa),hsa_status_t,(hsa_profile_t,hsa_executable_state_t,Ptr{Uint8},Ptr{hsa_executable_t}),profile,executable_state,options,executable)
 end
 
-function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_or_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_destroy(executable::hsa_executable_t)
+    ccall((:hsa_executable_destroy,libhsa),hsa_status_t,(hsa_executable_t,),executable)
 end
 
-function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_xor_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_load_code_object(executable::hsa_executable_t,agent::Agent,code_object::hsa_code_object_t,options::Ptr{Uint8})
+    ccall((:hsa_executable_load_code_object,libhsa),hsa_status_t,(hsa_executable_t,hsa_agent_t,hsa_code_object_t,Ptr{Uint8}),executable,agent,code_object,options)
 end
 
-function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_xor_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_freeze(executable::hsa_executable_t,options::Ptr{Uint8})
+    ccall((:hsa_executable_freeze,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint8}),executable,options)
 end
 
-function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_xor_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_get_info(executable::hsa_executable_t,attribute::hsa_executable_info_t,value::Ptr{Void})
+    ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,attribute,value)
 end
 
-function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_xor_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_global_variable_define(executable::hsa_executable_t,variable_name::Ptr{Uint8},address::Ptr{Void})
+    ccall((:hsa_executable_global_variable_define,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint8},Ptr{Void}),executable,variable_name,address)
 end
 
-function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_add_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_agent_global_variable_define(executable::hsa_executable_t,agent::Agent,variable_name::Ptr{Uint8},address::Ptr{Void})
+    ccall((:hsa_executable_agent_global_variable_define,libhsa),hsa_status_t,(hsa_executable_t,hsa_agent_t,Ptr{Uint8},Ptr{Void}),executable,agent,variable_name,address)
 end
 
-function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_add_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_readonly_variable_define(executable::hsa_executable_t,agent::Agent,variable_name::Ptr{Uint8},address::Ptr{Void})
+    ccall((:hsa_executable_readonly_variable_define,libhsa),hsa_status_t,(hsa_executable_t,hsa_agent_t,Ptr{Uint8},Ptr{Void}),executable,agent,variable_name,address)
 end
 
-function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_add_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_validate(executable::hsa_executable_t,result::Ptr{Uint32})
+    ccall((:hsa_executable_validate,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint32}),executable,result)
 end
 
-function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_add_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_get_symbol(executable::hsa_executable_t,module_name::Ptr{Uint8},symbol_name::Ptr{Uint8},agent::Agent,call_convention::Int32,symbol::Ptr{hsa_executable_symbol_t})
+    ccall((:hsa_executable_get_symbol,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint8},Ptr{Uint8},hsa_agent_t,Int32,Ptr{hsa_executable_symbol_t}),executable,module_name,symbol_name,agent,call_convention,symbol)
 end
 
-function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_subtract_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+function hsa_executable_symbol_get_info(executable_symbol::hsa_executable_symbol_t,attribute::hsa_executable_symbol_info_t,value::Ptr{Void})
+    ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),executable_symbol,attribute,value)
 end
 
-function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_subtract_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_subtract_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_subtract_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_exchange_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_exchange_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_exchange_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_exchange_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
-end
-
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
-    ccall((:hsa_signal_cas_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
-end
-
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
-    ccall((:hsa_signal_cas_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
-end
-
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
-    ccall((:hsa_signal_cas_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
-end
-
-function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
-    ccall((:hsa_signal_cas_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
-end
-
-function hsa_status_string(status::hsa_status_t,status_string::Ptr{Ptr{Uint8}})
-    ccall((:hsa_status_string,libhsa),hsa_status_t,(hsa_status_t,Ptr{Ptr{Uint8}}),status,status_string)
-end
-
-function hsa_extension_query(extension::hsa_extension_t,result::Ptr{Cint})
-    ccall((:hsa_extension_query,libhsa),hsa_status_t,(hsa_extension_t,Ptr{Cint}),extension,result)
-end
-
-function hsa_ext_finalize(caller::hsa_runtime_caller_t,agent::Agent,program_agent_id::Uint32,program_agent_count::Uint32,finalization_request_count::Csize_t,finalization_request_list::Ptr{hsa_ext_finalization_request_t},control_directives::Ptr{hsa_ext_control_directives_t},symbol_definition_callback::hsa_ext_symbol_definition_callback_t,symbol_address_callback::hsa_ext_symbol_address_callback_t,error_message_callback::hsa_ext_error_message_callback_t,optimization_level::Uint8,options::Ptr{Uint8},debug_information::Cint,finalization::Ptr{hsa_ext_finalization_handle_t})
-    ccall((:hsa_ext_finalize,libhsa),hsa_status_t,(hsa_runtime_caller_t,hsa_agent_t,Uint32,Uint32,Csize_t,Ptr{hsa_ext_finalization_request_t},Ptr{hsa_ext_control_directives_t},hsa_ext_symbol_definition_callback_t,hsa_ext_symbol_address_callback_t,hsa_ext_error_message_callback_t,Uint8,Ptr{Uint8},Cint,Ptr{hsa_ext_finalization_handle_t}),caller,agent,program_agent_id,program_agent_count,finalization_request_count,finalization_request_list,control_directives,symbol_definition_callback,symbol_address_callback,error_message_callback,optimization_level,options,debug_information,finalization)
-end
-
-function hsa_ext_query_finalization_code_descriptor_count(agent::Agent,finalization::hsa_ext_finalization_handle_t,code_descriptor_count::Ptr{Uint32})
-    ccall((:hsa_ext_query_finalization_code_descriptor_count,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_finalization_handle_t,Ptr{Uint32}),agent,finalization,code_descriptor_count)
-end
-
-function hsa_ext_query_finalization_code_descriptor(agent::Agent,finalization::hsa_ext_finalization_handle_t,index::Uint32,code_descriptor::Ptr{hsa_ext_code_descriptor_t})
-    ccall((:hsa_ext_query_finalization_code_descriptor,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_finalization_handle_t,Uint32,Ptr{hsa_ext_code_descriptor_t}),agent,finalization,index,code_descriptor)
-end
-
-function hsa_ext_destroy_finalization(agent::Agent,finalization::hsa_ext_finalization_handle_t)
-    ccall((:hsa_ext_destroy_finalization,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_finalization_handle_t),agent,finalization)
-end
-
-function hsa_ext_serialize_finalization(caller::hsa_runtime_caller_t,agent::Agent,finalization::hsa_ext_finalization_handle_t,alloc_serialize_data_callback::hsa_runtime_alloc_data_callback_t,error_message_callback::hsa_ext_error_message_callback_t,debug_information::Cint,serialized_object::Ptr{Void})
-    ccall((:hsa_ext_serialize_finalization,libhsa),hsa_status_t,(hsa_runtime_caller_t,hsa_agent_t,hsa_ext_finalization_handle_t,hsa_runtime_alloc_data_callback_t,hsa_ext_error_message_callback_t,Cint,Ptr{Void}),caller,agent,finalization,alloc_serialize_data_callback,error_message_callback,debug_information,serialized_object)
-end
-
-function hsa_ext_deserialize_finalization(caller::hsa_runtime_caller_t,serialized_object::Ptr{Void},agent::Agent,program_agent_id::Uint32,program_agent_count::Uint32,symbol_address_callback::hsa_ext_symbol_address_callback_t,error_message_callback::hsa_ext_error_message_callback_t,debug_information::Cint,finalization::Ptr{hsa_ext_finalization_handle_t})
-    ccall((:hsa_ext_deserialize_finalization,libhsa),hsa_status_t,(hsa_runtime_caller_t,Ptr{Void},hsa_agent_t,Uint32,Uint32,hsa_ext_symbol_address_callback_t,hsa_ext_error_message_callback_t,Cint,Ptr{hsa_ext_finalization_handle_t}),caller,serialized_object,agent,program_agent_id,program_agent_count,symbol_address_callback,error_message_callback,debug_information,finalization)
-end
-
-function hsa_ext_program_create(agents::Ptr{hsa_agent_t},agent_count::Uint32,machine_model::hsa_ext_brig_machine_model8_t,profile::hsa_ext_brig_profile8_t,program::Ptr{hsa_ext_program_handle_t})
-    ccall((:hsa_ext_program_create,libhsa),hsa_status_t,(Ptr{hsa_agent_t},Uint32,hsa_ext_brig_machine_model8_t,hsa_ext_brig_profile8_t,Ptr{hsa_ext_program_handle_t}),agents,agent_count,machine_model,profile,program)
-end
-
-function hsa_ext_program_destroy(program::hsa_ext_program_handle_t)
-    ccall((:hsa_ext_program_destroy,libhsa),hsa_status_t,(hsa_ext_program_handle_t,),program)
-end
-
-function hsa_ext_add_module(program::hsa_ext_program_handle_t,brig_module::Ptr{hsa_ext_brig_module_t},_module::Ptr{hsa_ext_brig_module_handle_t})
-    ccall((:hsa_ext_add_module,libhsa),hsa_status_t,(hsa_ext_program_handle_t,Ptr{hsa_ext_brig_module_t},Ptr{hsa_ext_brig_module_handle_t}),program,brig_module,_module)
-end
-
-function hsa_ext_finalize_program(program::hsa_ext_program_handle_t,agent::Agent,finalization_request_count::Csize_t,finalization_request_list::Ptr{hsa_ext_finalization_request_t},control_directives::Ptr{hsa_ext_control_directives_t},error_message_callback::hsa_ext_error_message_callback_t,optimization_level::Uint8,options::Ptr{Uint8},debug_information::Cint)
-    ccall((:hsa_ext_finalize_program,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_agent_t,Csize_t,Ptr{hsa_ext_finalization_request_t},Ptr{hsa_ext_control_directives_t},hsa_ext_error_message_callback_t,Uint8,Ptr{Uint8},Cint),program,agent,finalization_request_count,finalization_request_list,control_directives,error_message_callback,optimization_level,options,debug_information)
-end
-
-function hsa_ext_query_program_agent_id(program::hsa_ext_program_handle_t,agent::Agent,program_agent_id::Ptr{hsa_ext_program_agent_id_t})
-    ccall((:hsa_ext_query_program_agent_id,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_agent_t,Ptr{hsa_ext_program_agent_id_t}),program,agent,program_agent_id)
-end
-
-function hsa_ext_query_program_agent_count(program::hsa_ext_program_handle_t,program_agent_count::Ptr{Uint32})
-    ccall((:hsa_ext_query_program_agent_count,libhsa),hsa_status_t,(hsa_ext_program_handle_t,Ptr{Uint32}),program,program_agent_count)
-end
-
-function hsa_ext_query_program_agents(program::hsa_ext_program_handle_t,program_agent_count::Uint32,agents::Ptr{hsa_agent_t})
-    ccall((:hsa_ext_query_program_agents,libhsa),hsa_status_t,(hsa_ext_program_handle_t,Uint32,Ptr{hsa_agent_t}),program,program_agent_count,agents)
-end
-
-function hsa_ext_query_program_module_count(program::hsa_ext_program_handle_t,program_module_count::Ptr{Uint32})
-    ccall((:hsa_ext_query_program_module_count,libhsa),hsa_status_t,(hsa_ext_program_handle_t,Ptr{Uint32}),program,program_module_count)
-end
-
-function hsa_ext_query_program_modules(program::hsa_ext_program_handle_t,program_module_count::Uint32,modules::Ptr{hsa_ext_brig_module_handle_t})
-    ccall((:hsa_ext_query_program_modules,libhsa),hsa_status_t,(hsa_ext_program_handle_t,Uint32,Ptr{hsa_ext_brig_module_handle_t}),program,program_module_count,modules)
-end
-
-function hsa_ext_query_program_brig_module(program::hsa_ext_program_handle_t,_module::hsa_ext_brig_module_handle_t,brig_module::Ptr{Ptr{hsa_ext_brig_module_t}})
-    ccall((:hsa_ext_query_program_brig_module,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_ext_brig_module_handle_t,Ptr{Ptr{hsa_ext_brig_module_t}}),program,_module,brig_module)
-end
-
-function hsa_ext_query_call_convention(program::hsa_ext_program_handle_t,agent::Agent,first_call_convention_id::Ptr{hsa_ext_program_call_convention_id32_t},call_convention_count::Ptr{Uint32})
-    ccall((:hsa_ext_query_call_convention,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_agent_t,Ptr{hsa_ext_program_call_convention_id32_t},Ptr{Uint32}),program,agent,first_call_convention_id,call_convention_count)
-end
-
-function hsa_ext_query_symbol_definition(program::hsa_ext_program_handle_t,_module::hsa_ext_brig_module_handle_t,symbol::hsa_ext_brig_code_section_offset32_t,definition_module::Ptr{hsa_ext_brig_module_handle_t},definition_module_brig::Ptr{Ptr{hsa_ext_brig_module_t}},definition_symbol::Ptr{hsa_ext_brig_code_section_offset32_t})
-    ccall((:hsa_ext_query_symbol_definition,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_ext_brig_module_handle_t,hsa_ext_brig_code_section_offset32_t,Ptr{hsa_ext_brig_module_handle_t},Ptr{Ptr{hsa_ext_brig_module_t}},Ptr{hsa_ext_brig_code_section_offset32_t}),program,_module,symbol,definition_module,definition_module_brig,definition_symbol)
-end
-
-function hsa_ext_define_program_allocation_global_variable_address(program::hsa_ext_program_handle_t,_module::hsa_ext_brig_module_handle_t,symbol::hsa_ext_brig_code_section_offset32_t,error_message_callback::hsa_ext_error_message_callback_t,address::Ptr{Void})
-    ccall((:hsa_ext_define_program_allocation_global_variable_address,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_ext_brig_module_handle_t,hsa_ext_brig_code_section_offset32_t,hsa_ext_error_message_callback_t,Ptr{Void}),program,_module,symbol,error_message_callback,address)
-end
-
-function hsa_ext_query_program_allocation_global_variable_address(program::hsa_ext_program_handle_t,_module::hsa_ext_brig_module_handle_t,symbol::hsa_ext_brig_code_section_offset32_t,address::Ptr{Ptr{Void}})
-    ccall((:hsa_ext_query_program_allocation_global_variable_address,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_ext_brig_module_handle_t,hsa_ext_brig_code_section_offset32_t,Ptr{Ptr{Void}}),program,_module,symbol,address)
-end
-
-function hsa_ext_define_agent_allocation_global_variable_address(program::hsa_ext_program_handle_t,agent::Agent,_module::hsa_ext_brig_module_handle_t,symbol::hsa_ext_brig_code_section_offset32_t,error_message_callback::hsa_ext_error_message_callback_t,address::Ptr{Void})
-    ccall((:hsa_ext_define_agent_allocation_global_variable_address,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_agent_t,hsa_ext_brig_module_handle_t,hsa_ext_brig_code_section_offset32_t,hsa_ext_error_message_callback_t,Ptr{Void}),program,agent,_module,symbol,error_message_callback,address)
-end
-
-function hsa_ext_query_agent_global_variable_address(program::hsa_ext_program_handle_t,agent::Agent,_module::hsa_ext_brig_module_handle_t,symbol::hsa_ext_brig_code_section_offset32_t,address::Ptr{Ptr{Void}})
-    ccall((:hsa_ext_query_agent_global_variable_address,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_agent_t,hsa_ext_brig_module_handle_t,hsa_ext_brig_code_section_offset32_t,Ptr{Ptr{Void}}),program,agent,_module,symbol,address)
-end
-
-function hsa_ext_define_readonly_variable_address(program::hsa_ext_program_handle_t,agent::Agent,_module::hsa_ext_brig_module_handle_t,symbol::hsa_ext_brig_code_section_offset32_t,error_message_callback::hsa_ext_error_message_callback_t,address::Ptr{Void})
-    ccall((:hsa_ext_define_readonly_variable_address,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_agent_t,hsa_ext_brig_module_handle_t,hsa_ext_brig_code_section_offset32_t,hsa_ext_error_message_callback_t,Ptr{Void}),program,agent,_module,symbol,error_message_callback,address)
-end
-
-function hsa_ext_query_readonly_variable_address(program::hsa_ext_program_handle_t,agent::Agent,_module::hsa_ext_brig_module_handle_t,symbol::hsa_ext_brig_code_section_offset32_t,address::Ptr{Ptr{Void}})
-    ccall((:hsa_ext_query_readonly_variable_address,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_agent_t,hsa_ext_brig_module_handle_t,hsa_ext_brig_code_section_offset32_t,Ptr{Ptr{Void}}),program,agent,_module,symbol,address)
-end
-
-function hsa_ext_query_kernel_descriptor_address(program::hsa_ext_program_handle_t,_module::hsa_ext_brig_module_handle_t,symbol::hsa_ext_brig_code_section_offset32_t,kernel_descriptor::Ptr{Ptr{hsa_ext_code_descriptor_t}})
-    ccall((:hsa_ext_query_kernel_descriptor_address,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_ext_brig_module_handle_t,hsa_ext_brig_code_section_offset32_t,Ptr{Ptr{hsa_ext_code_descriptor_t}}),program,_module,symbol,kernel_descriptor)
-end
-
-function hsa_ext_query_indirect_function_descriptor_address(program::hsa_ext_program_handle_t,_module::hsa_ext_brig_module_handle_t,symbol::hsa_ext_brig_code_section_offset32_t,indirect_function_descriptor::Ptr{Ptr{hsa_ext_code_descriptor_t}})
-    ccall((:hsa_ext_query_indirect_function_descriptor_address,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_ext_brig_module_handle_t,hsa_ext_brig_code_section_offset32_t,Ptr{Ptr{hsa_ext_code_descriptor_t}}),program,_module,symbol,indirect_function_descriptor)
-end
-
-function hsa_ext_validate_program(program::hsa_ext_program_handle_t,error_message_callback::hsa_ext_error_message_callback_t)
-    ccall((:hsa_ext_validate_program,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_ext_error_message_callback_t),program,error_message_callback)
-end
-
-function hsa_ext_validate_program_module(program::hsa_ext_program_handle_t,_module::hsa_ext_brig_module_handle_t,error_message_callback::hsa_ext_error_message_callback_t)
-    ccall((:hsa_ext_validate_program_module,libhsa),hsa_status_t,(hsa_ext_program_handle_t,hsa_ext_brig_module_handle_t,hsa_ext_error_message_callback_t),program,_module,error_message_callback)
-end
-
-function hsa_ext_serialize_program(caller::hsa_runtime_caller_t,program::hsa_ext_program_handle_t,alloc_serialize_data_callback::hsa_runtime_alloc_data_callback_t,error_message_callback::hsa_ext_error_message_callback_t,debug_information::Cint,serialized_object::Ptr{Void})
-    ccall((:hsa_ext_serialize_program,libhsa),hsa_status_t,(hsa_runtime_caller_t,hsa_ext_program_handle_t,hsa_runtime_alloc_data_callback_t,hsa_ext_error_message_callback_t,Cint,Ptr{Void}),caller,program,alloc_serialize_data_callback,error_message_callback,debug_information,serialized_object)
-end
-
-function hsa_ext_deserialize_program(caller::hsa_runtime_caller_t,serialized_object::Ptr{Void},program_allocation_symbol_address::hsa_ext_program_allocation_symbol_address_t,agent_allocation_symbol_address::hsa_ext_agent_allocation_symbol_address_t,error_message_callback::hsa_ext_error_message_callback_t,debug_information::Cint,program::Ptr{Ptr{hsa_ext_program_handle_t}})
-    ccall((:hsa_ext_deserialize_program,libhsa),hsa_status_t,(hsa_runtime_caller_t,Ptr{Void},hsa_ext_program_allocation_symbol_address_t,hsa_ext_agent_allocation_symbol_address_t,hsa_ext_error_message_callback_t,Cint,Ptr{Ptr{hsa_ext_program_handle_t}}),caller,serialized_object,program_allocation_symbol_address,agent_allocation_symbol_address,error_message_callback,debug_information,program)
-end
-
-function hsa_ext_get_image_info_max_dim(component::Agent,attribute::hsa_agent_info_t,value::Ptr{Void})
-    ccall((:hsa_ext_get_image_info_max_dim,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),component,attribute,value)
-end
-
-function hsa_ext_image_get_format_capability(agent::Agent,image_format::Ptr{hsa_ext_image_format_t},image_geometry::hsa_ext_image_geometry_t,capability_mask::Ptr{Uint32})
-    ccall((:hsa_ext_image_get_format_capability,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_image_format_t},hsa_ext_image_geometry_t,Ptr{Uint32}),agent,image_format,image_geometry,capability_mask)
-end
-
-function hsa_ext_image_get_info(agent::Agent,image_descriptor::Ptr{hsa_ext_image_descriptor_t},access_permission::hsa_ext_image_access_permission_t,image_info::Ptr{hsa_ext_image_info_t})
-    ccall((:hsa_ext_image_get_info,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_image_descriptor_t},hsa_ext_image_access_permission_t,Ptr{hsa_ext_image_info_t}),agent,image_descriptor,access_permission,image_info)
-end
-
-function hsa_ext_image_create_handle(agent::Agent,image_descriptor::Ptr{hsa_ext_image_descriptor_t},image_data::Ptr{Void},access_permission::hsa_ext_image_access_permission_t,image_handle::Ptr{hsa_ext_image_handle_t})
-    ccall((:hsa_ext_image_create_handle,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_image_descriptor_t},Ptr{Void},hsa_ext_image_access_permission_t,Ptr{hsa_ext_image_handle_t}),agent,image_descriptor,image_data,access_permission,image_handle)
-end
-
-function hsa_ext_image_import(agent::Agent,src_memory::Ptr{Void},src_row_pitch::Csize_t,src_slice_pitch::Csize_t,dst_image_handle::hsa_ext_image_handle_t,image_region::Ptr{hsa_ext_image_region_t},completion_signal::Ptr{hsa_signal_t})
-    ccall((:hsa_ext_image_import,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Csize_t,Csize_t,hsa_ext_image_handle_t,Ptr{hsa_ext_image_region_t},Ptr{hsa_signal_t}),agent,src_memory,src_row_pitch,src_slice_pitch,dst_image_handle,image_region,completion_signal)
-end
-
-function hsa_ext_image_export(agent::Agent,src_image_handle::hsa_ext_image_handle_t,dst_memory::Ptr{Void},dst_row_pitch::Csize_t,dst_slice_pitch::Csize_t,image_region::Ptr{hsa_ext_image_region_t},completion_signal::Ptr{hsa_signal_t})
-    ccall((:hsa_ext_image_export,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_handle_t,Ptr{Void},Csize_t,Csize_t,Ptr{hsa_ext_image_region_t},Ptr{hsa_signal_t}),agent,src_image_handle,dst_memory,dst_row_pitch,dst_slice_pitch,image_region,completion_signal)
-end
-
-function hsa_ext_image_copy(agent::Agent,src_image_handle::hsa_ext_image_handle_t,dst_image_handle::hsa_ext_image_handle_t,image_region::Ptr{hsa_ext_image_region_t},completion_signal::Ptr{hsa_signal_t})
-    ccall((:hsa_ext_image_copy,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_handle_t,hsa_ext_image_handle_t,Ptr{hsa_ext_image_region_t},Ptr{hsa_signal_t}),agent,src_image_handle,dst_image_handle,image_region,completion_signal)
-end
-
-function hsa_ext_image_clear(agent::Agent,image_handle::hsa_ext_image_handle_t,data::Array_4_Cfloat,image_region::Ptr{hsa_ext_image_region_t},completion_signal::Ptr{hsa_signal_t})
-    ccall((:hsa_ext_image_clear,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_handle_t,Array_4_Cfloat,Ptr{hsa_ext_image_region_t},Ptr{hsa_signal_t}),agent,image_handle,data,image_region,completion_signal)
-end
-
-function hsa_ext_image_copy_split_offset(agent::Agent,src_image_handle::hsa_ext_image_handle_t,dst_image_handle::hsa_ext_image_handle_t,src_origin::hsa_dim3_t,dst_origin::hsa_dim3_t,size::hsa_ext_image_range_t,completion_signal::Ptr{hsa_signal_t})
-    ccall((:hsa_ext_image_copy_split_offset,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_handle_t,hsa_ext_image_handle_t,hsa_dim3_t,hsa_dim3_t,hsa_ext_image_range_t,Ptr{hsa_signal_t}),agent,src_image_handle,dst_image_handle,src_origin,dst_origin,size,completion_signal)
-end
-
-function hsa_ext_image_clear_generic_data(agent::Agent,image_handle::hsa_ext_image_handle_t,data::Ptr{Void},image_region::Ptr{hsa_ext_image_region_t},completion_signal::Ptr{hsa_signal_t})
-    ccall((:hsa_ext_image_clear_generic_data,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_handle_t,Ptr{Void},Ptr{hsa_ext_image_region_t},Ptr{hsa_signal_t}),agent,image_handle,data,image_region,completion_signal)
-end
-
-function hsa_ext_image_destroy_handle(agent::Agent,image_handle::Ptr{hsa_ext_image_handle_t})
-    ccall((:hsa_ext_image_destroy_handle,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_image_handle_t}),agent,image_handle)
-end
-
-function hsa_ext_sampler_create_handle(agent::Agent,sampler_descriptor::Ptr{hsa_ext_sampler_descriptor_t},sampler_handle::Ptr{hsa_ext_sampler_handle_t})
-    ccall((:hsa_ext_sampler_create_handle,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_sampler_descriptor_t},Ptr{hsa_ext_sampler_handle_t}),agent,sampler_descriptor,sampler_handle)
-end
-
-function hsa_ext_sampler_destroy_handle(agent::Agent,sampler_handle::Ptr{hsa_ext_sampler_handle_t})
-    ccall((:hsa_ext_sampler_destroy_handle,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_sampler_handle_t}),agent,sampler_handle)
+function hsa_executable_iterate_symbols(executable::hsa_executable_t,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_executable_iterate_symbols,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Void},Ptr{Void}),executable,callback,data)
 end
 
 function hsa_ext_get_memory_type(agent::Agent,_type::Ptr{hsa_amd_memory_type_t})
@@ -1315,32 +853,60 @@ function hsa_ext_get_dispatch_times(agent::Agent,signal::Signal,time::Ptr{hsa_am
     ccall((:hsa_ext_get_dispatch_times,libhsa),hsa_status_t,(hsa_agent_t,hsa_signal_t,Ptr{hsa_amd_dispatch_time_t}),agent,signal,time)
 end
 
-function hsa_ext_extra_query_call_convention_count(agent::Agent,call_convention_count::Ptr{Uint32})
-    ccall((:hsa_ext_extra_query_call_convention_count,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Uint32}),agent,call_convention_count)
+function hsa_ext_sdma_queue_create(agent::Agent,buffer_size::Csize_t,buffer_addr::Ptr{Void},queue_id::Ptr{Uint64},read_ptr::Ptr{Ptr{Uint32}},write_ptr::Ptr{Ptr{Uint32}},doorbell::Ptr{Ptr{Uint32}})
+    ccall((:hsa_ext_sdma_queue_create,libhsa),hsa_status_t,(hsa_agent_t,Csize_t,Ptr{Void},Ptr{Uint64},Ptr{Ptr{Uint32}},Ptr{Ptr{Uint32}},Ptr{Ptr{Uint32}}),agent,buffer_size,buffer_addr,queue_id,read_ptr,write_ptr,doorbell)
 end
 
-function hsa_ext_extra_query_symbol_definition(program::hsa_ext_program_handle_t,symbol_name::Ptr{Uint8},definition_module::Ptr{hsa_ext_brig_module_handle_t},definition_module_brig::Ptr{Ptr{hsa_ext_brig_module_t}},definition_symbol::Ptr{hsa_ext_brig_code_section_offset32_t})
-    ccall((:hsa_ext_extra_query_symbol_definition,libhsa),hsa_status_t,(hsa_ext_program_handle_t,Ptr{Uint8},Ptr{hsa_ext_brig_module_handle_t},Ptr{Ptr{hsa_ext_brig_module_t}},Ptr{hsa_ext_brig_code_section_offset32_t}),program,symbol_name,definition_module,definition_module_brig,definition_symbol)
+function hsa_ext_sdma_queue_destroy(agent::Agent,queue_id::Uint64)
+    ccall((:hsa_ext_sdma_queue_destroy,libhsa),hsa_status_t,(hsa_agent_t,Uint64),agent,queue_id)
 end
 
-function hsa_ext_extra_query_program(code::hsa_ext_code_handle_t,program::Ptr{hsa_ext_program_handle_t})
-    ccall((:hsa_ext_extra_query_program,libhsa),hsa_status_t,(hsa_ext_code_handle_t,Ptr{hsa_ext_program_handle_t}),code,program)
+function hsa_ext_async_signal_handler(signal::Signal,cond::hsa_signal_condition_t,value::hsa_signal_value_t,handler::hsa_ext_signal_handler,arg::Ptr{Void})
+    ccall((:hsa_ext_async_signal_handler,libhsa),hsa_status_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,hsa_ext_signal_handler,Ptr{Void}),signal,cond,value,handler,arg)
 end
 
-function hsa_ext_code_unit_load(caller::hsa_runtime_caller_t,agent::Ptr{hsa_agent_t},agent_count::Csize_t,serialized_code_unit::Ptr{Void},serialized_code_unit_size::Csize_t,options::Ptr{Uint8},symbol_value::hsa_ext_symbol_value_callback_t,code_unit::Ptr{hsa_amd_code_unit_t})
-    ccall((:hsa_ext_code_unit_load,libhsa),hsa_status_t,(hsa_runtime_caller_t,Ptr{hsa_agent_t},Csize_t,Ptr{Void},Csize_t,Ptr{Uint8},hsa_ext_symbol_value_callback_t,Ptr{hsa_amd_code_unit_t}),caller,agent,agent_count,serialized_code_unit,serialized_code_unit_size,options,symbol_value,code_unit)
+function hsa_ext_signal_wait_any(signal_count::Uint32,signals::Ptr{hsa_signal_t},conds::Ptr{hsa_signal_condition_t},values::Ptr{hsa_signal_value_t},timeout_hint::Uint64,wait_hint::hsa_wait_state_t,satisfying_value::Ptr{hsa_signal_value_t})
+    ccall((:hsa_ext_signal_wait_any,libhsa),Uint32,(Uint32,Ptr{hsa_signal_t},Ptr{hsa_signal_condition_t},Ptr{hsa_signal_value_t},Uint64,hsa_wait_state_t,Ptr{hsa_signal_value_t}),signal_count,signals,conds,values,timeout_hint,wait_hint,satisfying_value)
 end
 
-function hsa_ext_code_unit_destroy(code_unit::hsa_amd_code_unit_t)
-    ccall((:hsa_ext_code_unit_destroy,libhsa),hsa_status_t,(hsa_amd_code_unit_t,),code_unit)
+function load(signal::Signal)
+    load(signal,Val{Acquire})
 end
 
-function hsa_ext_code_unit_get_info(code_unit::hsa_amd_code_unit_t,attribute::hsa_amd_code_unit_info_t,index::Uint32,value::Ptr{Void})
-    ccall((:hsa_ext_code_unit_get_info,libhsa),hsa_status_t,(hsa_amd_code_unit_t,hsa_amd_code_unit_info_t,Uint32,Ptr{Void}),code_unit,attribute,index,value)
+function store!(signal::Signal,value::hsa_signal_value_t)
+    store!(signal,value,Val{Release})
 end
 
-function hsa_ext_code_unit_iterator(caller::hsa_runtime_caller_t,code_unit_iterator::hsa_ext_code_unit_iterator_callback_t)
-    ccall((:hsa_ext_code_unit_iterator,libhsa),hsa_status_t,(hsa_runtime_caller_t,hsa_ext_code_unit_iterator_callback_t),caller,code_unit_iterator)
+function exchange!(signal::Signal,value::hsa_signal_value_t)
+    exchange!(signal,value,Val{AcquRel})
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t)
+    cas!(signal,expected,value,Val{AcquRel})
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t)
+    add!(signal,value,Val{AcquRel})
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t)
+    subtract!(signal,value,Val{AcquRel})
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t)
+    and!(signal,value,Val{AcquRel})
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t)
+    or!(signal,value,Val{AcquRel})
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t)
+    xor!(signal,value,Val{AcquRel})
+end
+
+function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_state_hint::hsa_wait_state_t)
+    wait(signal,condition,compare_value,timeout_hint,wait_state_hint,Val{Acquire})
 end
 
 function load_read_index(queue::Queue)
@@ -1366,6 +932,417 @@ end
 function store_read_index!(queue::Queue,value::Uint64)
     store_read_index!(queue,value,Val{Release})
 end
+# Julia wrapper for header: ../runtime/inc/hsa_ext_finalize.h
+# Automatically generated using Clang.jl wrap_c, version 0.0.0
+
+
+function hsa_status_string(status::hsa_status_t,status_string::Ptr{Ptr{Uint8}})
+    ccall((:hsa_status_string,libhsa),hsa_status_t,(hsa_status_t,Ptr{Ptr{Uint8}}),status,status_string)
+end
+
+function hsa_init()
+    ccall((:hsa_init,libhsa),hsa_status_t,())
+end
+
+function hsa_shut_down()
+    ccall((:hsa_shut_down,libhsa),hsa_status_t,())
+end
+
+function hsa_system_get_info(attribute::hsa_system_info_t,value::Ptr{Void})
+    ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),attribute,value)
+end
+
+function hsa_system_extension_supported(extension::Uint16,version_major::Uint16,version_minor::Uint16,result::Ptr{Bool})
+    ccall((:hsa_system_extension_supported,libhsa),hsa_status_t,(Uint16,Uint16,Uint16,Ptr{Bool}),extension,version_major,version_minor,result)
+end
+
+function hsa_system_get_extension_table(extension::Uint16,version_major::Uint16,version_minor::Uint16,table::Ptr{Void})
+    ccall((:hsa_system_get_extension_table,libhsa),hsa_status_t,(Uint16,Uint16,Uint16,Ptr{Void}),extension,version_major,version_minor,table)
+end
+
+function hsa_agent_get_info(agent::Agent,attribute::hsa_agent_info_t,value::Ptr{Void})
+    ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,attribute,value)
+end
+
+function hsa_iterate_agents(callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_iterate_agents,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void}),callback,data)
+end
+
+function hsa_agent_get_exception_policies(agent::Agent,profile::hsa_profile_t,mask::Ptr{Uint16})
+    ccall((:hsa_agent_get_exception_policies,libhsa),hsa_status_t,(hsa_agent_t,hsa_profile_t,Ptr{Uint16}),agent,profile,mask)
+end
+
+function hsa_agent_extension_supported(extension::Uint16,agent::Agent,version_major::Uint16,version_minor::Uint16,result::Ptr{Bool})
+    ccall((:hsa_agent_extension_supported,libhsa),hsa_status_t,(Uint16,hsa_agent_t,Uint16,Uint16,Ptr{Bool}),extension,agent,version_major,version_minor,result)
+end
+
+function hsa_signal_create(initial_value::hsa_signal_value_t,num_consumers::Uint32,consumers::Ptr{hsa_agent_t},signal::Ptr{hsa_signal_t})
+    ccall((:hsa_signal_create,libhsa),hsa_status_t,(hsa_signal_value_t,Uint32,Ptr{hsa_agent_t},Ptr{hsa_signal_t}),initial_value,num_consumers,consumers,signal)
+end
+
+function hsa_signal_destroy(signal::Signal)
+    ccall((:hsa_signal_destroy,libhsa),hsa_status_t,(hsa_signal_t,),signal)
+end
+
+function load(signal::Signal,::Type{Val{Acquire}})
+    ccall((:hsa_signal_load_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
+end
+
+function load(signal::Signal,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_load_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
+end
+
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_store_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_store_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_exchange_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_exchange_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_exchange_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_exchange_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_cas_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_cas_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_cas_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_cas_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_add_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_add_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_add_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_add_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_subtract_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_subtract_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_subtract_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_subtract_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_and_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_and_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_and_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_and_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_or_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_or_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_or_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_or_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_xor_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_xor_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_xor_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_xor_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_state_hint::hsa_wait_state_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_wait_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_state_t),signal,condition,compare_value,timeout_hint,wait_state_hint)
+end
+
+function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_state_hint::hsa_wait_state_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_wait_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_state_t),signal,condition,compare_value,timeout_hint,wait_state_hint)
+end
+
+function hsa_queue_create(agent::Agent,size::Uint32,_type::hsa_queue_type_t,callback::Ptr{Void},data::Ptr{Void},private_segment_size::Uint32,group_segment_size::Uint32,queue::Ptr{Ptr{hsa_queue_t}})
+    ccall((:hsa_queue_create,libhsa),hsa_status_t,(hsa_agent_t,Uint32,hsa_queue_type_t,Ptr{Void},Ptr{Void},Uint32,Uint32,Ptr{Ptr{hsa_queue_t}}),agent,size,_type,callback,data,private_segment_size,group_segment_size,queue)
+end
+
+function hsa_soft_queue_create(region::hsa_region_t,size::Uint32,_type::hsa_queue_type_t,features::Uint32,doorbell_signal::Signal,queue::Ptr{Ptr{hsa_queue_t}})
+    ccall((:hsa_soft_queue_create,libhsa),hsa_status_t,(hsa_region_t,Uint32,hsa_queue_type_t,Uint32,hsa_signal_t,Ptr{Ptr{hsa_queue_t}}),region,size,_type,features,doorbell_signal,queue)
+end
+
+function hsa_queue_destroy(queue::Queue)
+    ccall((:hsa_queue_destroy,libhsa),hsa_status_t,(Ptr{hsa_queue_t},),queue)
+end
+
+function hsa_queue_inactivate(queue::Queue)
+    ccall((:hsa_queue_inactivate,libhsa),hsa_status_t,(Ptr{hsa_queue_t},),queue)
+end
+
+function load_read_index(queue::Queue,::Type{Val{Acquire}})
+    ccall((:hsa_queue_load_read_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
+end
+
+function load_read_index(queue::Queue,::Type{Val{Relaxed}})
+    ccall((:hsa_queue_load_read_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
+end
+
+function load_write_index(queue::Queue,::Type{Val{Acquire}})
+    ccall((:hsa_queue_load_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
+end
+
+function load_write_index(queue::Queue,::Type{Val{Relaxed}})
+    ccall((:hsa_queue_load_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
+end
+
+function store_write_index!(queue::Queue,value::Uint64,::Type{Val{Relaxed}})
+    ccall((:hsa_queue_store_write_index_relaxed,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function store_write_index!(queue::Queue,value::Uint64,::Type{Val{Release}})
+    ccall((:hsa_queue_store_write_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64,::Type{Val{AcquRel}})
+    ccall((:hsa_queue_cas_write_index_acq_rel,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
+end
+
+function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64,::Type{Val{Acquire}})
+    ccall((:hsa_queue_cas_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
+end
+
+function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64,::Type{Val{Relaxed}})
+    ccall((:hsa_queue_cas_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
+end
+
+function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64,::Type{Val{Release}})
+    ccall((:hsa_queue_cas_write_index_release,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
+end
+
+function add_write_index!(queue::Queue,value::Uint64,::Type{Val{AcquRel}})
+    ccall((:hsa_queue_add_write_index_acq_rel,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function add_write_index!(queue::Queue,value::Uint64,::Type{Val{Acquire}})
+    ccall((:hsa_queue_add_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function add_write_index!(queue::Queue,value::Uint64,::Type{Val{Relaxed}})
+    ccall((:hsa_queue_add_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function add_write_index!(queue::Queue,value::Uint64,::Type{Val{Release}})
+    ccall((:hsa_queue_add_write_index_release,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function store_read_index!(queue::Queue,value::Uint64,::Type{Val{Relaxed}})
+    ccall((:hsa_queue_store_read_index_relaxed,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function store_read_index!(queue::Queue,value::Uint64,::Type{Val{Release}})
+    ccall((:hsa_queue_store_read_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function hsa_region_get_info(region::hsa_region_t,attribute::hsa_region_info_t,value::Ptr{Void})
+    ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,attribute,value)
+end
+
+function hsa_agent_iterate_regions(agent::Agent,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_agent_iterate_regions,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Ptr{Void}),agent,callback,data)
+end
+
+function hsa_memory_allocate(region::hsa_region_t,size::Csize_t,ptr::Ptr{Ptr{Void}})
+    ccall((:hsa_memory_allocate,libhsa),hsa_status_t,(hsa_region_t,Csize_t,Ptr{Ptr{Void}}),region,size,ptr)
+end
+
+function hsa_memory_free(ptr::Ptr{Void})
+    ccall((:hsa_memory_free,libhsa),hsa_status_t,(Ptr{Void},),ptr)
+end
+
+function hsa_memory_copy(dst::Ptr{Void},src::Ptr{Void},size::Csize_t)
+    ccall((:hsa_memory_copy,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void},Csize_t),dst,src,size)
+end
+
+function hsa_memory_assign_agent(ptr::Ptr{Void},agent::Agent,access::hsa_access_permission_t)
+    ccall((:hsa_memory_assign_agent,libhsa),hsa_status_t,(Ptr{Void},hsa_agent_t,hsa_access_permission_t),ptr,agent,access)
+end
+
+function hsa_memory_register(ptr::Ptr{Void},size::Csize_t)
+    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
+end
+
+function hsa_memory_deregister(ptr::Ptr{Void},size::Csize_t)
+    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
+end
+
+function hsa_isa_from_name(name::Ptr{Uint8},isa::Ptr{hsa_isa_t})
+    ccall((:hsa_isa_from_name,libhsa),hsa_status_t,(Ptr{Uint8},Ptr{hsa_isa_t}),name,isa)
+end
+
+function hsa_isa_get_info(isa::hsa_isa_t,attribute::hsa_isa_info_t,index::Uint32,value::Ptr{Void})
+    ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,Uint32,Ptr{Void}),isa,attribute,index,value)
+end
+
+function hsa_isa_compatible(code_object_isa::hsa_isa_t,agent_isa::hsa_isa_t,result::Ptr{Bool})
+    ccall((:hsa_isa_compatible,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_t,Ptr{Bool}),code_object_isa,agent_isa,result)
+end
+
+function hsa_code_object_serialize(code_object::hsa_code_object_t,alloc_callback::Ptr{Void},callback_data::hsa_callback_data_t,options::Ptr{Uint8},serialized_code_object::Ptr{Ptr{Void}},serialized_code_object_size::Ptr{Csize_t})
+    ccall((:hsa_code_object_serialize,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},hsa_callback_data_t,Ptr{Uint8},Ptr{Ptr{Void}},Ptr{Csize_t}),code_object,alloc_callback,callback_data,options,serialized_code_object,serialized_code_object_size)
+end
+
+function hsa_code_object_deserialize(serialized_code_object::Ptr{Void},serialized_code_object_size::Csize_t,options::Ptr{Uint8},code_object::Ptr{hsa_code_object_t})
+    ccall((:hsa_code_object_deserialize,libhsa),hsa_status_t,(Ptr{Void},Csize_t,Ptr{Uint8},Ptr{hsa_code_object_t}),serialized_code_object,serialized_code_object_size,options,code_object)
+end
+
+function hsa_code_object_destroy(code_object::hsa_code_object_t)
+    ccall((:hsa_code_object_destroy,libhsa),hsa_status_t,(hsa_code_object_t,),code_object)
+end
+
+function hsa_code_object_get_info(code_object::hsa_code_object_t,attribute::hsa_code_object_info_t,value::Ptr{Void})
+    ccall((:hsa_code_object_get_info,libhsa),hsa_status_t,(hsa_code_object_t,hsa_code_object_info_t,Ptr{Void}),code_object,attribute,value)
+end
+
+function hsa_code_object_get_symbol(code_object::hsa_code_object_t,symbol_name::Ptr{Uint8},symbol::Ptr{hsa_code_symbol_t})
+    ccall((:hsa_code_object_get_symbol,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Uint8},Ptr{hsa_code_symbol_t}),code_object,symbol_name,symbol)
+end
+
+function hsa_code_symbol_get_info(code_symbol::hsa_code_symbol_t,attribute::hsa_code_symbol_info_t,value::Ptr{Void})
+    ccall((:hsa_code_symbol_get_info,libhsa),hsa_status_t,(hsa_code_symbol_t,hsa_code_symbol_info_t,Ptr{Void}),code_symbol,attribute,value)
+end
+
+function hsa_code_object_iterate_symbols(code_object::hsa_code_object_t,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_code_object_iterate_symbols,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},Ptr{Void}),code_object,callback,data)
+end
+
+function hsa_executable_create(profile::hsa_profile_t,executable_state::hsa_executable_state_t,options::Ptr{Uint8},executable::Ptr{hsa_executable_t})
+    ccall((:hsa_executable_create,libhsa),hsa_status_t,(hsa_profile_t,hsa_executable_state_t,Ptr{Uint8},Ptr{hsa_executable_t}),profile,executable_state,options,executable)
+end
+
+function hsa_executable_destroy(executable::hsa_executable_t)
+    ccall((:hsa_executable_destroy,libhsa),hsa_status_t,(hsa_executable_t,),executable)
+end
+
+function hsa_executable_load_code_object(executable::hsa_executable_t,agent::Agent,code_object::hsa_code_object_t,options::Ptr{Uint8})
+    ccall((:hsa_executable_load_code_object,libhsa),hsa_status_t,(hsa_executable_t,hsa_agent_t,hsa_code_object_t,Ptr{Uint8}),executable,agent,code_object,options)
+end
+
+function hsa_executable_freeze(executable::hsa_executable_t,options::Ptr{Uint8})
+    ccall((:hsa_executable_freeze,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint8}),executable,options)
+end
+
+function hsa_executable_get_info(executable::hsa_executable_t,attribute::hsa_executable_info_t,value::Ptr{Void})
+    ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,attribute,value)
+end
+
+function hsa_executable_global_variable_define(executable::hsa_executable_t,variable_name::Ptr{Uint8},address::Ptr{Void})
+    ccall((:hsa_executable_global_variable_define,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint8},Ptr{Void}),executable,variable_name,address)
+end
+
+function hsa_executable_agent_global_variable_define(executable::hsa_executable_t,agent::Agent,variable_name::Ptr{Uint8},address::Ptr{Void})
+    ccall((:hsa_executable_agent_global_variable_define,libhsa),hsa_status_t,(hsa_executable_t,hsa_agent_t,Ptr{Uint8},Ptr{Void}),executable,agent,variable_name,address)
+end
+
+function hsa_executable_readonly_variable_define(executable::hsa_executable_t,agent::Agent,variable_name::Ptr{Uint8},address::Ptr{Void})
+    ccall((:hsa_executable_readonly_variable_define,libhsa),hsa_status_t,(hsa_executable_t,hsa_agent_t,Ptr{Uint8},Ptr{Void}),executable,agent,variable_name,address)
+end
+
+function hsa_executable_validate(executable::hsa_executable_t,result::Ptr{Uint32})
+    ccall((:hsa_executable_validate,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint32}),executable,result)
+end
+
+function hsa_executable_get_symbol(executable::hsa_executable_t,module_name::Ptr{Uint8},symbol_name::Ptr{Uint8},agent::Agent,call_convention::Int32,symbol::Ptr{hsa_executable_symbol_t})
+    ccall((:hsa_executable_get_symbol,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint8},Ptr{Uint8},hsa_agent_t,Int32,Ptr{hsa_executable_symbol_t}),executable,module_name,symbol_name,agent,call_convention,symbol)
+end
+
+function hsa_executable_symbol_get_info(executable_symbol::hsa_executable_symbol_t,attribute::hsa_executable_symbol_info_t,value::Ptr{Void})
+    ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),executable_symbol,attribute,value)
+end
+
+function hsa_executable_iterate_symbols(executable::hsa_executable_t,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_executable_iterate_symbols,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Void},Ptr{Void}),executable,callback,data)
+end
+
+function hsa_ext_program_create(machine_model::hsa_machine_model_t,profile::hsa_profile_t,default_float_rounding_mode::hsa_default_float_rounding_mode_t,options::Ptr{Uint8},program::Ptr{hsa_ext_program_t})
+    ccall((:hsa_ext_program_create,libhsa),hsa_status_t,(hsa_machine_model_t,hsa_profile_t,hsa_default_float_rounding_mode_t,Ptr{Uint8},Ptr{hsa_ext_program_t}),machine_model,profile,default_float_rounding_mode,options,program)
+end
+
+function hsa_ext_program_destroy(program::hsa_ext_program_t)
+    ccall((:hsa_ext_program_destroy,libhsa),hsa_status_t,(hsa_ext_program_t,),program)
+end
+
+function hsa_ext_program_add_module(program::hsa_ext_program_t,_module::hsa_ext_module_t)
+    ccall((:hsa_ext_program_add_module,libhsa),hsa_status_t,(hsa_ext_program_t,hsa_ext_module_t),program,_module)
+end
+
+function hsa_ext_program_iterate_modules(program::hsa_ext_program_t,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_ext_program_iterate_modules,libhsa),hsa_status_t,(hsa_ext_program_t,Ptr{Void},Ptr{Void}),program,callback,data)
+end
+
+function hsa_ext_program_get_info(program::hsa_ext_program_t,attribute::hsa_ext_program_info_t,value::Ptr{Void})
+    ccall((:hsa_ext_program_get_info,libhsa),hsa_status_t,(hsa_ext_program_t,hsa_ext_program_info_t,Ptr{Void}),program,attribute,value)
+end
+
+function hsa_ext_program_finalize(program::hsa_ext_program_t,isa::hsa_isa_t,call_convention::Int32,control_directives::hsa_ext_control_directives_t,options::Ptr{Uint8},code_object_type::hsa_code_object_type_t,code_object::Ptr{hsa_code_object_t})
+    ccall((:hsa_ext_program_finalize,libhsa),hsa_status_t,(hsa_ext_program_t,hsa_isa_t,Int32,hsa_ext_control_directives_t,Ptr{Uint8},hsa_code_object_type_t,Ptr{hsa_code_object_t}),program,isa,call_convention,control_directives,options,code_object_type,code_object)
+end
 
 function load(signal::Signal)
     load(signal,Val{Acquire})
@@ -1375,8 +1352,20 @@ function store!(signal::Signal,value::hsa_signal_value_t)
     store!(signal,value,Val{Release})
 end
 
-function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_expectancy_hint::hsa_wait_expectancy_t)
-    wait(signal,condition,compare_value,timeout_hint,wait_expectancy_hint,Val{Acquire})
+function exchange!(signal::Signal,value::hsa_signal_value_t)
+    exchange!(signal,value,Val{AcquRel})
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t)
+    cas!(signal,expected,value,Val{AcquRel})
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t)
+    add!(signal,value,Val{AcquRel})
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t)
+    subtract!(signal,value,Val{AcquRel})
 end
 
 function and!(signal::Signal,value::hsa_signal_value_t)
@@ -1391,12 +1380,471 @@ function xor!(signal::Signal,value::hsa_signal_value_t)
     xor!(signal,value,Val{AcquRel})
 end
 
-function add!(signal::Signal,value::hsa_signal_value_t)
-    add!(signal,value,Val{AcquRel})
+function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_state_hint::hsa_wait_state_t)
+    wait(signal,condition,compare_value,timeout_hint,wait_state_hint,Val{Acquire})
 end
 
-function subtract!(signal::Signal,value::hsa_signal_value_t)
-    subtract!(signal,value,Val{AcquRel})
+function load_read_index(queue::Queue)
+    load_read_index(queue,Val{Acquire})
+end
+
+function load_write_index(queue::Queue)
+    load_write_index(queue,Val{Acquire})
+end
+
+function store_write_index!(queue::Queue,value::Uint64)
+    store_write_index!(queue,value,Val{Release})
+end
+
+function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64)
+    cas_write_index!(queue,expected,value,Val{AcquRel})
+end
+
+function add_write_index!(queue::Queue,value::Uint64)
+    add_write_index!(queue,value,Val{AcquRel})
+end
+
+function store_read_index!(queue::Queue,value::Uint64)
+    store_read_index!(queue,value,Val{Release})
+end
+# Julia wrapper for header: ../runtime/inc/hsa_ext_image.h
+# Automatically generated using Clang.jl wrap_c, version 0.0.0
+
+
+function hsa_status_string(status::hsa_status_t,status_string::Ptr{Ptr{Uint8}})
+    ccall((:hsa_status_string,libhsa),hsa_status_t,(hsa_status_t,Ptr{Ptr{Uint8}}),status,status_string)
+end
+
+function hsa_init()
+    ccall((:hsa_init,libhsa),hsa_status_t,())
+end
+
+function hsa_shut_down()
+    ccall((:hsa_shut_down,libhsa),hsa_status_t,())
+end
+
+function hsa_system_get_info(attribute::hsa_system_info_t,value::Ptr{Void})
+    ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),attribute,value)
+end
+
+function hsa_system_extension_supported(extension::Uint16,version_major::Uint16,version_minor::Uint16,result::Ptr{Bool})
+    ccall((:hsa_system_extension_supported,libhsa),hsa_status_t,(Uint16,Uint16,Uint16,Ptr{Bool}),extension,version_major,version_minor,result)
+end
+
+function hsa_system_get_extension_table(extension::Uint16,version_major::Uint16,version_minor::Uint16,table::Ptr{Void})
+    ccall((:hsa_system_get_extension_table,libhsa),hsa_status_t,(Uint16,Uint16,Uint16,Ptr{Void}),extension,version_major,version_minor,table)
+end
+
+function hsa_agent_get_info(agent::Agent,attribute::hsa_agent_info_t,value::Ptr{Void})
+    ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,attribute,value)
+end
+
+function hsa_iterate_agents(callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_iterate_agents,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void}),callback,data)
+end
+
+function hsa_agent_get_exception_policies(agent::Agent,profile::hsa_profile_t,mask::Ptr{Uint16})
+    ccall((:hsa_agent_get_exception_policies,libhsa),hsa_status_t,(hsa_agent_t,hsa_profile_t,Ptr{Uint16}),agent,profile,mask)
+end
+
+function hsa_agent_extension_supported(extension::Uint16,agent::Agent,version_major::Uint16,version_minor::Uint16,result::Ptr{Bool})
+    ccall((:hsa_agent_extension_supported,libhsa),hsa_status_t,(Uint16,hsa_agent_t,Uint16,Uint16,Ptr{Bool}),extension,agent,version_major,version_minor,result)
+end
+
+function hsa_signal_create(initial_value::hsa_signal_value_t,num_consumers::Uint32,consumers::Ptr{hsa_agent_t},signal::Ptr{hsa_signal_t})
+    ccall((:hsa_signal_create,libhsa),hsa_status_t,(hsa_signal_value_t,Uint32,Ptr{hsa_agent_t},Ptr{hsa_signal_t}),initial_value,num_consumers,consumers,signal)
+end
+
+function hsa_signal_destroy(signal::Signal)
+    ccall((:hsa_signal_destroy,libhsa),hsa_status_t,(hsa_signal_t,),signal)
+end
+
+function load(signal::Signal,::Type{Val{Acquire}})
+    ccall((:hsa_signal_load_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
+end
+
+function load(signal::Signal,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_load_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,),signal)
+end
+
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_store_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function store!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_store_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_exchange_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_exchange_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_exchange_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function exchange!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_exchange_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_cas_acq_rel,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_cas_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_cas_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_cas_release,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_value_t,hsa_signal_value_t),signal,expected,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_add_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_add_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_add_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_add_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_subtract_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_subtract_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_subtract_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_subtract_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_and_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_and_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_and_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_and_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_or_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_or_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_or_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_or_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{AcquRel}})
+    ccall((:hsa_signal_xor_acq_rel,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_xor_acquire,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_xor_relaxed,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t,::Type{Val{Release}})
+    ccall((:hsa_signal_xor_release,libhsa),Void,(hsa_signal_t,hsa_signal_value_t),signal,value)
+end
+
+function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_state_hint::hsa_wait_state_t,::Type{Val{Acquire}})
+    ccall((:hsa_signal_wait_acquire,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_state_t),signal,condition,compare_value,timeout_hint,wait_state_hint)
+end
+
+function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_state_hint::hsa_wait_state_t,::Type{Val{Relaxed}})
+    ccall((:hsa_signal_wait_relaxed,libhsa),hsa_signal_value_t,(hsa_signal_t,hsa_signal_condition_t,hsa_signal_value_t,Uint64,hsa_wait_state_t),signal,condition,compare_value,timeout_hint,wait_state_hint)
+end
+
+function hsa_queue_create(agent::Agent,size::Uint32,_type::hsa_queue_type_t,callback::Ptr{Void},data::Ptr{Void},private_segment_size::Uint32,group_segment_size::Uint32,queue::Ptr{Ptr{hsa_queue_t}})
+    ccall((:hsa_queue_create,libhsa),hsa_status_t,(hsa_agent_t,Uint32,hsa_queue_type_t,Ptr{Void},Ptr{Void},Uint32,Uint32,Ptr{Ptr{hsa_queue_t}}),agent,size,_type,callback,data,private_segment_size,group_segment_size,queue)
+end
+
+function hsa_soft_queue_create(region::hsa_region_t,size::Uint32,_type::hsa_queue_type_t,features::Uint32,doorbell_signal::Signal,queue::Ptr{Ptr{hsa_queue_t}})
+    ccall((:hsa_soft_queue_create,libhsa),hsa_status_t,(hsa_region_t,Uint32,hsa_queue_type_t,Uint32,hsa_signal_t,Ptr{Ptr{hsa_queue_t}}),region,size,_type,features,doorbell_signal,queue)
+end
+
+function hsa_queue_destroy(queue::Queue)
+    ccall((:hsa_queue_destroy,libhsa),hsa_status_t,(Ptr{hsa_queue_t},),queue)
+end
+
+function hsa_queue_inactivate(queue::Queue)
+    ccall((:hsa_queue_inactivate,libhsa),hsa_status_t,(Ptr{hsa_queue_t},),queue)
+end
+
+function load_read_index(queue::Queue,::Type{Val{Acquire}})
+    ccall((:hsa_queue_load_read_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
+end
+
+function load_read_index(queue::Queue,::Type{Val{Relaxed}})
+    ccall((:hsa_queue_load_read_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
+end
+
+function load_write_index(queue::Queue,::Type{Val{Acquire}})
+    ccall((:hsa_queue_load_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
+end
+
+function load_write_index(queue::Queue,::Type{Val{Relaxed}})
+    ccall((:hsa_queue_load_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},),queue)
+end
+
+function store_write_index!(queue::Queue,value::Uint64,::Type{Val{Relaxed}})
+    ccall((:hsa_queue_store_write_index_relaxed,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function store_write_index!(queue::Queue,value::Uint64,::Type{Val{Release}})
+    ccall((:hsa_queue_store_write_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64,::Type{Val{AcquRel}})
+    ccall((:hsa_queue_cas_write_index_acq_rel,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
+end
+
+function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64,::Type{Val{Acquire}})
+    ccall((:hsa_queue_cas_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
+end
+
+function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64,::Type{Val{Relaxed}})
+    ccall((:hsa_queue_cas_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
+end
+
+function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64,::Type{Val{Release}})
+    ccall((:hsa_queue_cas_write_index_release,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64,Uint64),queue,expected,value)
+end
+
+function add_write_index!(queue::Queue,value::Uint64,::Type{Val{AcquRel}})
+    ccall((:hsa_queue_add_write_index_acq_rel,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function add_write_index!(queue::Queue,value::Uint64,::Type{Val{Acquire}})
+    ccall((:hsa_queue_add_write_index_acquire,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function add_write_index!(queue::Queue,value::Uint64,::Type{Val{Relaxed}})
+    ccall((:hsa_queue_add_write_index_relaxed,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function add_write_index!(queue::Queue,value::Uint64,::Type{Val{Release}})
+    ccall((:hsa_queue_add_write_index_release,libhsa),Uint64,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function store_read_index!(queue::Queue,value::Uint64,::Type{Val{Relaxed}})
+    ccall((:hsa_queue_store_read_index_relaxed,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function store_read_index!(queue::Queue,value::Uint64,::Type{Val{Release}})
+    ccall((:hsa_queue_store_read_index_release,libhsa),Void,(Ptr{hsa_queue_t},Uint64),queue,value)
+end
+
+function hsa_region_get_info(region::hsa_region_t,attribute::hsa_region_info_t,value::Ptr{Void})
+    ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,attribute,value)
+end
+
+function hsa_agent_iterate_regions(agent::Agent,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_agent_iterate_regions,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Ptr{Void}),agent,callback,data)
+end
+
+function hsa_memory_allocate(region::hsa_region_t,size::Csize_t,ptr::Ptr{Ptr{Void}})
+    ccall((:hsa_memory_allocate,libhsa),hsa_status_t,(hsa_region_t,Csize_t,Ptr{Ptr{Void}}),region,size,ptr)
+end
+
+function hsa_memory_free(ptr::Ptr{Void})
+    ccall((:hsa_memory_free,libhsa),hsa_status_t,(Ptr{Void},),ptr)
+end
+
+function hsa_memory_copy(dst::Ptr{Void},src::Ptr{Void},size::Csize_t)
+    ccall((:hsa_memory_copy,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void},Csize_t),dst,src,size)
+end
+
+function hsa_memory_assign_agent(ptr::Ptr{Void},agent::Agent,access::hsa_access_permission_t)
+    ccall((:hsa_memory_assign_agent,libhsa),hsa_status_t,(Ptr{Void},hsa_agent_t,hsa_access_permission_t),ptr,agent,access)
+end
+
+function hsa_memory_register(ptr::Ptr{Void},size::Csize_t)
+    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
+end
+
+function hsa_memory_deregister(ptr::Ptr{Void},size::Csize_t)
+    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
+end
+
+function hsa_isa_from_name(name::Ptr{Uint8},isa::Ptr{hsa_isa_t})
+    ccall((:hsa_isa_from_name,libhsa),hsa_status_t,(Ptr{Uint8},Ptr{hsa_isa_t}),name,isa)
+end
+
+function hsa_isa_get_info(isa::hsa_isa_t,attribute::hsa_isa_info_t,index::Uint32,value::Ptr{Void})
+    ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,Uint32,Ptr{Void}),isa,attribute,index,value)
+end
+
+function hsa_isa_compatible(code_object_isa::hsa_isa_t,agent_isa::hsa_isa_t,result::Ptr{Bool})
+    ccall((:hsa_isa_compatible,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_t,Ptr{Bool}),code_object_isa,agent_isa,result)
+end
+
+function hsa_code_object_serialize(code_object::hsa_code_object_t,alloc_callback::Ptr{Void},callback_data::hsa_callback_data_t,options::Ptr{Uint8},serialized_code_object::Ptr{Ptr{Void}},serialized_code_object_size::Ptr{Csize_t})
+    ccall((:hsa_code_object_serialize,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},hsa_callback_data_t,Ptr{Uint8},Ptr{Ptr{Void}},Ptr{Csize_t}),code_object,alloc_callback,callback_data,options,serialized_code_object,serialized_code_object_size)
+end
+
+function hsa_code_object_deserialize(serialized_code_object::Ptr{Void},serialized_code_object_size::Csize_t,options::Ptr{Uint8},code_object::Ptr{hsa_code_object_t})
+    ccall((:hsa_code_object_deserialize,libhsa),hsa_status_t,(Ptr{Void},Csize_t,Ptr{Uint8},Ptr{hsa_code_object_t}),serialized_code_object,serialized_code_object_size,options,code_object)
+end
+
+function hsa_code_object_destroy(code_object::hsa_code_object_t)
+    ccall((:hsa_code_object_destroy,libhsa),hsa_status_t,(hsa_code_object_t,),code_object)
+end
+
+function hsa_code_object_get_info(code_object::hsa_code_object_t,attribute::hsa_code_object_info_t,value::Ptr{Void})
+    ccall((:hsa_code_object_get_info,libhsa),hsa_status_t,(hsa_code_object_t,hsa_code_object_info_t,Ptr{Void}),code_object,attribute,value)
+end
+
+function hsa_code_object_get_symbol(code_object::hsa_code_object_t,symbol_name::Ptr{Uint8},symbol::Ptr{hsa_code_symbol_t})
+    ccall((:hsa_code_object_get_symbol,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Uint8},Ptr{hsa_code_symbol_t}),code_object,symbol_name,symbol)
+end
+
+function hsa_code_symbol_get_info(code_symbol::hsa_code_symbol_t,attribute::hsa_code_symbol_info_t,value::Ptr{Void})
+    ccall((:hsa_code_symbol_get_info,libhsa),hsa_status_t,(hsa_code_symbol_t,hsa_code_symbol_info_t,Ptr{Void}),code_symbol,attribute,value)
+end
+
+function hsa_code_object_iterate_symbols(code_object::hsa_code_object_t,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_code_object_iterate_symbols,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},Ptr{Void}),code_object,callback,data)
+end
+
+function hsa_executable_create(profile::hsa_profile_t,executable_state::hsa_executable_state_t,options::Ptr{Uint8},executable::Ptr{hsa_executable_t})
+    ccall((:hsa_executable_create,libhsa),hsa_status_t,(hsa_profile_t,hsa_executable_state_t,Ptr{Uint8},Ptr{hsa_executable_t}),profile,executable_state,options,executable)
+end
+
+function hsa_executable_destroy(executable::hsa_executable_t)
+    ccall((:hsa_executable_destroy,libhsa),hsa_status_t,(hsa_executable_t,),executable)
+end
+
+function hsa_executable_load_code_object(executable::hsa_executable_t,agent::Agent,code_object::hsa_code_object_t,options::Ptr{Uint8})
+    ccall((:hsa_executable_load_code_object,libhsa),hsa_status_t,(hsa_executable_t,hsa_agent_t,hsa_code_object_t,Ptr{Uint8}),executable,agent,code_object,options)
+end
+
+function hsa_executable_freeze(executable::hsa_executable_t,options::Ptr{Uint8})
+    ccall((:hsa_executable_freeze,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint8}),executable,options)
+end
+
+function hsa_executable_get_info(executable::hsa_executable_t,attribute::hsa_executable_info_t,value::Ptr{Void})
+    ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,attribute,value)
+end
+
+function hsa_executable_global_variable_define(executable::hsa_executable_t,variable_name::Ptr{Uint8},address::Ptr{Void})
+    ccall((:hsa_executable_global_variable_define,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint8},Ptr{Void}),executable,variable_name,address)
+end
+
+function hsa_executable_agent_global_variable_define(executable::hsa_executable_t,agent::Agent,variable_name::Ptr{Uint8},address::Ptr{Void})
+    ccall((:hsa_executable_agent_global_variable_define,libhsa),hsa_status_t,(hsa_executable_t,hsa_agent_t,Ptr{Uint8},Ptr{Void}),executable,agent,variable_name,address)
+end
+
+function hsa_executable_readonly_variable_define(executable::hsa_executable_t,agent::Agent,variable_name::Ptr{Uint8},address::Ptr{Void})
+    ccall((:hsa_executable_readonly_variable_define,libhsa),hsa_status_t,(hsa_executable_t,hsa_agent_t,Ptr{Uint8},Ptr{Void}),executable,agent,variable_name,address)
+end
+
+function hsa_executable_validate(executable::hsa_executable_t,result::Ptr{Uint32})
+    ccall((:hsa_executable_validate,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint32}),executable,result)
+end
+
+function hsa_executable_get_symbol(executable::hsa_executable_t,module_name::Ptr{Uint8},symbol_name::Ptr{Uint8},agent::Agent,call_convention::Int32,symbol::Ptr{hsa_executable_symbol_t})
+    ccall((:hsa_executable_get_symbol,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Uint8},Ptr{Uint8},hsa_agent_t,Int32,Ptr{hsa_executable_symbol_t}),executable,module_name,symbol_name,agent,call_convention,symbol)
+end
+
+function hsa_executable_symbol_get_info(executable_symbol::hsa_executable_symbol_t,attribute::hsa_executable_symbol_info_t,value::Ptr{Void})
+    ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),executable_symbol,attribute,value)
+end
+
+function hsa_executable_iterate_symbols(executable::hsa_executable_t,callback::Ptr{Void},data::Ptr{Void})
+    ccall((:hsa_executable_iterate_symbols,libhsa),hsa_status_t,(hsa_executable_t,Ptr{Void},Ptr{Void}),executable,callback,data)
+end
+
+function hsa_ext_image_get_capability(agent::Agent,geometry::hsa_ext_image_geometry_t,image_format::Ptr{hsa_ext_image_format_t},capability_mask::Ptr{Uint32})
+    ccall((:hsa_ext_image_get_capability,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_geometry_t,Ptr{hsa_ext_image_format_t},Ptr{Uint32}),agent,geometry,image_format,capability_mask)
+end
+
+function hsa_ext_image_data_get_info(agent::Agent,image_descriptor::Ptr{hsa_ext_image_descriptor_t},access_permission::hsa_access_permission_t,image_data_info::Ptr{hsa_ext_image_data_info_t})
+    ccall((:hsa_ext_image_data_get_info,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_image_descriptor_t},hsa_access_permission_t,Ptr{hsa_ext_image_data_info_t}),agent,image_descriptor,access_permission,image_data_info)
+end
+
+function hsa_ext_image_create(agent::Agent,image_descriptor::Ptr{hsa_ext_image_descriptor_t},image_data::Ptr{Void},access_permission::hsa_access_permission_t,image::Ptr{hsa_ext_image_t})
+    ccall((:hsa_ext_image_create,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_image_descriptor_t},Ptr{Void},hsa_access_permission_t,Ptr{hsa_ext_image_t}),agent,image_descriptor,image_data,access_permission,image)
+end
+
+function hsa_ext_image_destroy(agent::Agent,image::hsa_ext_image_t)
+    ccall((:hsa_ext_image_destroy,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_t),agent,image)
+end
+
+function hsa_ext_image_copy(agent::Agent,src_image::hsa_ext_image_t,src_offset::Ptr{hsa_dim3_t},dst_image::hsa_ext_image_t,dst_offset::Ptr{hsa_dim3_t},range::Ptr{hsa_dim3_t})
+    ccall((:hsa_ext_image_copy,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_t,Ptr{hsa_dim3_t},hsa_ext_image_t,Ptr{hsa_dim3_t},Ptr{hsa_dim3_t}),agent,src_image,src_offset,dst_image,dst_offset,range)
+end
+
+function hsa_ext_image_import(agent::Agent,src_memory::Ptr{Void},src_row_pitch::Csize_t,src_slice_pitch::Csize_t,dst_image::hsa_ext_image_t,image_region::Ptr{hsa_ext_image_region_t})
+    ccall((:hsa_ext_image_import,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Csize_t,Csize_t,hsa_ext_image_t,Ptr{hsa_ext_image_region_t}),agent,src_memory,src_row_pitch,src_slice_pitch,dst_image,image_region)
+end
+
+function hsa_ext_image_export(agent::Agent,src_image::hsa_ext_image_t,dst_memory::Ptr{Void},dst_row_pitch::Csize_t,dst_slice_pitch::Csize_t,image_region::Ptr{hsa_ext_image_region_t})
+    ccall((:hsa_ext_image_export,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_t,Ptr{Void},Csize_t,Csize_t,Ptr{hsa_ext_image_region_t}),agent,src_image,dst_memory,dst_row_pitch,dst_slice_pitch,image_region)
+end
+
+function hsa_ext_image_clear(agent::Agent,image::hsa_ext_image_t,data::Ptr{Void},image_region::Ptr{hsa_ext_image_region_t})
+    ccall((:hsa_ext_image_clear,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_t,Ptr{Void},Ptr{hsa_ext_image_region_t}),agent,image,data,image_region)
+end
+
+function hsa_ext_get_image_info_max_dim(component::Agent,attribute::hsa_agent_info_t,value::Ptr{Void})
+    ccall((:hsa_ext_get_image_info_max_dim,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),component,attribute,value)
+end
+
+function hsa_ext_sampler_create(agent::Agent,sampler_descriptor::Ptr{hsa_ext_sampler_descriptor_t},sampler::Ptr{hsa_ext_sampler_t})
+    ccall((:hsa_ext_sampler_create,libhsa),hsa_status_t,(hsa_agent_t,Ptr{hsa_ext_sampler_descriptor_t},Ptr{hsa_ext_sampler_t}),agent,sampler_descriptor,sampler)
+end
+
+function hsa_ext_sampler_destroy(agent::Agent,sampler::hsa_ext_sampler_t)
+    ccall((:hsa_ext_sampler_destroy,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_sampler_t),agent,sampler)
+end
+
+function load(signal::Signal)
+    load(signal,Val{Acquire})
+end
+
+function store!(signal::Signal,value::hsa_signal_value_t)
+    store!(signal,value,Val{Release})
 end
 
 function exchange!(signal::Signal,value::hsa_signal_value_t)
@@ -1405,4 +1853,52 @@ end
 
 function cas!(signal::Signal,expected::hsa_signal_value_t,value::hsa_signal_value_t)
     cas!(signal,expected,value,Val{AcquRel})
+end
+
+function add!(signal::Signal,value::hsa_signal_value_t)
+    add!(signal,value,Val{AcquRel})
+end
+
+function subtract!(signal::Signal,value::hsa_signal_value_t)
+    subtract!(signal,value,Val{AcquRel})
+end
+
+function and!(signal::Signal,value::hsa_signal_value_t)
+    and!(signal,value,Val{AcquRel})
+end
+
+function or!(signal::Signal,value::hsa_signal_value_t)
+    or!(signal,value,Val{AcquRel})
+end
+
+function xor!(signal::Signal,value::hsa_signal_value_t)
+    xor!(signal,value,Val{AcquRel})
+end
+
+function wait(signal::Signal,condition::hsa_signal_condition_t,compare_value::hsa_signal_value_t,timeout_hint::Uint64,wait_state_hint::hsa_wait_state_t)
+    wait(signal,condition,compare_value,timeout_hint,wait_state_hint,Val{Acquire})
+end
+
+function load_read_index(queue::Queue)
+    load_read_index(queue,Val{Acquire})
+end
+
+function load_write_index(queue::Queue)
+    load_write_index(queue,Val{Acquire})
+end
+
+function store_write_index!(queue::Queue,value::Uint64)
+    store_write_index!(queue,value,Val{Release})
+end
+
+function cas_write_index!(queue::Queue,expected::Uint64,value::Uint64)
+    cas_write_index!(queue,expected,value,Val{AcquRel})
+end
+
+function add_write_index!(queue::Queue,value::Uint64)
+    add_write_index!(queue,value,Val{AcquRel})
+end
+
+function store_read_index!(queue::Queue,value::Uint64)
+    store_read_index!(queue,value,Val{Release})
 end

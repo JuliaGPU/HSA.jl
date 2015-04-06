@@ -16,8 +16,9 @@ type Queue
     base_address :: Uint64
     doorbell_signal :: Signal
     size :: Uint32
+    group_segment_size :: Uint32
+    private_segment_size :: Uint32
     id :: Uint32
-    service_queue :: Nullable{Queue}
 	error_callback :: Nullable{Function}
 
     function Queue(q_ptr :: Ptr{hsa_queue_t})
@@ -52,12 +53,6 @@ type Queue
 
         queue_by_id[q_id] = WeakRef(q)
 
-        # retrieve reference to the service queue, if any
-        svc_q_ptr = queue_info_service_queue(q_ptr)
-        if svc_q_ptr != C_NULL
-            q.service_queue = Queue(svc_q_ptr)
-        end
-
         return q
     end
 end
@@ -65,11 +60,16 @@ end
 function Queue(a :: Agent, size;
     typ :: hsa_queue_type_t = HSA_QUEUE_TYPE_SINGLE,
     error_callback = Nullable{Function}(),
-    service_queue = Nullable{Queue}())
+	group_segment_size = typemax(Uint32),
+	private_segment_size = typemax(Uint32))
+
     size = convert(Uint32, size)
 	assert_runtime_alive()
 
-    h = HSA.queue_create(a, size, typ, register_callback = !isnull(Nullable{Function}(error_callback)), service_queue = Nullable{Queue}(service_queue))
+    h = HSA.queue_create(a, size, typ;
+	    register_callback = !isnull(Nullable{Function}(error_callback)),
+	    group_segment_size = group_segment_size,
+	    private_segment_size = private_segment_size)
 
     queue = Queue(h)
 	queue.error_callback = error_callback
@@ -107,11 +107,12 @@ function push!(q :: Queue, p :: AQLPacket)
 	store!(q.doorbell_signal, hsa_signal_value_t(idx))
 end
 
-function queue_err_cb(status :: hsa_status_t, queue_ptr :: Ptr{hsa_queue_t})
+function queue_err_cb(status :: hsa_status_t, queue_ptr :: Ptr{hsa_queue_t}, data_ptr :: Ptr{Void})
 	if queue_ptr == C_NULL
 		error("null queue ptr passed to error callback")
 	end
 
+	# retrieve or create Queue wrapper object
 	queue = Queue(queue_ptr)
 
 	cb = queue.error_callback
@@ -122,17 +123,19 @@ function queue_err_cb(status :: hsa_status_t, queue_ptr :: Ptr{hsa_queue_t})
 	return
 end
 
-const queue_err_cb_ptr = cfunction(queue_err_cb, Void, (hsa_status_t, Ptr{hsa_queue_t}))
+const queue_err_cb_ptr = cfunction(queue_err_cb, Void, (hsa_status_t, Ptr{hsa_queue_t}, Ptr{Void}))
 
 function queue_create(a :: Agent, size :: Uint32, typ :: hsa_queue_type_t;
 	register_callback :: Bool = false,
-	service_queue = Nullable{Queue}())
-    res = Ptr{hsa_queue_t}[C_NULL]
-    cb_ptr = (register_callback) ? C_NULL : queue_err_cb_ptr
-    sq_ptr = (isnull(service_queue)) ? C_NULL : service_queue.value.handle
+	private_segment_size = typemax(Uint32),
+	group_segment_size = typemax(Uint32))
 
-    err = ccall((:hsa_queue_create, libhsa), hsa_status_t, (hsa_agent_t, Uint32, hsa_queue_type_t, Ptr{Void}, Ptr{hsa_queue_t}, Ptr{Ptr{hsa_queue_t}}),
-                a.handle, size, typ, cb_ptr, sq_ptr, res)
+    res = Ptr{hsa_queue_t}[C_NULL]
+    cb_ptr = (register_callback) ? queue_err_cb_ptr : C_NULL
+	cb_data_ptr = C_NULL
+
+    err = ccall((:hsa_queue_create, libhsa), hsa_status_t, (hsa_agent_t, Uint32, hsa_queue_type_t, Ptr{Void}, Ptr{Void}, Uint32, Uint32, Ptr{Ptr{hsa_queue_t}}),
+                a.handle, size, typ, cb_ptr, cb_data_ptr, private_segment_size, group_segment_size, res)
 
     test_status(err)
 
@@ -146,41 +149,6 @@ function queue_destroy(q :: Queue)
 		q.is_active = false
     end
 end
-
-# Getters
-
-function queue_idx_getters()
-    const queue_getters = Symbol[
-        :hsa_queue_load_read_index,
-        :hsa_queue_load_write_index
-        ]
-
-    function getter_code(c_fun)
-        c_fun = Expr(:quote, c_fun)
-        :(ccall(($c_fun, libhsa), hsa_status_t, (Ptr{hsa_queue_t},), q))
-    end
-
-    for getter in queue_getters
-        name = symbol(getter_name(getter))
-        name_relaxed = symbol(getter, :_relaxed)
-        getter_relaxed = getter_code(name_relaxed)
-        name_acquire = symbol(getter, :_acquire)
-        getter_acquire = getter_code(name_acquire)
-
-        getter_impl = quote
-            function $name(q; relaxed::Bool = false)
-                if relaxed
-                    $getter_relaxed
-                else
-                    $getter_acquire
-                end
-            end
-        end
-
-        eval(getter_impl)
-    end
-end
-queue_idx_getters()
 
 function queue_destroy(q_ptr :: Ptr{hsa_queue_t})
     if q_ptr != C_NULL
@@ -214,10 +182,10 @@ field_getter(
     Dict(
         :type => (hsa_queue_type_t, 0),
         :features => (hsa_queue_feature_t, 4),
-        :base_address => (Uint64, 8),
+		:base_address => (Uint64, 8), # TODO handle ifdefs for machine_model/endianness
         :doorbell_signal => (hsa_signal_t, 16),
         :size => (Uint32, 24),
-        :id => (Uint32, 28),
-        :service_queue => (Ptr{hsa_queue_t}, 32)
+		# Uint32 reserved
+        :id => (Uint32, 32),
     )
 )

@@ -30,6 +30,9 @@ function getter_code_for(var :: Symbol, return_type)
             if t == String # max length string
                 setup_code = :($var = Array(Uint8, $targ))
                 convert_code = :($var = ascii($var))
+			else # max length array type
+				setup_code = :($var = Array($t, $targ))
+				convert_code = :() # do nothing
             end
         end
     else

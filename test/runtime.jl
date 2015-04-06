@@ -26,6 +26,9 @@ facts("The Misc Functions") do
         @fact HSA.system_info_timestamp() => anything
         @fact HSA.system_info_timestamp_frequency() => anything
         @fact HSA.system_info_signal_max_wait() => anything
+        @fact HSA.system_info_endianness() => anything
+        @fact HSA.system_info_machine_model() => anything
+        @fact HSA.system_info_extensions() => anything
     end
 
     context("Can retrieve status strings") do

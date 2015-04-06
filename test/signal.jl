@@ -39,6 +39,7 @@ facts("A Signal") do
 		# does not destroy the signal upon being finalized
 		finalize(s)
 	end
+
 	context("can be manipulated") do
         s = HSA.Signal(value = 2)
 
@@ -76,11 +77,16 @@ facts("A Signal") do
        s = HSA.Signal(value = 2)
 
        @fact wait(s, :(==), 2) => 2
-       @fact wait(s, :<, 3; timeout_hint = 10, wait_hint = WaitLong) => 2
+       @fact wait(s, :<, 3; timeout_hint = 10) => 2
        @fact wait(s, :(!=), 3) => 2
        @fact wait(s, :(>=), 2) => 2
     end
 
+	context("can be waited on with a timeout") do
+		s = HSA.Signal(value = 2)
+
+		@fact wait(s, :(==), 3; timeout_hint = 1) => 2
+	end
 
     finalize(rt)
 end

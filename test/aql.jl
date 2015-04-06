@@ -6,7 +6,7 @@ facts("AQL Packets") do
     dispatch_bytes = Uint8[
         HSA.PacketTypeDispatch,
         (0x01 << 7) | # Barrier Bit
-        (HSA.FenceScopeComponent << 5) | # Acquire Scope
+        (HSA.FenceScopeAgent << 5) | # Acquire Scope
         (HSA.FenceScopeSystem << 3), # Release Scope
         # Dispatch Packet
         0x00, (0x03 << 6), # Dimensions - Reserved
@@ -45,7 +45,7 @@ facts("AQL Packets") do
     agent_ptr = convert(Ptr{Void}, pointer(agent_bytes))
 
    	barrier_bytes = Uint8[
-        HSA.PacketTypeBarrier,
+        HSA.PacketTypeBarrierAnd,
         (0x00 << 7) | # Barrier Bit
         (HSA.FenceScopeNone << 5) | # Acquire Scope
         (HSA.FenceScopeNone << 3), # Release Scope
@@ -67,7 +67,7 @@ facts("AQL Packets") do
             header = HSA.unsafe_convert(HSA.PacketHeader, dispatch_ptr)
             @fact header.typ => HSA.PacketTypeDispatch
             @fact header.barrier => true
-            @fact header.acquire_fence_scope => HSA.FenceScopeComponent
+            @fact header.acquire_fence_scope => HSA.FenceScopeAgent
             @fact header.release_fence_scope => HSA.FenceScopeSystem
         end
 
@@ -112,15 +112,15 @@ facts("AQL Packets") do
 		end
     end
 
-    context("DispatchPackets") do
+    context("KernelDispatchPackets") do
         context("can be loaded") do
             dp = HSA.unsafe_convert(HSA.AQLPacket, dispatch_ptr)
 
-            @fact isa(dp, HSA.DispatchPacket) => true
+            @fact isa(dp, HSA.KernelDispatchPacket) => true
 
             @fact dp.header.typ => HSA.PacketTypeDispatch
             @fact dp.header.barrier => true
-            @fact dp.header.acquire_fence_scope => HSA.FenceScopeComponent
+            @fact dp.header.acquire_fence_scope => HSA.FenceScopeAgent
             @fact dp.header.release_fence_scope => HSA.FenceScopeSystem
 
             @fact dp.dimensions => 0x0003
@@ -148,10 +148,10 @@ facts("AQL Packets") do
         end
 
 		context("can be created in various ways") do
-            @fact_throws HSA.DispatchPacket{0}()
-			@fact_throws HSA.DispatchPacket{4}(1,2,3,4,5,6,7,8)
+            @fact_throws HSA.KernelDispatchPacket{0}()
+			@fact_throws HSA.KernelDispatchPacket{4}(1,2,3,4,5,6,7,8)
 
-			dp1 = HSA.DispatchPacket{1}(2)
+			dp1 = HSA.KernelDispatchPacket{1}(2)
 			@fact dp1.dimensions => 1
 			@fact dp1.workgroup_size_x => 1
 			@fact dp1.workgroup_size_y => 1
@@ -204,7 +204,7 @@ facts("AQL Packets") do
 
 			@fact isa(bp, HSA.BarrierPacket) => true
 
-		    @fact bp.header.typ => HSA.PacketTypeBarrier
+		    @fact bp.header.typ => HSA.PacketTypeBarrierAnd
 
 			@fact bp.dep_signal[1] => 0x0000000000000001
 			@fact bp.dep_signal[2] => 0x0000000000000002

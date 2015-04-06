@@ -1,5 +1,20 @@
 export Runtime
 
+getter(:hsa_system_get_info,
+    (:info, :data),
+    (hsa_system_info_t, Ptr{Void}),
+    Dict(
+    :HSA_SYSTEM_INFO_VERSION_MAJOR => Cushort,
+    :HSA_SYSTEM_INFO_VERSION_MINOR => Cushort,
+    :HSA_SYSTEM_INFO_TIMESTAMP => Culonglong,
+    :HSA_SYSTEM_INFO_TIMESTAMP_FREQUENCY => Cushort,
+    :HSA_SYSTEM_INFO_SIGNAL_MAX_WAIT => Culonglong,
+	:HSA_SYSTEM_INFO_ENDIANNESS => hsa_endianness_t,
+	:HSA_SYSTEM_INFO_MACHINE_MODEL => hsa_machine_model_t,
+	:HSA_SYSTEM_INFO_EXTENSIONS => (Uint8, 128)
+    )
+)
+
 export assert_runtime_alive
 
 const runtime_ref_count = Int[0]

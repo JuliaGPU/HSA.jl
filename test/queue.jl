@@ -17,7 +17,6 @@ facts("A Queue") do
         @fact q.doorbell_signal => anything
         @fact q.size => (Uint32)(4)
         @fact q.id => anything
-        @fact isnull(q.service_queue) => true
     end
 
     @with_agents context("Can be destroyed") do
@@ -65,6 +64,8 @@ facts("A Queue") do
 		@fact_throws q[5] = p
 		q[1] = p
 		@fact q[1] => p
+		q[2] = p
+		@fact q[2] => p
 	end
 
 	@with_agents context("Can submit new packets via push") do

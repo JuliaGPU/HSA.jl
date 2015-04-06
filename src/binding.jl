@@ -1,17 +1,3 @@
-getter(:hsa_system_get_info,
-    (:info, :data),
-    (hsa_system_info_t, Ptr{Void}),
-    Dict(
-    :HSA_SYSTEM_INFO_VERSION_MAJOR => Cushort,
-    :HSA_SYSTEM_INFO_VERSION_MINOR => Cushort,
-    :HSA_SYSTEM_INFO_TIMESTAMP => Culonglong,
-    :HSA_SYSTEM_INFO_TIMESTAMP_FREQUENCY => Cushort,
-    :HSA_SYSTEM_INFO_SIGNAL_MAX_WAIT => Culonglong
-    )
-)
-
-
-
 import Base.convert
 
 function convert(::Type{hsa_dim3_t}, values :: Vector{Uint32})

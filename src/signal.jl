@@ -30,9 +30,8 @@ type Signal
 end
 
 # Wait Expectancy Hints
-const WaitShort = HSA_WAIT_EXPECTANCY_SHORT
-const WaitLong = HSA_WAIT_EXPECTANCY_LONG
-const WaitUnknown = HSA_WAIT_EXPECTANCY_UNKNOWN
+const WaitActive = HSA_WAIT_STATE_ACTIVE
+const WaitBlocked = HSA_WAIT_STATE_BLOCKED
 
 function Signal(; value::hsa_signal_value_t = 0, consumers = Set{Agent}())
     h = signal_create(value, consumers)
@@ -61,36 +60,37 @@ import Base.get
 get(s::Signal) = load(s)
 
 function signal_create(initial_value::hsa_signal_value_t, consumers)
-    local num_consumers, consumer_arr
+    local num_consumers, consumer_arr, consumer_ptr
     if !isempty(consumers)
         num_consumers = size(consumers,1)
         consumer_arr = hsa_agent_t[ a.handle for a in consumers ]
+		consumer_ptr = pointer(consumer_arr)
     else
         num_consumers = 0x0
-        consumer_arr = C_NULL
+        consumer_ptr = C_NULL
     end
 
-    res = hsa_signal_t[0]
+    res = Ref(hsa_signal_t(0))
 
     err = ccall((:hsa_signal_create, libhsa), hsa_status_t, (hsa_signal_value_t, Uint32, Ptr{hsa_agent_t}, Ptr{hsa_signal_t}),
-                initial_value, num_consumers, consumer_arr, res)
+                initial_value, num_consumers, consumer_ptr, res)
 
     test_status(err)
 
-    return res[1]
+    return res.x
 end
 
 import Base.wait
 
 function wait(s::Signal, cond::Symbol, compare_value::hsa_signal_value_t;
     timeout_hint = typemax(Uint64),
-    wait_hint::hsa_wait_expectancy_t = WaitUnknown
+    wait_state_hint::hsa_wait_state_t = WaitBlocked
     )
     const cond_map = Dict(
-        :(==) => HSA_EQ,
-        :(!=) => HSA_NE,
-        :(<) => HSA_LT,
-        :(>=) => HSA_GTE
+        :(==) => HSA_SIGNAL_CONDITION_EQ,
+        :(!=) => HSA_SIGNAL_CONDITION_NE,
+        :(<) => HSA_SIGNAL_CONDITION_LT,
+        :(>=) => HSA_SIGNAL_CONDITION_GTE
         )
 
     if !haskey(cond_map, cond)
@@ -101,5 +101,5 @@ function wait(s::Signal, cond::Symbol, compare_value::hsa_signal_value_t;
 
     timeout_hint = convert(Uint64, timeout_hint)
 
-    return wait(s, hsa_cond, compare_value, timeout_hint, wait_hint)
+    return wait(s, hsa_cond, compare_value, timeout_hint, wait_state_hint)
 end
