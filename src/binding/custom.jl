@@ -82,7 +82,7 @@ function getter(c_name::Symbol, argnames, argtypes, map)
             arg_type = argtypes[i]
             arg_type = get(argtype_map, symbol(arg_type), arg_type)
 
-            arg_exp = :($arg_name :: $arg_type)
+			arg_exp = :($arg_name :: $arg_type)
 
             push!(ccall_args, arg_name)
             push!(getter_args, arg_exp)

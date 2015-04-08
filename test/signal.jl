@@ -14,6 +14,13 @@ facts("A Signal") do
         @fact get(s2) => 2
 	end
 
+	context("are deduplicated in the constructor") do
+		s = HSA.Signal()
+		s_ame = HSA.Signal(s.handle)
+
+		@fact s => s_ame
+	end
+
     agents = HSA.all_agents()
     @with_agents context("can be created with specific consumer agents") do
         a = agents[1]

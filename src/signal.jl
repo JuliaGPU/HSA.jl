@@ -1,6 +1,6 @@
 export WaitShort, WaitLong, WaitUnknown
 
-const signal_by_id = Dict{hsa_signal_t, WeakRef}()
+const signal_by_id = Dict{Uint64, WeakRef}()
 
 export Signal
 
@@ -14,16 +14,17 @@ type Signal
     function Signal(h::hsa_signal_t, consumers::Set{Agent} = Set{Agent}())
         assert_runtime_alive()
 
-        if haskey(signal_by_id, h)
-            existing = signal_by_id[h].value
+        if haskey(signal_by_id, h.handle)
+            existing = signal_by_id[h.handle].value
             if existing != nothing
+				println("matched existing Signal: $(h.handle)")
                 return existing
             end
         end
 
         s = new(h, consumers, true)
 
-        signal_by_id[h] = WeakRef(s)
+        signal_by_id[h.handle] = WeakRef(s)
 
         return s
     end

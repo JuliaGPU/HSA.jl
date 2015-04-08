@@ -26,5 +26,21 @@ facts("Memory Management") do
 				@fact isa(r, HSA.Region) => true
 			end
 		end
+
+		context("can be queried") do
+			a = agents[1]
+			regs = HSA.regions(a)
+
+			greg = find(x -> begin
+				seg = region_info_segment(x)
+				return seg == RegionSegmentGlobal
+			end, regs)
+
+			@fact isa(greg, HSA.Region) => true
+
+			flags = HSA.region_info_global_flags(greg)
+
+			@fact (flags & HSA.HSA_REGION_GLOBAL_FLAG_KERNARG) => not 0
+		end
 	end
 end

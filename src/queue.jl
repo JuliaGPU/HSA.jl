@@ -1,10 +1,5 @@
 const queue_by_id = Dict{Uint32, WeakRef}()
 
-export QueueTypeSingle, QueueTypeMulti
-
-const QueueTypeSingle = HSA_QUEUE_TYPE_SINGLE
-const QueueTypeMulti = HSA_QUEUE_TYPE_MULTI
-
 export Queue
 
 type Queue
@@ -16,10 +11,15 @@ type Queue
     base_address :: Uint64
     doorbell_signal :: Signal
     size :: Uint32
-    group_segment_size :: Uint32
-    private_segment_size :: Uint32
     id :: Uint32
+
+	# Info for "hardware" queues
+    group_segment_size :: Nullable{Uint32}
+    private_segment_size :: Nullable{Uint32}
 	error_callback :: Nullable{Function}
+
+	# Info for "software" queues
+	region :: Nullable{Region}
 
     function Queue(q_ptr :: Ptr{hsa_queue_t})
         assert_runtime_alive()
@@ -47,7 +47,7 @@ type Queue
         q_bell = Signal(queue_info_doorbell_signal(q_ptr))
         q_size = queue_info_size(q_ptr)
 
-        q = new(q_ptr, true, q_typ, q_feat, q_base, q_bell, q_size, q_id, nothing, nothing)
+        q = new(q_ptr, true, q_typ, q_feat, q_base, q_bell, q_size, q_id, nothing, nothing, nothing, nothing)
 
         finalizer(q, queue_destroy)
 
@@ -57,8 +57,9 @@ type Queue
     end
 end
 
+# Constructor for Hardware Queues
 function Queue(a :: Agent, size;
-    typ :: hsa_queue_type_t = HSA_QUEUE_TYPE_SINGLE,
+    typ :: hsa_queue_type_t = QueueTypeSingle,
     error_callback = Nullable{Function}(),
 	group_segment_size = typemax(Uint32),
 	private_segment_size = typemax(Uint32))
@@ -75,6 +76,22 @@ function Queue(a :: Agent, size;
 	queue.error_callback = error_callback
 
 	return queue
+end
+
+# Constructor for Software Queues
+function Queue(r :: Region, size, doorbell_signal :: Signal;
+	typ :: hsa_queue_type_t = HSA_QUEUE_TYPE_SINGLE,
+	features :: Uint32 = HSA_QUEUE_FEATURE_AGENT_DISPATCH)
+
+	size = convert(Uint32, size)
+
+	h = HSA.soft_queue_create(r, size, typ, features, doorbell_signal)
+
+	q = Queue(h)
+
+	q.region = r
+
+	return q
 end
 
 import Base.getindex
@@ -130,16 +147,29 @@ function queue_create(a :: Agent, size :: Uint32, typ :: hsa_queue_type_t;
 	private_segment_size = typemax(Uint32),
 	group_segment_size = typemax(Uint32))
 
-    res = Ptr{hsa_queue_t}[C_NULL]
+    res = Ref{Ptr{hsa_queue_t}}(C_NULL)
     cb_ptr = (register_callback) ? queue_err_cb_ptr : C_NULL
 	cb_data_ptr = C_NULL
 
     err = ccall((:hsa_queue_create, libhsa), hsa_status_t, (hsa_agent_t, Uint32, hsa_queue_type_t, Ptr{Void}, Ptr{Void}, Uint32, Uint32, Ptr{Ptr{hsa_queue_t}}),
-                a.handle, size, typ, cb_ptr, cb_data_ptr, private_segment_size, group_segment_size, res)
+                a, size, typ, cb_ptr, cb_data_ptr, private_segment_size, group_segment_size, res)
 
     test_status(err)
 
-    return res[1]
+    return res.x
+end
+
+function soft_queue_create(r :: Region, size :: Uint32, typ :: hsa_queue_type_t,
+	features :: Uint32, doorbell_signal :: Signal)
+
+    res = Ref{Ptr{hsa_queue_t}}(C_NULL)
+
+    err = ccall((:hsa_soft_queue_create, libhsa), hsa_status_t, (hsa_region_t, Uint32, hsa_queue_type_t, Uint32, hsa_signal_t, Ptr{Ptr{hsa_queue_t}}),
+                r.handle, size, typ, features, doorbell_signal, res)
+
+    test_status(err)
+
+    return res.x
 end
 
 function queue_destroy(q :: Queue)

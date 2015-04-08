@@ -1,19 +1,3 @@
-export PacketTypeVendorSpecific, PacketTypeInvalid, PacketTypeKernelDispatch,
-    PacketTypeBarrierAndAnd, PacketTypeAgentDispatch, PacketTypeBarrierAndOr
-
-const PacketTypeVendorSpecific =  convert(Uint8, HSA_PACKET_TYPE_VENDOR_SPECIFIC)
-const PacketTypeInvalid = convert(Uint8, HSA_PACKET_TYPE_INVALID)
-const PacketTypeKernelDispatch = convert(Uint8, HSA_PACKET_TYPE_KERNEL_DISPATCH)
-const PacketTypeBarrierAnd = convert(Uint8, HSA_PACKET_TYPE_BARRIER_AND)
-const PacketTypeAgentDispatch = convert(Uint8, HSA_PACKET_TYPE_AGENT_DISPATCH)
-const PacketTypeBarrierAndOr = convert(Uint8, HSA_PACKET_TYPE_BARRIER_OR)
-
-export FenceScopeNone, FenceScopeAgent, FenceScopeSystem
-
-const FenceScopeNone = convert(Uint8, HSA_FENCE_SCOPE_NONE)
-const FenceScopeAgent = convert(Uint8, HSA_FENCE_SCOPE_AGENT)
-const FenceScopeSystem = convert(Uint8, HSA_FENCE_SCOPE_SYSTEM)
-
 export PacketHeader
 
 type PacketHeader
@@ -228,7 +212,7 @@ function unsafe_store!(ptr :: Ptr{Void}, dp :: KernelDispatchPacket)
     unsafe_store!(convert(Ptr{Uint64}, ptr + 32), dp.kernel_object_address)
     unsafe_store!(convert(Ptr{Uint64}, ptr + 40), dp.kernarg_address)
     unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0x00)    # Uint64 reserved
-    unsafe_store!(convert(Ptr{Uint64}, ptr + 56), dp.completion_signal)
+    unsafe_store!(convert(Ptr{Uint64}, ptr + 56), dp.completion_signal.handle)
 
     unsafe_store!(ptr, dp.header)
 end
@@ -246,7 +230,7 @@ type AgentDispatchPacket <: AQLPacket
 		return_address = 0,
 		header :: PacketHeader = PacketHeader(PacketTypeAgentDispatch),
 		args :: Array{Uint64,1} = Array(Uint64, 4),
-		completion_signal = 0
+		completion_signal = hsa_signal_t(0)
 		)
 
         assert(header.typ == PacketTypeAgentDispatch)
@@ -277,7 +261,7 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeAgentDispatch}}, ptr :: Pt
 		header = p_hdr,
 		return_address = p_retu,
 		args = Uint64[p_arg1, p_arg2, p_arg3, p_arg4],
-		completion_signal = p_comp)
+		completion_signal = hsa_signal_t(p_comp))
 end
 
 function unsafe_store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)
@@ -290,7 +274,7 @@ function unsafe_store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)
 		8 # Bytes
 		)
     unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0x0000000000000000)    # Uint64 reserved
-    unsafe_store!(convert(Ptr{Uint64}, ptr + 56), ad.completion_signal)
+    unsafe_store!(convert(Ptr{Uint64}, ptr + 56), ad.completion_signal.handle)
 
     unsafe_store!(ptr, ad.header)
 end

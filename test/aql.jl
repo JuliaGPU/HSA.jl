@@ -4,7 +4,7 @@ using FactCheck
 facts("AQL Packets") do
     # Little Endian!
     dispatch_bytes = Uint8[
-        HSA.PacketTypeDispatch,
+        HSA.PacketTypeKernelDispatch,
         (0x01 << 7) | # Barrier Bit
         (HSA.FenceScopeAgent << 5) | # Acquire Scope
         (HSA.FenceScopeSystem << 3), # Release Scope
@@ -65,7 +65,7 @@ facts("AQL Packets") do
     context("PacketHeader") do
         context("can be loaded") do
             header = HSA.unsafe_convert(HSA.PacketHeader, dispatch_ptr)
-            @fact header.typ => HSA.PacketTypeDispatch
+            @fact header.typ => HSA.PacketTypeKernelDispatch
             @fact header.barrier => true
             @fact header.acquire_fence_scope => HSA.FenceScopeAgent
             @fact header.release_fence_scope => HSA.FenceScopeSystem
@@ -105,8 +105,8 @@ facts("AQL Packets") do
 		end
 
 		context("Can be compared for equality") do
-			h1 = PacketHeader(HSA.PacketTypeDispatch)
-			h2 = PacketHeader(HSA.PacketTypeDispatch)
+			h1 = PacketHeader(HSA.PacketTypeKernelDispatch)
+			h2 = PacketHeader(HSA.PacketTypeKernelDispatch)
 
 			@fact isequal(h1, h2) => true
 		end
@@ -118,7 +118,7 @@ facts("AQL Packets") do
 
             @fact isa(dp, HSA.KernelDispatchPacket) => true
 
-            @fact dp.header.typ => HSA.PacketTypeDispatch
+            @fact dp.header.typ => HSA.PacketTypeKernelDispatch
             @fact dp.header.barrier => true
             @fact dp.header.acquire_fence_scope => HSA.FenceScopeAgent
             @fact dp.header.release_fence_scope => HSA.FenceScopeSystem

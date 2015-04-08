@@ -11,10 +11,9 @@ include("runtime.jl")
 include("agent.jl")
 include("signal.jl")
 include("aql.jl")
-include("queue.jl")
 include("memory.jl")
-
-include("ext_amd.jl")
+include("queue.jl")
+include("code.jl")
 
 include("binding/hsa_h.jl")
 include("binding.jl")

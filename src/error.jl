@@ -4,6 +4,8 @@ type HSAError <: Exception
     status::hsa_status_t
 end
 
+import Base.show
+
 function show(io::IO, e::HSAError)
     local message
     try
@@ -12,7 +14,7 @@ function show(io::IO, e::HSAError)
         message = sprint(show, ex)
     end
 
-    print(io, typeof(e), "(", e.status, "/", Int64(e.status), ") ", message)
+    print(io, typeof(e), "(", e.status, ") ", message)
 end
 
 function test_status(status::hsa_status_t)

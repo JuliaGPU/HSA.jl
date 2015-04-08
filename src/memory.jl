@@ -1,19 +1,12 @@
-export RegionSegmentGlobal, RegionSegmentPrivate, RegionSegmentGroup, RegionSegmentReadOnly
-
-const RegionSegmentGlobal = HSA_REGION_SEGMENT_GLOBAL
-const RegionSegmentReadOnly = HSA_REGION_SEGMENT_READONLY
-const RegionSegmentPrivate = HSA_REGION_SEGMENT_PRIVATE
-const RegionSegmentGroup = HSA_REGION_SEGMENT_GROUP
-
 export Region
 
 type Region
-	handle :: Uint64
+	handle :: hsa_region_t
 end
 
 import Base.convert
 
-convert(::Type{Uint64}, r::Region) = r.handle
+convert(::Type{hsa_region_t}, r::Region) = r.handle
 
 import Base.==
 
@@ -57,7 +50,7 @@ end
 
 getter(:hsa_region_get_info,
     (:region, :attribute, :value),
-    (hsa_region_t, hsa_region_info_t, Ptr{Void}),
+    (:hsa_region_t, :hsa_region_info_t, Ptr{Void}),
     Dict(
     :HSA_REGION_INFO_SEGMENT => hsa_region_segment_t,
     :HSA_REGION_INFO_GLOBAL_FLAGS => hsa_region_global_flag_t,
