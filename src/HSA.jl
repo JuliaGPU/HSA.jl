@@ -6,6 +6,7 @@ include("binding/custom.jl") # wrapper generators
 
 include("def.jl")
 include("util_iter.jl")
+include("util_macros.jl")
 include("error.jl")
 include("runtime.jl")
 include("agent.jl")
@@ -14,6 +15,7 @@ include("aql.jl")
 include("memory.jl")
 include("queue.jl")
 include("code.jl")
+include("ext_finalization.jl")
 
 include("binding/hsa_h.jl")
 include("binding.jl")

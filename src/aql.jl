@@ -103,7 +103,7 @@ type KernelDispatchPacket{N} <: AQLPacket
 			),
 		private_segment_size = 0,
 		group_segment_size = 0,
-		completion_signal = 0
+		completion_signal = hsa_signal_t(0)
 		)
 
 		if !isa(N, Uint8)

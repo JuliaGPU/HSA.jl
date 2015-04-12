@@ -206,16 +206,3 @@ import Base.unsafe_convert
 
 unsafe_convert(::Type{Ptr{hsa_queue_t}}, q::Queue) = q.handle
 
-field_getter(
-    :queue_info_,
-    hsa_queue_t,
-    Dict(
-        :type => (hsa_queue_type_t, 0),
-        :features => (hsa_queue_feature_t, 4),
-		:base_address => (Uint64, 8), # TODO handle ifdefs for machine_model/endianness
-        :doorbell_signal => (hsa_signal_t, 16),
-        :size => (Uint32, 24),
-		# Uint32 reserved
-        :id => (Uint32, 32),
-    )
-)

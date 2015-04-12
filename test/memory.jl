@@ -31,16 +31,17 @@ facts("Memory Management") do
 			a = agents[1]
 			regs = HSA.regions(a)
 
-			greg = find(x -> begin
-				seg = region_info_segment(x)
-				return seg == RegionSegmentGlobal
+			greg_idx = findfirst(x -> begin
+				seg = HSA.region_info_segment(x)
+				return seg == HSA.RegionSegmentGlobal
 			end, regs)
+			greg = regs[greg_idx]
 
 			@fact isa(greg, HSA.Region) => true
 
 			flags = HSA.region_info_global_flags(greg)
 
-			@fact (flags & HSA.HSA_REGION_GLOBAL_FLAG_KERNARG) => not 0
+			@fact (flags & HSA.HSA_REGION_GLOBAL_FLAG_KERNARG) => not(0)
 		end
 	end
 end

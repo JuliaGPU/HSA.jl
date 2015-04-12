@@ -17,8 +17,13 @@ function show(io::IO, e::HSAError)
     print(io, typeof(e), "(", e.status, ") ", message)
 end
 
-function test_status(status::hsa_status_t)
+function test_status(status::hsa_status_t; warn_only :: Bool = false)
     if status & HSA_STATUS_ERROR == HSA_STATUS_ERROR
-        throw(HSAError(status))
+		ex = HSAError(status)
+		if warn_only
+			warn(ex)
+		else
+            throw(ex)
+		end
     end
 end

@@ -54,7 +54,14 @@ end
 
 import Base.convert
 
+convert(::Type{hsa_signal_t}, s::Uint64) = hsa_signal_t(s)
+convert(::Type{Uint64}, s::hsa_signal_t) = s.handle
+
 convert(::Type{hsa_signal_t}, s::Signal) = s.handle
+convert(::Type{Uint64}, s::Signal) = s.handle.handle
+
+convert(::Type{Signal}, h :: Uint64) = Signal(hsa_signal_t(h))
+convert(::Type{Signal}, h :: hsa_signal_t) = Signal(h)
 
 import Base.get
 

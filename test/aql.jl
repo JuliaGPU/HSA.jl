@@ -134,7 +134,7 @@ facts("AQL Packets") do
             @fact dp.group_segment_size => 0x00000030
             @fact dp.kernel_object_address => 0x0000000000000001
             @fact dp.kernarg_address => 0x0000000000000002
-            @fact dp.completion_signal => 0x0000000000000010
+            @fact dp.completion_signal.handle => 0x0000000000000010
         end
 
         context("can be stored") do
@@ -163,7 +163,7 @@ facts("AQL Packets") do
 			@fact dp1.group_segment_size => 0
 			@fact dp1.kernel_object_address => 0
 			@fact dp1.kernarg_address => 0
-			@fact dp1.completion_signal => 0
+			@fact dp1.completion_signal.handle => 0
 		end
     end
 
@@ -184,7 +184,7 @@ facts("AQL Packets") do
 			@fact ad.arg[2] => 0x0000000000000004
 			@fact ad.arg[3] => 0x0000000000000001
 			@fact ad.arg[4] => 0x0000000000000002
-			@fact ad.completion_signal => 0x0000000000000100
+			@fact ad.completion_signal.handle => 0x0000000000000100
 		end
 
 		context("can be stored") do
@@ -211,7 +211,7 @@ facts("AQL Packets") do
 			@fact bp.dep_signal[3] => 0x0000000000000003
 			@fact bp.dep_signal[4] => 0x0000000000000004
 			@fact bp.dep_signal[5] => 0x0000000000000005
-			@fact bp.completion_signal => 0x0000000000000100
+			@fact bp.completion_signal.handle => 0x0000000000000100
 		end
 
 		context("can be stored") do

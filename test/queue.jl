@@ -1,35 +1,16 @@
 using HSA
 using FactCheck
 
-function get_testagent(agents)
-	spectre_idx = findfirst(a -> begin
-		name = HSA.agent_info_name(a)
-		# Creating queues for the CPU fails for some reason (Generic Error)
-		return startswith(name, "Spectre")
-	end, agents)
-	return agents[spectre_idx]
-end
-
-function get_softqueue(agent, s = HSA.Signal(value = 0), r_out = Ref{Nullable{HSA.Region}}())
-    regs = HSA.regions(agent)
-
-	gl_idx = findfirst(x -> begin
-        seg = HSA.region_info_segment(x)
-		if seg == HSA.RegionSegmentGlobal
-			flags = HSA.region_info_global_flags(x)
-
-			if (flags & HSA.RegionGlobalFlagKernarg) != 0
-				return true
-			end
+# Check if the packet headers in the buffers have been
+# initialized to "invalid" according to the spec
+function check_packetheaders(q)
+	for i = 1:q.size
+		hdr = HSA.unsafe_convert(PacketHeader, convert(Ptr{Void}, q.base_address + i))
+		@fact hdr.typ => HSA.PacketTypeInvalid "At Index $i"
+		if hdr.typ != HSA.PacketTypeInvalid
+			break
 		end
-		return false
-	end, regs)
-
-	gl_reg = regs[gl_idx]
-
-	r_out.x = gl_reg
-
-	return HSA.Queue(gl_reg, 0x04, s)
+	end
 end
 
 facts("A Queue") do
@@ -43,8 +24,14 @@ facts("A Queue") do
         q = get_softqueue(a,s,r)
 
 		@fact isa(q, Queue) => true
-		@fact q.doorbell_signal.handle.handle => s.handle.handle
+		@fact q.features & HSA.QueueFeatureAgentDispatch => HSA.QueueFeatureAgentDispatch
+
+		q_handle = q.doorbell_signal.handle.handle
+		s_handle = s.handle.handle
+		@fact q_handle => s_handle "$q_handle/$s_handle"
 		@fact q.region.value => r.x.value
+
+		check_packetheaders(q)
 	end
 
     @with_agents context("Can be created as hardware Queues") do
@@ -57,9 +44,14 @@ facts("A Queue") do
         @fact q.typ => anything
         @fact q.features => not((HSA.hsa_queue_feature_t)(0))
         @fact q.base_address => not(Uint64(0))
-        @fact q.doorbell_signal => anything
-        @fact q.size => max(a_minq, (Uint32)(4))
+        @fact isa(q.doorbell_signal, Signal) => true
+        @fact q.size => greater_than_or_equal(0x04) "Requested/Min/Actual QueueSize: 4/$a_minq/$(q.size)"
         @fact q.id => anything
+
+		# try to see if the signal is actually valid
+		HSA.store!(q.doorbell_signal, 1)
+
+		check_packetheaders(q)
     end
 
     @with_agents context("Can be destroyed") do
@@ -111,7 +103,9 @@ facts("A Queue") do
 		@fact q[2] => p
 	end
 
-	@with_agents context("Can submit new packets via push") do
+	# currently fails with a segmentation fault when accessing the
+	# doorbell signal because the runtime returns a broken software queue
+	@with_agents @pending context("Can submit new packets via push") do
 		a = get_testagent(agents)
 		q = get_softqueue(a)
 
