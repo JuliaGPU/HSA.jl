@@ -62,45 +62,6 @@ function all_agents(;
 	return agents
 end
 
-getter(:hsa_agent_get_info,
-    (:agent, :info, :data),
-    (:hsa_agent_t, :hsa_agent_info_t, Ptr{Void}),
-    Dict(
-    :HSA_AGENT_INFO_NAME => (String,64),
-    :HSA_AGENT_INFO_VENDOR_NAME => (String,64),
-    :HSA_AGENT_INFO_FEATURE => hsa_agent_feature_t,
-    :HSA_AGENT_INFO_MACHINE_MODEL => hsa_machine_model_t,
-    :HSA_AGENT_INFO_PROFILE => hsa_profile_t,
-    :HSA_AGENT_INFO_DEFAULT_FLOAT_ROUNDING_MODE => hsa_default_float_rounding_mode_t,
-    :HSA_AGENT_INFO_BASE_PROFILE_DEFAULT_FLOAT_ROUNDING_MODES => hsa_default_float_rounding_mode_t,
-    :HSA_AGENT_INFO_FAST_F16_OPERATION => Bool,
-    :HSA_AGENT_INFO_WAVEFRONT_SIZE => Uint32,
-    :HSA_AGENT_INFO_WORKGROUP_MAX_DIM => (Uint16, Uint16, Uint16),
-    :HSA_AGENT_INFO_WORKGROUP_MAX_SIZE => Uint32,
-    :HSA_AGENT_INFO_GRID_MAX_DIM => hsa_dim3_t,
-    :HSA_AGENT_INFO_GRID_MAX_SIZE => Uint32,
-    :HSA_AGENT_INFO_FBARRIER_MAX_SIZE => Uint32,
-    :HSA_AGENT_INFO_QUEUES_MAX => Uint32,
-    :HSA_AGENT_INFO_QUEUE_MIN_SIZE => Uint32,
-    :HSA_AGENT_INFO_QUEUE_MAX_SIZE => Uint32,
-    :HSA_AGENT_INFO_QUEUE_TYPE => hsa_queue_type_t,
-    :HSA_AGENT_INFO_NODE => Uint32,
-    :HSA_AGENT_INFO_DEVICE => hsa_device_type_t,
-    :HSA_AGENT_INFO_CACHE_SIZE => (Uint32, Uint32, Uint32, Uint32),
-    :HSA_AGENT_INFO_ISA => hsa_isa_t,
-	:HSA_AGENT_INFO_EXTENSIONS => (Uint8, 128),
-	:HSA_AGENT_INFO_VERSION_MAJOR => Uint16,
-	:HSA_AGENT_INFO_VERSION_MINOR => Uint16,
-    :HSA_EXT_AGENT_INFO_IMAGE1D_MAX_DIM => hsa_dim3_t,
-    :HSA_EXT_AGENT_INFO_IMAGE2D_MAX_DIM => hsa_dim3_t,
-    :HSA_EXT_AGENT_INFO_IMAGE3D_MAX_DIM => hsa_dim3_t,
-    :HSA_EXT_AGENT_INFO_IMAGE_ARRAY_MAX_SIZE => Uint32,
-    :HSA_EXT_AGENT_INFO_IMAGE_RD_MAX => Uint32,
-    :HSA_EXT_AGENT_INFO_IMAGE_RDWR_MAX => Uint32,
-    :HSA_EXT_AGENT_INFO_SAMPLER_MAX => Uint32,
-    )
-)
-
 type AgentInfo
 	agent :: Agent
 	name :: String

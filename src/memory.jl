@@ -47,18 +47,3 @@ function regions(a :: Agent)
 
 	return reg
 end
-
-getter(:hsa_region_get_info,
-    (:region, :attribute, :value),
-    (:hsa_region_t, :hsa_region_info_t, Ptr{Void}),
-    Dict(
-    :HSA_REGION_INFO_SEGMENT => hsa_region_segment_t,
-    :HSA_REGION_INFO_GLOBAL_FLAGS => hsa_region_global_flag_t,
-    :HSA_REGION_INFO_SIZE => Csize_t,
-    :HSA_REGION_INFO_ALLOC_MAX_SIZE => Csize_t,
-    :HSA_REGION_INFO_RUNTIME_ALLOC_ALLOWED => Bool,
-    :HSA_REGION_INFO_RUNTIME_ALLOC_GRANULE => Csize_t,
-    :HSA_REGION_INFO_RUNTIME_ALLOC_ALIGNMENT => Csize_t,
-    )
-)
-
