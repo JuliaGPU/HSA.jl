@@ -11,6 +11,7 @@ type Queue
     base_address :: Uint64
     doorbell_signal :: Signal
     size :: Uint32
+	size_mask :: Uint32
     id :: Uint32
 
 	# Info for "hardware" queues
@@ -46,8 +47,9 @@ type Queue
         q_base = queue_info_base_address(q_ptr)
         q_bell = Signal(queue_info_doorbell_signal(q_ptr))
         q_size = queue_info_size(q_ptr)
+		q_size_mask = q_size - 1
 
-        q = new(q_ptr, true, q_typ, q_feat, q_base, q_bell, q_size, q_id, nothing, nothing, nothing, nothing)
+        q = new(q_ptr, true, q_typ, q_feat, q_base, q_bell, q_size, q_size_mask, q_id, nothing, nothing, nothing, nothing)
 
         finalizer(q, queue_destroy)
 
@@ -96,20 +98,32 @@ end
 
 import Base.getindex
 
+@doc """
+Retrieve a Packet at position `i` from the Queue. Indexing does not follow
+julia conventions (1-based indexing) but rather respects the indexing used in the API.
+(read/write indices)
+"""
 function getindex(q :: Queue, i)
-	assert(i > 0 && i <= q.size)
+	assert(i >= 0)
+	i = convert(Uint32, i)
 
-	p_ptr = convert(Ptr{Void}, q.base_address + 64 * (i - 1))
+	p_ptr = convert(Ptr{Void}, q.base_address + 64 * (i & q.size_mask))
 
 	return unsafe_convert(AQLPacket, p_ptr)
 end
 
 import Base.setindex!
 
+@doc """
+Write a Packet to the Queue at position `i`. Indexing does not follow
+julia conventions (1-based indexing) but rather respects the indexing used in the API.
+(read/write indices)
+"""
 function setindex!(q :: Queue, p :: AQLPacket, i)
-	assert(i > 0 && i <= q.size)
+	assert(i >= 0)
+	i = convert(Uint32, i)
 
-	p_ptr = convert(Ptr{Void}, q.base_address + 64 * (i - 1))
+	p_ptr = convert(Ptr{Void}, q.base_address + 64 * (i & q.size_mask))
 
 	unsafe_store!(p_ptr, p)
 end

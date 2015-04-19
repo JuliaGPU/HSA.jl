@@ -96,11 +96,11 @@ facts("A Queue") do
 		q = HSA.Queue(a, 0x04)
 	    p = HSA.AgentDispatchPacket(0x8000)
 
-		@fact_throws q[q.size + 1] = p
+		q[q.size] = p
+		@fact q[0] => p
+		@fact q[q.size] => p
 		q[1] = p
 		@fact q[1] => p
-		q[2] = p
-		@fact q[2] => p
 	end
 
 	# currently fails with a segmentation fault when accessing the
