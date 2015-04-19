@@ -1,4 +1,4 @@
-# Julia wrapper for header: ../../runtime/include/hsa.h
+# Julia wrapper for header: /home/strollinger/hsa/runtime/include/hsa.h
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
@@ -843,7 +843,167 @@ function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 
     test_status(err) # line 71:
     value = ascii(value)
 end
-# Julia wrapper for header: ../../runtime/include/hsa_ext_finalize.h
+
+function executable_symbol_info_indirect_function_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_linkage(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_symbol_kind_linkage_t}(Base.zero(hsa_symbol_kind_linkage_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_kernarg_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    begin 
+        len = executable_symbol_info_type(symbol)
+        value = Array(Uint8,len)
+    end # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:
+    test_status(err) # line 71:
+    value = ascii(value)
+end
+
+function executable_symbol_info_kernel_group_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_allocation(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_variable_allocation_t}(Base.zero(hsa_variable_allocation_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_module_name_length(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_dynamic_callstack(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{Bool}(Base.zero(Bool)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_is_definition(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{Bool}(Base.zero(Bool)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_alignment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_segment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_variable_segment_t}(Base.zero(hsa_variable_segment_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_kernarg_segment_alignment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_type(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_symbol_kind_t}(Base.zero(hsa_symbol_kind_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_TYPE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_module_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    begin 
+        len = executable_symbol_info_module_name_length(symbol)
+        value = Array(Uint8,len)
+    end # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # line 69:
+    test_status(err) # line 71:
+    value = ascii(value)
+end
+
+function executable_symbol_info_variable_address(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_private_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_agent(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_agent_t}(Base.zero(hsa_agent_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_AGENT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_name_length(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_is_const(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{Bool}(Base.zero(Bool)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_indirect_function_call_convention(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+# Julia wrapper for header: /home/strollinger/hsa/runtime/include/hsa_ext_finalize.h
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
@@ -1712,7 +1872,167 @@ function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 
     test_status(err) # line 71:
     value = ascii(value)
 end
-# Julia wrapper for header: ../../runtime/include/hsa_ext_image.h
+
+function executable_symbol_info_indirect_function_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_linkage(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_symbol_kind_linkage_t}(Base.zero(hsa_symbol_kind_linkage_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_kernarg_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    begin 
+        len = executable_symbol_info_type(symbol)
+        value = Array(Uint8,len)
+    end # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:
+    test_status(err) # line 71:
+    value = ascii(value)
+end
+
+function executable_symbol_info_kernel_group_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_allocation(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_variable_allocation_t}(Base.zero(hsa_variable_allocation_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_module_name_length(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_dynamic_callstack(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{Bool}(Base.zero(Bool)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_is_definition(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{Bool}(Base.zero(Bool)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_alignment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_segment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_variable_segment_t}(Base.zero(hsa_variable_segment_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_kernarg_segment_alignment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_type(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_symbol_kind_t}(Base.zero(hsa_symbol_kind_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_TYPE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_module_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    begin 
+        len = executable_symbol_info_module_name_length(symbol)
+        value = Array(Uint8,len)
+    end # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # line 69:
+    test_status(err) # line 71:
+    value = ascii(value)
+end
+
+function executable_symbol_info_variable_address(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_private_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_agent(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_agent_t}(Base.zero(hsa_agent_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_AGENT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_name_length(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_is_const(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{Bool}(Base.zero(Bool)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_indirect_function_call_convention(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+# Julia wrapper for header: /home/strollinger/hsa/runtime/include/hsa_ext_image.h
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
@@ -2600,4 +2920,164 @@ function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 
     err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME,Base.zero(UInt32),value) # line 69:
     test_status(err) # line 71:
     value = ascii(value)
+end
+
+function executable_symbol_info_indirect_function_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_linkage(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_symbol_kind_linkage_t}(Base.zero(hsa_symbol_kind_linkage_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_kernarg_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    begin 
+        len = executable_symbol_info_type(symbol)
+        value = Array(Uint8,len)
+    end # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:
+    test_status(err) # line 71:
+    value = ascii(value)
+end
+
+function executable_symbol_info_kernel_group_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_allocation(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_variable_allocation_t}(Base.zero(hsa_variable_allocation_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_module_name_length(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_dynamic_callstack(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{Bool}(Base.zero(Bool)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_is_definition(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{Bool}(Base.zero(Bool)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_alignment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_segment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_variable_segment_t}(Base.zero(hsa_variable_segment_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_kernarg_segment_alignment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_type(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_symbol_kind_t}(Base.zero(hsa_symbol_kind_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_TYPE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_module_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    begin 
+        len = executable_symbol_info_module_name_length(symbol)
+        value = Array(Uint8,len)
+    end # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # line 69:
+    test_status(err) # line 71:
+    value = ascii(value)
+end
+
+function executable_symbol_info_variable_address(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_kernel_private_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_agent(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_agent_t}(Base.zero(hsa_agent_t)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_AGENT,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_name_length(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_variable_is_const(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{Bool}(Base.zero(Bool)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_symbol_info_indirect_function_call_convention(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
 end

@@ -319,6 +319,39 @@ push!(getters,
 	    )
 	)
 )
+
+push!(getters,
+    GetterSpec(
+	    :hsa_executable_symbol_get_info,
+        (:symbol, :attribute, :value),
+	    (:hsa_executable_symbol_t, :hsa_executable_symbol_info_t, Ptr{Void}),
+	    result_specs = Dict(
+			:HSA_EXECUTABLE_SYMBOL_INFO_TYPE=> ResultSpec(:hsa_symbol_kind_t),
+			:HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH => ResultSpec(Uint32),
+			:HSA_EXECUTABLE_SYMBOL_INFO_NAME=> ResultSpec(String, :HSA_EXECUTABLE_SYMBOL_INFO_TYPE),
+			:HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH => ResultSpec(Uint32),
+			:HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME=> ResultSpec(String, :HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH),
+			:HSA_EXECUTABLE_SYMBOL_INFO_AGENT => ResultSpec(:hsa_agent_t),
+			:HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS=> ResultSpec(Uint64),
+			:HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE=> ResultSpec(:hsa_symbol_kind_linkage_t),
+			:HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION => ResultSpec(Bool),
+			:HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION => ResultSpec(:hsa_variable_allocation_t),
+			:HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT => ResultSpec(:hsa_variable_segment_t),
+			:HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT => ResultSpec(Uint32),
+			:HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE=> ResultSpec(Uint32),
+			:HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST => ResultSpec(Bool),
+			:HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT => ResultSpec(Uint64),
+			:HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE => ResultSpec(Uint32),
+			:HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT => ResultSpec(Uint32),
+			:HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE=> ResultSpec(Uint32),
+			:HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE=> ResultSpec(Uint32),
+			:HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK=> ResultSpec(Bool),
+			:HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT => ResultSpec(Uint32),
+			:HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION => ResultSpec(Uint32)
+	    )
+	)
+)
+
 function gen_getters(obuf)
 	for spec in getters
 		for m_key in keys(spec.result_specs)
