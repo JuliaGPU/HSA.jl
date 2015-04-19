@@ -1,12 +1,11 @@
 export Region
 
-type Region
-	handle :: hsa_region_t
-end
+typealias Region hsa_region_t
 
 import Base.convert
 
-convert(::Type{hsa_region_t}, r::Region) = r.handle
+convert(::Type{Uint64}, r::Region) = r.handle
+convert(::Type{Region}, r::Uint64) = Region(r)
 
 import Base.==
 
@@ -46,4 +45,31 @@ function regions(a :: Agent)
 		end)
 
 	return reg
+end
+
+function memory_register(
+	ptr,
+	size)
+
+	err = ccall((:hsa_memory_register, libhsa), hsa_status_t, (Ptr{Void}, Csize_t),
+	ptr, size)
+
+	test_status(err)
+end
+
+function memory_allocate(
+	region,
+	size)
+
+	res = Ref{Ptr{Void}}(0)
+
+	err = ccall((:hsa_memory_allocate, libhsa), hsa_status_t, (
+	hsa_region_t,
+	Csize_t,
+	Ptr{Ptr{Void}}),
+	region, size, res)
+
+	test_status(err)
+
+	return res.x
 end
