@@ -1,5 +1,3 @@
-export WaitShort, WaitLong, WaitUnknown
-
 const signal_by_id = Dict{Uint64, WeakRef}()
 
 export Signal
