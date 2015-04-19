@@ -132,7 +132,7 @@ facts("AQL Packets") do
 			@fact dp.grid_size_z => 0x00000010
             @fact dp.private_segment_size => 0x00000020
             @fact dp.group_segment_size => 0x00000030
-            @fact dp.kernel_object_address => 0x0000000000000001
+            @fact dp.kernel_object => 0x0000000000000001
             @fact dp.kernarg_address => 0x0000000000000002
             @fact dp.completion_signal.handle => 0x0000000000000010
         end
@@ -161,7 +161,7 @@ facts("AQL Packets") do
 			@fact dp1.grid_size_z => 1
 			@fact dp1.private_segment_size => 0
 			@fact dp1.group_segment_size => 0
-			@fact dp1.kernel_object_address => 0
+			@fact dp1.kernel_object => 0
 			@fact dp1.kernarg_address => 0
 			@fact dp1.completion_signal.handle => 0
 		end

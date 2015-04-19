@@ -90,7 +90,7 @@ type KernelDispatchPacket{N} <: AQLPacket
     grid_size_z :: Uint32
     private_segment_size :: Uint32
     group_segment_size :: Uint32
-    kernel_object_address :: Uint64
+    kernel_object :: Uint64
     kernarg_address :: Uint64
     completion_signal :: hsa_signal_t
 
@@ -152,7 +152,7 @@ type KernelDispatchPacket{N} <: AQLPacket
 			grid_size[3],
 			private_segment_size, # private_segment_size
 			group_segment_size, # group_segment_size
-			0, # kernel_object_address
+			0, # kernel_object
 			0, # kernarg_address
 			completion_signal, # completion_signal
 		)
@@ -188,7 +188,7 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeKernelDispatch}}, ptr :: P
 		group_segment_size = p_gseg_size,
 		completion_signal = p_comp_sign
 		)
-	res.kernel_object_address = p_kobj_addr
+	res.kernel_object = p_kobj_addr
 	res.kernarg_address = p_karg_addr
 
     return res
@@ -209,7 +209,7 @@ function unsafe_store!(ptr :: Ptr{Void}, dp :: KernelDispatchPacket)
     unsafe_store!(convert(Ptr{Uint32}, ptr + 20), dp.grid_size_z)
     unsafe_store!(convert(Ptr{Uint32}, ptr + 24), dp.private_segment_size)
     unsafe_store!(convert(Ptr{Uint32}, ptr + 28), dp.group_segment_size)
-    unsafe_store!(convert(Ptr{Uint64}, ptr + 32), dp.kernel_object_address)
+    unsafe_store!(convert(Ptr{Uint64}, ptr + 32), dp.kernel_object)
     unsafe_store!(convert(Ptr{Uint64}, ptr + 40), dp.kernarg_address)
     unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0x00)    # Uint64 reserved
     unsafe_store!(convert(Ptr{Uint64}, ptr + 56), dp.completion_signal.handle)
