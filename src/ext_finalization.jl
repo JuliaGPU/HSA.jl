@@ -69,4 +69,36 @@ function program_add_module(program, mod)
 	HSA.test_status(err)
 end
 
+function program_finalize(program, isa, call_convention;
+	control_directives = nothing,
+	options = nothing,
+	code_object_type = HSA.HSA_CODE_OBJECT_TYPE_PROGRAM)
+
+	if control_directives == nothing
+		control_directives = zero(HSA.hsa_ext_control_directives_t)
+	end
+
+	if options == nothing || options == ""
+        options = C_NULL
+	else
+		options = ascii(options)
+	end
+
+	res = Ref{HSA.hsa_code_object_t}(HSA.hsa_code_object_t(0))
+
+	err = ccall((:hsa_ext_program_finalize, HSA.libhsa), HSA.hsa_status_t, (
+	HSA.hsa_ext_program_t,
+	HSA.hsa_isa_t,
+	Int32,
+	HSA.hsa_ext_control_directives_t,
+	Ptr{Cchar},
+	HSA.hsa_code_object_type_t,
+	Ptr{HSA.hsa_code_object_t}),
+	program, isa, call_convention, control_directives, options, code_object_type, res)
+
+	HSA.test_status(err)
+
+	return res.x
+end
+
 end

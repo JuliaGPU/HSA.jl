@@ -1,4 +1,4 @@
-# Julia wrapper for header: /home/strollinger/hsa/runtime/include/hsa.h
+# Julia wrapper for header: /opt/hsa/include/hsa.h
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
@@ -844,6 +844,20 @@ function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 
     value = ascii(value)
 end
 
+function executable_info_state(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_executable_state_t}(Base.zero(hsa_executable_state_t)) # line 67:
+    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_STATE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_info_profile(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # line 67:
+    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_PROFILE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
 function executable_symbol_info_indirect_function_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
     value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT,value) # line 69:
@@ -1003,7 +1017,7 @@ function executable_symbol_info_indirect_function_call_convention(symbol) # /hom
     test_status(err) # line 71:
     value = value.x
 end
-# Julia wrapper for header: /home/strollinger/hsa/runtime/include/hsa_ext_finalize.h
+# Julia wrapper for header: /opt/hsa/include/hsa_ext_finalize.h
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
@@ -1873,6 +1887,20 @@ function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 
     value = ascii(value)
 end
 
+function executable_info_state(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_executable_state_t}(Base.zero(hsa_executable_state_t)) # line 67:
+    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_STATE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_info_profile(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # line 67:
+    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_PROFILE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
 function executable_symbol_info_indirect_function_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
     value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT,value) # line 69:
@@ -2032,7 +2060,7 @@ function executable_symbol_info_indirect_function_call_convention(symbol) # /hom
     test_status(err) # line 71:
     value = value.x
 end
-# Julia wrapper for header: /home/strollinger/hsa/runtime/include/hsa_ext_image.h
+# Julia wrapper for header: /opt/hsa/include/hsa_ext_image.h
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
@@ -2920,6 +2948,20 @@ function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 
     err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME,Base.zero(UInt32),value) # line 69:
     test_status(err) # line 71:
     value = ascii(value)
+end
+
+function executable_info_state(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_executable_state_t}(Base.zero(hsa_executable_state_t)) # line 67:
+    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_STATE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
+end
+
+function executable_info_profile(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
+    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # line 67:
+    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_PROFILE,value) # line 69:
+    test_status(err) # line 71:
+    value = value.x
 end
 
 function executable_symbol_info_indirect_function_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:

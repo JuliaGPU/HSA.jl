@@ -322,6 +322,18 @@ push!(getters,
 
 push!(getters,
     GetterSpec(
+	    :hsa_executable_get_info,
+		(:executable, :attribute, :value),
+		(:hsa_executable_t, :hsa_executable_info_t, Ptr{Void}),
+		result_specs = Dict(
+			:HSA_EXECUTABLE_INFO_PROFILE => ResultSpec(:hsa_profile_t),
+			:HSA_EXECUTABLE_INFO_STATE => ResultSpec(:hsa_executable_state_t)
+		)
+	)
+)
+
+push!(getters,
+    GetterSpec(
 	    :hsa_executable_symbol_get_info,
         (:symbol, :attribute, :value),
 	    (:hsa_executable_symbol_t, :hsa_executable_symbol_info_t, Ptr{Void}),
