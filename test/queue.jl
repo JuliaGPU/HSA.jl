@@ -5,7 +5,7 @@ using FactCheck
 # initialized to "invalid" according to the spec
 function check_packetheaders(q)
 	for i = 1:q.size
-		hdr = HSA.unsafe_convert(PacketHeader, convert(Ptr{Void}, q.base_address + i))
+		hdr = HSA.unsafe_convert(PacketHeader, convert(Ptr{Void}, q.base_address + i * 64))
 		@fact hdr.typ => HSA.PacketTypeInvalid "At Index $i"
 		if hdr.typ != HSA.PacketTypeInvalid
 			break
