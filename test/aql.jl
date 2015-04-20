@@ -9,7 +9,7 @@ facts("AQL Packets") do
         (HSA.FenceScopeAgent << 5) | # Acquire Scope
         (HSA.FenceScopeSystem << 3), # Release Scope
         # Dispatch Packet
-        0x00, (0x03 << 6), # Dimensions - Reserved
+        0x03, 0x00, # setup (dimensions)
         0x0A, 0x00, # wg_s_x
         0x09, 0x00, # wg_s_y
         0x08, 0x00, # wg_s_z
@@ -25,6 +25,13 @@ facts("AQL Packets") do
         0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # completion_signal
     ]
     dispatch_ptr = convert(Ptr{Void}, pointer(dispatch_bytes))
+
+	dispatch_1d_bytes = copy(dispatch_bytes)
+	dispatch_1d_bytes[3] = 0x01
+	dispatch_1d_bytes[7] = 0x01
+	dispatch_1d_bytes[9] = 0x01
+
+	dispatch_1d_ptr = convert(Ptr{Void}, pointer(dispatch_1d_bytes))
 
 	agent_bytes = Uint8[
         HSA.PacketTypeAgentDispatch,
@@ -104,6 +111,15 @@ facts("AQL Packets") do
 			@fact ph2.release_fence_scope => HSA.FenceScopeNone
 		end
 
+		context("Can be copied") do
+			hdr1 = PacketHeader(HSA.PacketTypeInvalid)
+
+			hdr2 = copy(hdr1)
+
+			@fact hdr1 => hdr2
+			@fact object_id(hdr1) => not(object_id(hdr2))
+		end
+
 		context("Can be compared for equality") do
 			h1 = PacketHeader(HSA.PacketTypeKernelDispatch)
 			h2 = PacketHeader(HSA.PacketTypeKernelDispatch)
@@ -111,6 +127,31 @@ facts("AQL Packets") do
 			@fact isequal(h1, h2) => true
 		end
     end
+
+	context("VendorPackets") do
+
+
+	end
+
+	context("InvalidPackets") do
+		in_disp_bytes = copy(dispatch_bytes)
+		in_disp_bytes[1] = HSA.PacketTypeInvalid
+		in_disp_ptr = convert(Ptr{Void}, pointer(in_disp_bytes))
+
+		context("Can be loaded") do
+            p = HSA.unsafe_convert(HSA.AQLPacket, in_disp_ptr)
+
+			@fact isa(p, InvalidPacket) => true
+			@fact p.bytes => in_disp_bytes
+		end
+
+		context("Can be reinterpreted as a KernelDispatchPacket") do
+            p = HSA.unsafe_convert(HSA.AQLPacket, in_disp_ptr)
+			id = convert(KernelDispatchPacket, p)
+
+			@fact id.header.typ => HSA.PacketTypeInvalid
+		end
+	end
 
     context("KernelDispatchPackets") do
         context("can be loaded") do
@@ -135,6 +176,9 @@ facts("AQL Packets") do
             @fact dp.kernel_object => 0x0000000000000001
             @fact dp.kernarg_address => 0x0000000000000002
             @fact dp.completion_signal.handle => 0x0000000000000010
+
+			dp1d = HSA.unsafe_convert(HSA.AQLPacket, dispatch_1d_ptr)
+			@fact dp1d.dimensions => 0x0001
         end
 
         context("can be stored") do
@@ -148,10 +192,10 @@ facts("AQL Packets") do
         end
 
 		context("can be created in various ways") do
-            @fact_throws HSA.KernelDispatchPacket{0}()
-			@fact_throws HSA.KernelDispatchPacket{4}(1,2,3,4,5,6,7,8)
+            @fact_throws HSA.KernelDispatchPacket(0)
+			@fact_throws HSA.KernelDispatchPacket(4, 1,2,3,4,5,6,7,8)
 
-			dp1 = HSA.KernelDispatchPacket{1}(2)
+			dp1 = HSA.KernelDispatchPacket(1,2)
 			@fact dp1.dimensions => 1
 			@fact dp1.workgroup_size_x => 1
 			@fact dp1.workgroup_size_y => 1

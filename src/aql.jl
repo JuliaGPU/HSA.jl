@@ -61,6 +61,12 @@ function unsafe_store!(ptr :: Ptr{Void}, hdr :: PacketHeader)
     unsafe_store!(h_ptr, hdr.typ)
 end
 
+import Base.copy
+
+function copy(hdr :: PacketHeader)
+	return PacketHeader(hdr.typ, hdr.barrier, hdr.acquire_fence_scope, hdr.release_fence_scope)
+end
+
 abstract AQLPacket
 
 import Base.==
@@ -79,7 +85,7 @@ end
 
 export KernelDispatchPacket
 
-type KernelDispatchPacket{N} <: AQLPacket
+type KernelDispatchPacket <: AQLPacket
     header :: PacketHeader
     dimensions :: Uint16
     workgroup_size_x :: Uint16
@@ -94,7 +100,9 @@ type KernelDispatchPacket{N} <: AQLPacket
     kernarg_address :: Uint64
     completion_signal :: hsa_signal_t
 
-    function KernelDispatchPacket(sizes::Integer...;
+    function KernelDispatchPacket(
+		dimension :: Integer,
+		sizes::Integer...;
 		header :: PacketHeader = PacketHeader(
 				PacketTypeKernelDispatch,
 				barrier = false,
@@ -106,44 +114,35 @@ type KernelDispatchPacket{N} <: AQLPacket
 		completion_signal = hsa_signal_t(0)
 		)
 
-		if !isa(N, Uint8)
-			newN = convert(Uint8, N)
-			return KernelDispatchPacket{newN}(
-			sizes...;
-			header = header,
-			private_segment_size = private_segment_size,
-			group_segment_size = group_segment_size,
-			completion_signal = completion_signal
-			)
-		end
-
-        if N < 1 || N > 3
-			error("dimensions out of range, expected 1-3, got $N")
+        if dimension < 1 || dimension > 3
+			error("dimensions out of range, expected 1-3, got $dimension")
 		end
 
 		argc = length(sizes)
 
-		if (argc != 2 * N) && (argc != N)
-			error("incorrect number of dimension arguments, expected either $N or $(2*N)")
+		if (argc > dimension) && (argc % 2 != 0)
+			error("incorrect number of dimension arguments, expected either $dimension or $(2*dimension) but got $argc")
 		end
+
+		argc_half = argc / 2
 
 		grid_size = [1,1,1]
 
-		for i = 1:N
+		for i = 1:dimension
 			grid_size[i] = sizes[i]
 		end
 
 		wg_size = [1,1,1]
 
-		if argc > N
-			for i = 1:N
-				wg_size[i] = sizes[N + i]
+		if argc > dimension
+			for i = 1:dimension
+				wg_size[i] = sizes[argc_half + i]
 			end
 		end
 
 		return new(
 		    header,
-			N, # dimensions
+			dimension, # dimensions
 			wg_size[1],
 			wg_size[2],
 			wg_size[3],
@@ -164,7 +163,7 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeKernelDispatch}}, ptr :: P
         error("invalid packet pointer")
     end
 
-    p_dims = unsafe_load(convert(Ptr{Uint16}, ptr + 2)) >> 14
+    p_dims = unsafe_load(convert(Ptr{Uint16}, ptr + 2)) & 0x03
     p_wg_x = unsafe_load(convert(Ptr{Uint16}, ptr + 4))
     p_wg_y = unsafe_load(convert(Ptr{Uint16}, ptr + 6))
     p_wg_z = unsafe_load(convert(Ptr{Uint16}, ptr + 8))
@@ -180,7 +179,8 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeKernelDispatch}}, ptr :: P
     # Uint64 reserved
     p_comp_sign = unsafe_load(convert(Ptr{hsa_signal_t}, ptr + 56))
 
-    res = KernelDispatchPacket{p_dims}(
+    res = KernelDispatchPacket(
+	    p_dims,
 	    p_gr_x, p_gr_y, p_gr_z,
 	    p_wg_x, p_wg_y, p_wg_z;
 		header = p_hdr,
@@ -199,7 +199,7 @@ function unsafe_store!(ptr :: Ptr{Void}, dp :: KernelDispatchPacket)
 		error("not a dispatch packet")
 	end
 
-    unsafe_store!(convert(Ptr{Uint16}, ptr + 2), convert(Uint16, dp.dimensions) << 14)
+    unsafe_store!(convert(Ptr{Uint16}, ptr + 2), convert(Uint16, dp.dimensions))
     unsafe_store!(convert(Ptr{Uint16}, ptr + 4), dp.workgroup_size_x)
     unsafe_store!(convert(Ptr{Uint16}, ptr + 6), dp.workgroup_size_y)
     unsafe_store!(convert(Ptr{Uint16}, ptr + 8), dp.workgroup_size_z)
@@ -283,6 +283,7 @@ export BarrierPacket
 
 type BarrierPacket <: AQLPacket
     header :: PacketHeader
+	is_or :: Bool
     dep_signal :: Array{Uint64, 1}
     completion_signal :: hsa_signal_t
 end
@@ -294,7 +295,7 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeBarrierAnd}}, ptr :: Ptr{V
 	unsafe_copy!(p_dep_ptr, convert(Ptr{Uint64}, ptr + 8), 5)
 	p_comp = unsafe_load(convert(Ptr{Uint64}, ptr + 56))
 
-	return BarrierPacket(p_hdr, p_dep, p_comp)
+	return BarrierPacket(p_hdr, false, p_dep, p_comp)
 end
 
 function unsafe_store!(ptr :: Ptr{Void}, bp :: BarrierPacket)
@@ -311,6 +312,33 @@ function unsafe_store!(ptr :: Ptr{Void}, bp :: BarrierPacket)
 	unsafe_store!(convert(Ptr{Uint64}, ptr + 56), bp.completion_signal)
 
 	unsafe_store!(ptr, bp.header)
+end
+
+export InvalidPacket
+
+type InvalidPacket
+	header :: PacketHeader
+	bytes :: Array{Uint8, 1}
+
+	function InvalidPacket(hdr, bytes)
+		@assert hdr.typ == HSA.PacketTypeInvalid
+		@assert length(bytes) == 64
+
+		return new(hdr, bytes)
+	end
+end
+
+function load(::Type{AQLPacket}, ::Type{Val{PacketTypeInvalid}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
+	bytes = Array(Uint8, 64)
+
+	unsafe_copy!(pointer(bytes), convert(Ptr{Uint8}, ptr), 64)
+
+    return InvalidPacket(p_hdr, bytes)
+end
+
+function convert(::Type{KernelDispatchPacket}, p :: InvalidPacket)
+	ptr = convert(Ptr{Void}, pointer(p.bytes))
+	return load(AQLPacket, Val{PacketTypeKernelDispatch}, ptr, p.header)
 end
 
 function unsafe_convert(::Type{AQLPacket}, ptr :: Ptr{Void})
