@@ -19,3 +19,10 @@ macro use(init :: Expr, block)
 	end
 end
 
+export @dbgmacro
+
+macro dbgmacro(block)
+	expanded = macroexpand(block)
+	println(expanded)
+	return esc(expanded)
+end
