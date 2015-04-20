@@ -10,5 +10,6 @@ include("queue.jl")
 include("aql.jl")
 include("memory.jl")
 include("ext_finalization.jl")
+include("code.jl")
 
 end
