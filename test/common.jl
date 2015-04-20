@@ -1,6 +1,6 @@
 NewRT() = HSA.Runtime()
 
-function get_testagent(agents)
+function get_testagent(agents = HSA.all_agents())
 	spectre_idx = findfirst(a -> begin
 		name = HSA.agent_info_name(a)
 		# Creating queues for the CPU fails for some reason (Generic Error)
