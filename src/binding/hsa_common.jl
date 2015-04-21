@@ -1123,7 +1123,7 @@ function agent_info_profile(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl
 end
 
 function agent_info_cache_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{(UInt32,UInt32,UInt32,UInt32)}(Base.zero((UInt32,UInt32,UInt32,UInt32))) # line 67:
+    value = Ref{Tuple{UInt32,UInt32,UInt32,UInt32}}(Base.zero(Tuple{UInt32,UInt32,UInt32,UInt32})) # line 67:
     err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_CACHE_SIZE,value) # line 69:
     test_status(err) # line 71:
     value = value.x
@@ -1196,7 +1196,7 @@ function agent_info_version_major(agent) # /home/strollinger/hsa/jl/gen/gen_gett
 end
 
 function agent_info_workgroup_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{(UInt16,UInt16,UInt16)}(Base.zero((UInt16,UInt16,UInt16))) # line 67:
+    value = Ref{Tuple{UInt16,UInt16,UInt16}}(Base.zero(Tuple{UInt16,UInt16,UInt16})) # line 67:
     err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_DIM,value) # line 69:
     test_status(err) # line 71:
     value = value.x

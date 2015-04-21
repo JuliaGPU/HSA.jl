@@ -89,7 +89,7 @@ facts("The Agents") do
 
             wg_dim = HSA.agent_info_workgroup_max_dim(a)
 	        @fact wg_dim => anything
-            @fact typeof(wg_dim) => (Uint16, Uint16, Uint16)
+            @fact typeof(wg_dim) => Tuple{Uint16, Uint16, Uint16}
 
 	        @fact HSA.agent_info_workgroup_max_size(a) => anything
 	        @fact HSA.agent_info_grid_max_dim(a) => anything

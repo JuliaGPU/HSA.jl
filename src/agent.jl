@@ -68,7 +68,7 @@ type AgentInfo
 	vendor_name :: String
 	feature :: hsa_agent_feature_t
     wavefront_size :: Uint32
-	workgroup_max_dim :: (Uint16, Uint16, Uint16)
+	workgroup_max_dim :: Tuple{Uint16, Uint16, Uint16}
 	workgroup_max_size :: Uint32
 	grid_max_dim :: hsa_dim3_t
 	grid_max_size :: Uint32
@@ -78,7 +78,7 @@ type AgentInfo
 	queue_type :: hsa_queue_type_t
 	node :: Uint32
 	device :: hsa_device_type_t
-	cache_size :: (Uint32,Uint32,Uint32,Uint32)
+	cache_size :: Tuple{Uint32,Uint32,Uint32,Uint32}
 end
 
 function AgentInfo(a :: Agent)
