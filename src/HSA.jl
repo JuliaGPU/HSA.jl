@@ -15,9 +15,20 @@ include("aql.jl")
 include("memory.jl")
 include("queue.jl")
 include("code.jl")
+
+if libhsaext != ""
+include("ext_def.jl")
 include("ext_finalization.jl")
+end
 
 include("binding/hsa_h.jl")
 include("binding.jl")
+
+# julia codegen integration
+if isdefined(Base, :HSA_TARGET)
+include("reflection.jl")
+include("execution.jl")
+include("intrinsics.jl")
+end
 
 end
