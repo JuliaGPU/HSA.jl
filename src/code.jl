@@ -51,10 +51,14 @@ end
 
 function executable_get_symbol(
 	executable,
-	module_name,
-	symbol_name,
-	agent,
-	call_convention)
+	symbol_name;
+	module_name = "",
+	agent = hsa_agent_t(0),
+	call_convention = 0)
+
+	if module_name == "" || module_name == nothing
+		module_name = C_NULL
+	end
 
 	res = Ref{hsa_executable_symbol_t}(hsa_executable_symbol_t(0))
 
@@ -70,4 +74,33 @@ function executable_get_symbol(
 	test_status(err)
 
 	return res.x
+end
+
+const executable_iterate_symbols_cb_ptr = cfunction(iterate_cb, hsa_status_t, (hsa_executable_t, hsa_executable_symbol_t, Ptr{Void}))
+
+function executable_iterate_symbols(executable, cb::Function)
+	convert_cb = function(ex, sym)
+		name = HSA.executable_symbol_info_name(sym)
+		cb(ex, sym, name)
+	end
+	state = IterState(convert_cb)
+
+	state_ptr = pointer_from_objref(state)
+
+	err = ccall((:hsa_executable_iterate_symbols, libhsa), hsa_status_t, (hsa_executable_t, Ptr{Void}, Ptr{Void}),
+	            executable, executable_iterate_symbols_cb_ptr, state_ptr)
+
+	if !isnull(state.err)
+		rethrow(state.err.value)
+	end
+
+	test_status(err)
+end
+
+function symbols(executable::Executable)
+	res = []
+
+	executable_iterate_symbols(executable, (ex, sym, name) -> push!(res, (sym, name)))
+
+	return res
 end
