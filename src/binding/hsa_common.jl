@@ -4,32 +4,32 @@ using Compat
 
 # begin enum hsa_status_t
 typealias hsa_status_t Uint32
-const HSA_STATUS_SUCCESS = @compat (UInt32)(0)
-const HSA_STATUS_INFO_BREAK = @compat (UInt32)(1)
-const HSA_STATUS_ERROR = @compat (UInt32)(4096)
-const HSA_STATUS_ERROR_INVALID_ARGUMENT = @compat (UInt32)(4097)
-const HSA_STATUS_ERROR_INVALID_QUEUE_CREATION = @compat (UInt32)(4098)
-const HSA_STATUS_ERROR_INVALID_ALLOCATION = @compat (UInt32)(4099)
-const HSA_STATUS_ERROR_INVALID_AGENT = @compat (UInt32)(4100)
-const HSA_STATUS_ERROR_INVALID_REGION = @compat (UInt32)(4101)
-const HSA_STATUS_ERROR_INVALID_SIGNAL = @compat (UInt32)(4102)
-const HSA_STATUS_ERROR_INVALID_QUEUE = @compat (UInt32)(4103)
-const HSA_STATUS_ERROR_OUT_OF_RESOURCES = @compat (UInt32)(4104)
-const HSA_STATUS_ERROR_INVALID_PACKET_FORMAT = @compat (UInt32)(4105)
-const HSA_STATUS_ERROR_RESOURCE_FREE = @compat (UInt32)(4106)
-const HSA_STATUS_ERROR_NOT_INITIALIZED = @compat (UInt32)(4107)
-const HSA_STATUS_ERROR_REFCOUNT_OVERFLOW = @compat (UInt32)(4108)
-const HSA_STATUS_ERROR_INCOMPATIBLE_ARGUMENTS = @compat (UInt32)(4109)
-const HSA_STATUS_ERROR_INVALID_INDEX = @compat (UInt32)(4110)
-const HSA_STATUS_ERROR_INVALID_ISA = @compat (UInt32)(4111)
-const HSA_STATUS_ERROR_INVALID_ISA_NAME = @compat (UInt32)(4119)
-const HSA_STATUS_ERROR_INVALID_CODE_OBJECT = @compat (UInt32)(4112)
-const HSA_STATUS_ERROR_INVALID_EXECUTABLE = @compat (UInt32)(4113)
-const HSA_STATUS_ERROR_FROZEN_EXECUTABLE = @compat (UInt32)(4114)
-const HSA_STATUS_ERROR_INVALID_SYMBOL_NAME = @compat (UInt32)(4115)
-const HSA_STATUS_ERROR_VARIABLE_ALREADY_DEFINED = @compat (UInt32)(4116)
-const HSA_STATUS_ERROR_VARIABLE_UNDEFINED = @compat (UInt32)(4117)
-const HSA_STATUS_ERROR_EXCEPTION = @compat (UInt32)(4118)
+const HSA_STATUS_SUCCESS = (UInt32)(0)
+const HSA_STATUS_INFO_BREAK = (UInt32)(1)
+const HSA_STATUS_ERROR = (UInt32)(4096)
+const HSA_STATUS_ERROR_INVALID_ARGUMENT = (UInt32)(4097)
+const HSA_STATUS_ERROR_INVALID_QUEUE_CREATION = (UInt32)(4098)
+const HSA_STATUS_ERROR_INVALID_ALLOCATION = (UInt32)(4099)
+const HSA_STATUS_ERROR_INVALID_AGENT = (UInt32)(4100)
+const HSA_STATUS_ERROR_INVALID_REGION = (UInt32)(4101)
+const HSA_STATUS_ERROR_INVALID_SIGNAL = (UInt32)(4102)
+const HSA_STATUS_ERROR_INVALID_QUEUE = (UInt32)(4103)
+const HSA_STATUS_ERROR_OUT_OF_RESOURCES = (UInt32)(4104)
+const HSA_STATUS_ERROR_INVALID_PACKET_FORMAT = (UInt32)(4105)
+const HSA_STATUS_ERROR_RESOURCE_FREE = (UInt32)(4106)
+const HSA_STATUS_ERROR_NOT_INITIALIZED = (UInt32)(4107)
+const HSA_STATUS_ERROR_REFCOUNT_OVERFLOW = (UInt32)(4108)
+const HSA_STATUS_ERROR_INCOMPATIBLE_ARGUMENTS = (UInt32)(4109)
+const HSA_STATUS_ERROR_INVALID_INDEX = (UInt32)(4110)
+const HSA_STATUS_ERROR_INVALID_ISA = (UInt32)(4111)
+const HSA_STATUS_ERROR_INVALID_ISA_NAME = (UInt32)(4119)
+const HSA_STATUS_ERROR_INVALID_CODE_OBJECT = (UInt32)(4112)
+const HSA_STATUS_ERROR_INVALID_EXECUTABLE = (UInt32)(4113)
+const HSA_STATUS_ERROR_FROZEN_EXECUTABLE = (UInt32)(4114)
+const HSA_STATUS_ERROR_INVALID_SYMBOL_NAME = (UInt32)(4115)
+const HSA_STATUS_ERROR_VARIABLE_ALREADY_DEFINED = (UInt32)(4116)
+const HSA_STATUS_ERROR_VARIABLE_UNDEFINED = (UInt32)(4117)
+const HSA_STATUS_ERROR_EXCEPTION = (UInt32)(4118)
 # end enum hsa_status_t
 
 type hsa_dim3_t
@@ -40,46 +40,46 @@ end
 
 # begin enum hsa_access_permission_t
 typealias hsa_access_permission_t Uint32
-const HSA_ACCESS_PERMISSION_RO = @compat (UInt32)(1)
-const HSA_ACCESS_PERMISSION_WO = @compat (UInt32)(2)
-const HSA_ACCESS_PERMISSION_RW = @compat (UInt32)(3)
+const HSA_ACCESS_PERMISSION_RO = (UInt32)(1)
+const HSA_ACCESS_PERMISSION_WO = (UInt32)(2)
+const HSA_ACCESS_PERMISSION_RW = (UInt32)(3)
 # end enum hsa_access_permission_t
 
 # begin enum hsa_endianness_t
 typealias hsa_endianness_t Uint32
-const HSA_ENDIANNESS_LITTLE = @compat (UInt32)(0)
-const HSA_ENDIANNESS_BIG = @compat (UInt32)(1)
+const HSA_ENDIANNESS_LITTLE = (UInt32)(0)
+const HSA_ENDIANNESS_BIG = (UInt32)(1)
 # end enum hsa_endianness_t
 
 # begin enum hsa_machine_model_t
 typealias hsa_machine_model_t Uint32
-const HSA_MACHINE_MODEL_SMALL = @compat (UInt32)(0)
-const HSA_MACHINE_MODEL_LARGE = @compat (UInt32)(1)
+const HSA_MACHINE_MODEL_SMALL = (UInt32)(0)
+const HSA_MACHINE_MODEL_LARGE = (UInt32)(1)
 # end enum hsa_machine_model_t
 
 # begin enum hsa_profile_t
 typealias hsa_profile_t Uint32
-const HSA_PROFILE_BASE = @compat (UInt32)(0)
-const HSA_PROFILE_FULL = @compat (UInt32)(1)
+const HSA_PROFILE_BASE = (UInt32)(0)
+const HSA_PROFILE_FULL = (UInt32)(1)
 # end enum hsa_profile_t
 
 # begin enum hsa_system_info_t
 typealias hsa_system_info_t Uint32
-const HSA_SYSTEM_INFO_VERSION_MAJOR = @compat (UInt32)(0)
-const HSA_SYSTEM_INFO_VERSION_MINOR = @compat (UInt32)(1)
-const HSA_SYSTEM_INFO_TIMESTAMP = @compat (UInt32)(2)
-const HSA_SYSTEM_INFO_TIMESTAMP_FREQUENCY = @compat (UInt32)(3)
-const HSA_SYSTEM_INFO_SIGNAL_MAX_WAIT = @compat (UInt32)(4)
-const HSA_SYSTEM_INFO_ENDIANNESS = @compat (UInt32)(5)
-const HSA_SYSTEM_INFO_MACHINE_MODEL = @compat (UInt32)(6)
-const HSA_SYSTEM_INFO_EXTENSIONS = @compat (UInt32)(7)
+const HSA_SYSTEM_INFO_VERSION_MAJOR = (UInt32)(0)
+const HSA_SYSTEM_INFO_VERSION_MINOR = (UInt32)(1)
+const HSA_SYSTEM_INFO_TIMESTAMP = (UInt32)(2)
+const HSA_SYSTEM_INFO_TIMESTAMP_FREQUENCY = (UInt32)(3)
+const HSA_SYSTEM_INFO_SIGNAL_MAX_WAIT = (UInt32)(4)
+const HSA_SYSTEM_INFO_ENDIANNESS = (UInt32)(5)
+const HSA_SYSTEM_INFO_MACHINE_MODEL = (UInt32)(6)
+const HSA_SYSTEM_INFO_EXTENSIONS = (UInt32)(7)
 # end enum hsa_system_info_t
 
 # begin enum hsa_extension_t
 typealias hsa_extension_t Uint32
-const HSA_EXTENSION_FINALIZER = @compat (UInt32)(0)
-const HSA_EXTENSION_IMAGES = @compat (UInt32)(1)
-const HSA_EXTENSION_AMD_PROFILER = @compat (UInt32)(2)
+const HSA_EXTENSION_FINALIZER = (UInt32)(0)
+const HSA_EXTENSION_IMAGES = (UInt32)(1)
+const HSA_EXTENSION_AMD_PROFILER = (UInt32)(2)
 # end enum hsa_extension_t
 
 type hsa_agent_t
@@ -88,58 +88,57 @@ end
 
 # begin enum hsa_agent_feature_t
 typealias hsa_agent_feature_t Uint32
-const HSA_AGENT_FEATURE_KERNEL_DISPATCH = @compat (UInt32)(1)
-const HSA_AGENT_FEATURE_AGENT_DISPATCH = @compat (UInt32)(2)
+const HSA_AGENT_FEATURE_KERNEL_DISPATCH = (UInt32)(1)
+const HSA_AGENT_FEATURE_AGENT_DISPATCH = (UInt32)(2)
 # end enum hsa_agent_feature_t
 
 # begin enum hsa_device_type_t
 typealias hsa_device_type_t Uint32
-const HSA_DEVICE_TYPE_CPU = @compat (UInt32)(0)
-const HSA_DEVICE_TYPE_GPU = @compat (UInt32)(1)
-const HSA_DEVICE_TYPE_DSP = @compat (UInt32)(2)
+const HSA_DEVICE_TYPE_CPU = (UInt32)(0)
+const HSA_DEVICE_TYPE_GPU = (UInt32)(1)
+const HSA_DEVICE_TYPE_DSP = (UInt32)(2)
 # end enum hsa_device_type_t
 
 # begin enum hsa_default_float_rounding_mode_t
 typealias hsa_default_float_rounding_mode_t Uint32
-const HSA_DEFAULT_FLOAT_ROUNDING_MODE_DEFAULT = @compat (UInt32)(0)
-const HSA_DEFAULT_FLOAT_ROUNDING_MODE_ZERO = @compat (UInt32)(1)
-const HSA_DEFAULT_FLOAT_ROUNDING_MODE_NEAR = @compat (UInt32)(2)
+const HSA_DEFAULT_FLOAT_ROUNDING_MODE_DEFAULT = (UInt32)(0)
+const HSA_DEFAULT_FLOAT_ROUNDING_MODE_ZERO = (UInt32)(1)
+const HSA_DEFAULT_FLOAT_ROUNDING_MODE_NEAR = (UInt32)(2)
 # end enum hsa_default_float_rounding_mode_t
 
 # begin enum hsa_agent_info_t
 typealias hsa_agent_info_t Uint32
-const HSA_AGENT_INFO_NAME = @compat (UInt32)(0)
-const HSA_AGENT_INFO_VENDOR_NAME = @compat (UInt32)(1)
-const HSA_AGENT_INFO_FEATURE = @compat (UInt32)(2)
-const HSA_AGENT_INFO_MACHINE_MODEL = @compat (UInt32)(3)
-const HSA_AGENT_INFO_PROFILE = @compat (UInt32)(4)
-const HSA_AGENT_INFO_DEFAULT_FLOAT_ROUNDING_MODE = @compat (UInt32)(5)
-const HSA_AGENT_INFO_BASE_PROFILE_DEFAULT_FLOAT_ROUNDING_MODES = @compat (UInt32)(23)
-const HSA_AGENT_INFO_FAST_F16_OPERATION = @compat (UInt32)(24)
-const HSA_AGENT_INFO_WAVEFRONT_SIZE = @compat (UInt32)(6)
-const HSA_AGENT_INFO_WORKGROUP_MAX_DIM = @compat (UInt32)(7)
-const HSA_AGENT_INFO_WORKGROUP_MAX_SIZE = @compat (UInt32)(8)
-const HSA_AGENT_INFO_GRID_MAX_DIM = @compat (UInt32)(9)
-const HSA_AGENT_INFO_GRID_MAX_SIZE = @compat (UInt32)(10)
-const HSA_AGENT_INFO_FBARRIER_MAX_SIZE = @compat (UInt32)(11)
-const HSA_AGENT_INFO_QUEUES_MAX = @compat (UInt32)(12)
-const HSA_AGENT_INFO_QUEUE_MIN_SIZE = @compat (UInt32)(13)
-const HSA_AGENT_INFO_QUEUE_MAX_SIZE = @compat (UInt32)(14)
-const HSA_AGENT_INFO_QUEUE_TYPE = @compat (UInt32)(15)
-const HSA_AGENT_INFO_NODE = @compat (UInt32)(16)
-const HSA_AGENT_INFO_DEVICE = @compat (UInt32)(17)
-const HSA_AGENT_INFO_CACHE_SIZE = @compat (UInt32)(18)
-const HSA_AGENT_INFO_ISA = @compat (UInt32)(19)
-const HSA_AGENT_INFO_EXTENSIONS = @compat (UInt32)(20)
-const HSA_AGENT_INFO_VERSION_MAJOR = @compat (UInt32)(21)
-const HSA_AGENT_INFO_VERSION_MINOR = @compat (UInt32)(22)
-const HSA_AGENT_INFO_COUNT = @compat (UInt32)(25)
+const HSA_AGENT_INFO_NAME = (UInt32)(0)
+const HSA_AGENT_INFO_VENDOR_NAME = (UInt32)(1)
+const HSA_AGENT_INFO_FEATURE = (UInt32)(2)
+const HSA_AGENT_INFO_MACHINE_MODEL = (UInt32)(3)
+const HSA_AGENT_INFO_PROFILE = (UInt32)(4)
+const HSA_AGENT_INFO_DEFAULT_FLOAT_ROUNDING_MODE = (UInt32)(5)
+const HSA_AGENT_INFO_BASE_PROFILE_DEFAULT_FLOAT_ROUNDING_MODES = (UInt32)(23)
+const HSA_AGENT_INFO_FAST_F16_OPERATION = (UInt32)(24)
+const HSA_AGENT_INFO_WAVEFRONT_SIZE = (UInt32)(6)
+const HSA_AGENT_INFO_WORKGROUP_MAX_DIM = (UInt32)(7)
+const HSA_AGENT_INFO_WORKGROUP_MAX_SIZE = (UInt32)(8)
+const HSA_AGENT_INFO_GRID_MAX_DIM = (UInt32)(9)
+const HSA_AGENT_INFO_GRID_MAX_SIZE = (UInt32)(10)
+const HSA_AGENT_INFO_FBARRIER_MAX_SIZE = (UInt32)(11)
+const HSA_AGENT_INFO_QUEUES_MAX = (UInt32)(12)
+const HSA_AGENT_INFO_QUEUE_MIN_SIZE = (UInt32)(13)
+const HSA_AGENT_INFO_QUEUE_MAX_SIZE = (UInt32)(14)
+const HSA_AGENT_INFO_QUEUE_TYPE = (UInt32)(15)
+const HSA_AGENT_INFO_NODE = (UInt32)(16)
+const HSA_AGENT_INFO_DEVICE = (UInt32)(17)
+const HSA_AGENT_INFO_CACHE_SIZE = (UInt32)(18)
+const HSA_AGENT_INFO_ISA = (UInt32)(19)
+const HSA_AGENT_INFO_EXTENSIONS = (UInt32)(20)
+const HSA_AGENT_INFO_VERSION_MAJOR = (UInt32)(21)
+const HSA_AGENT_INFO_VERSION_MINOR = (UInt32)(22)
 # end enum hsa_agent_info_t
 
 # begin enum hsa_exception_policy_t
 typealias hsa_exception_policy_t Uint32
-const HSA_EXCEPTION_POLICY_BREAK = @compat (UInt32)(1)
-const HSA_EXCEPTION_POLICY_DETECT = @compat (UInt32)(2)
+const HSA_EXCEPTION_POLICY_BREAK = (UInt32)(1)
+const HSA_EXCEPTION_POLICY_DETECT = (UInt32)(2)
 # end enum hsa_exception_policy_t
 
 type hsa_signal_t
@@ -150,16 +149,16 @@ typealias hsa_signal_value_t Int64
 
 # begin enum hsa_signal_condition_t
 typealias hsa_signal_condition_t Uint32
-const HSA_SIGNAL_CONDITION_EQ = @compat (UInt32)(0)
-const HSA_SIGNAL_CONDITION_NE = @compat (UInt32)(1)
-const HSA_SIGNAL_CONDITION_LT = @compat (UInt32)(2)
-const HSA_SIGNAL_CONDITION_GTE = @compat (UInt32)(3)
+const HSA_SIGNAL_CONDITION_EQ = (UInt32)(0)
+const HSA_SIGNAL_CONDITION_NE = (UInt32)(1)
+const HSA_SIGNAL_CONDITION_LT = (UInt32)(2)
+const HSA_SIGNAL_CONDITION_GTE = (UInt32)(3)
 # end enum hsa_signal_condition_t
 
 # begin enum hsa_wait_state_t
 typealias hsa_wait_state_t Uint32
-const HSA_WAIT_STATE_BLOCKED = @compat (UInt32)(0)
-const HSA_WAIT_STATE_ACTIVE = @compat (UInt32)(1)
+const HSA_WAIT_STATE_BLOCKED = (UInt32)(0)
+const HSA_WAIT_STATE_ACTIVE = (UInt32)(1)
 # end enum hsa_wait_state_t
 
 type hsa_region_t
@@ -168,14 +167,14 @@ end
 
 # begin enum hsa_queue_type_t
 typealias hsa_queue_type_t Uint32
-const HSA_QUEUE_TYPE_MULTI = @compat (UInt32)(0)
-const HSA_QUEUE_TYPE_SINGLE = @compat (UInt32)(1)
+const HSA_QUEUE_TYPE_MULTI = (UInt32)(0)
+const HSA_QUEUE_TYPE_SINGLE = (UInt32)(1)
 # end enum hsa_queue_type_t
 
 # begin enum hsa_queue_feature_t
 typealias hsa_queue_feature_t Uint32
-const HSA_QUEUE_FEATURE_KERNEL_DISPATCH = @compat (UInt32)(1)
-const HSA_QUEUE_FEATURE_AGENT_DISPATCH = @compat (UInt32)(2)
+const HSA_QUEUE_FEATURE_KERNEL_DISPATCH = (UInt32)(1)
+const HSA_QUEUE_FEATURE_AGENT_DISPATCH = (UInt32)(2)
 # end enum hsa_queue_feature_t
 
 type hsa_queue_t
@@ -190,46 +189,45 @@ end
 
 # begin enum hsa_packet_type_t
 typealias hsa_packet_type_t Uint32
-const HSA_PACKET_TYPE_VENDOR_SPECIFIC = @compat (UInt32)(0)
-const HSA_PACKET_TYPE_INVALID = @compat (UInt32)(1)
-const HSA_PACKET_TYPE_KERNEL_DISPATCH = @compat (UInt32)(2)
-const HSA_PACKET_TYPE_BARRIER_AND = @compat (UInt32)(3)
-const HSA_PACKET_TYPE_AGENT_DISPATCH = @compat (UInt32)(4)
-const HSA_PACKET_TYPE_BARRIER_OR = @compat (UInt32)(5)
-const HSA_PACKET_TYPE_COUNT = @compat (UInt32)(6)
+const HSA_PACKET_TYPE_VENDOR_SPECIFIC = (UInt32)(0)
+const HSA_PACKET_TYPE_INVALID = (UInt32)(1)
+const HSA_PACKET_TYPE_KERNEL_DISPATCH = (UInt32)(2)
+const HSA_PACKET_TYPE_BARRIER_AND = (UInt32)(3)
+const HSA_PACKET_TYPE_AGENT_DISPATCH = (UInt32)(4)
+const HSA_PACKET_TYPE_BARRIER_OR = (UInt32)(5)
 # end enum hsa_packet_type_t
 
 # begin enum hsa_fence_scope_t
 typealias hsa_fence_scope_t Uint32
-const HSA_FENCE_SCOPE_NONE = @compat (UInt32)(0)
-const HSA_FENCE_SCOPE_AGENT = @compat (UInt32)(1)
-const HSA_FENCE_SCOPE_SYSTEM = @compat (UInt32)(2)
+const HSA_FENCE_SCOPE_NONE = (UInt32)(0)
+const HSA_FENCE_SCOPE_AGENT = (UInt32)(1)
+const HSA_FENCE_SCOPE_SYSTEM = (UInt32)(2)
 # end enum hsa_fence_scope_t
 
 # begin enum hsa_packet_header_t
 typealias hsa_packet_header_t Uint32
-const HSA_PACKET_HEADER_TYPE = @compat (UInt32)(0)
-const HSA_PACKET_HEADER_BARRIER = @compat (UInt32)(8)
-const HSA_PACKET_HEADER_ACQUIRE_FENCE_SCOPE = @compat (UInt32)(9)
-const HSA_PACKET_HEADER_RELEASE_FENCE_SCOPE = @compat (UInt32)(11)
+const HSA_PACKET_HEADER_TYPE = (UInt32)(0)
+const HSA_PACKET_HEADER_BARRIER = (UInt32)(8)
+const HSA_PACKET_HEADER_ACQUIRE_FENCE_SCOPE = (UInt32)(9)
+const HSA_PACKET_HEADER_RELEASE_FENCE_SCOPE = (UInt32)(11)
 # end enum hsa_packet_header_t
 
 # begin enum hsa_packet_header_width_t
 typealias hsa_packet_header_width_t Uint32
-const HSA_PACKET_HEADER_WIDTH_TYPE = @compat (UInt32)(8)
-const HSA_PACKET_HEADER_WIDTH_BARRIER = @compat (UInt32)(1)
-const HSA_PACKET_HEADER_WIDTH_ACQUIRE_FENCE_SCOPE = @compat (UInt32)(2)
-const HSA_PACKET_HEADER_WIDTH_RELEASE_FENCE_SCOPE = @compat (UInt32)(2)
+const HSA_PACKET_HEADER_WIDTH_TYPE = (UInt32)(8)
+const HSA_PACKET_HEADER_WIDTH_BARRIER = (UInt32)(1)
+const HSA_PACKET_HEADER_WIDTH_ACQUIRE_FENCE_SCOPE = (UInt32)(2)
+const HSA_PACKET_HEADER_WIDTH_RELEASE_FENCE_SCOPE = (UInt32)(2)
 # end enum hsa_packet_header_width_t
 
 # begin enum hsa_kernel_dispatch_packet_setup_t
 typealias hsa_kernel_dispatch_packet_setup_t Uint32
-const HSA_KERNEL_DISPATCH_PACKET_SETUP_DIMENSIONS = @compat (UInt32)(0)
+const HSA_KERNEL_DISPATCH_PACKET_SETUP_DIMENSIONS = (UInt32)(0)
 # end enum hsa_kernel_dispatch_packet_setup_t
 
 # begin enum hsa_kernel_dispatch_packet_setup_width_t
 typealias hsa_kernel_dispatch_packet_setup_width_t Uint32
-const HSA_KERNEL_DISPATCH_PACKET_SETUP_WIDTH_DIMENSIONS = @compat (UInt32)(2)
+const HSA_KERNEL_DISPATCH_PACKET_SETUP_WIDTH_DIMENSIONS = (UInt32)(2)
 # end enum hsa_kernel_dispatch_packet_setup_width_t
 
 type hsa_kernel_dispatch_packet_t
@@ -257,7 +255,7 @@ immutable Array_4_Uint64
     d4::Uint64
 end
 
-Base.zero(::Type{Array_4_Uint64}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 265:
+Base.zero(::Type{Array_4_Uint64}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
         Array_4_Uint64(fill(zero(Uint64),4)...)
     end
 
@@ -279,7 +277,7 @@ immutable Array_5_hsa_signal_t
     d5::hsa_signal_t
 end
 
-Base.zero(::Type{Array_5_hsa_signal_t}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 265:
+Base.zero(::Type{Array_5_hsa_signal_t}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
         Array_5_hsa_signal_t(fill(zero(hsa_signal_t),5)...)
     end
 
@@ -303,57 +301,53 @@ end
 
 # begin enum hsa_region_segment_t
 typealias hsa_region_segment_t Uint32
-const HSA_REGION_SEGMENT_GLOBAL = @compat (UInt32)(0)
-const HSA_REGION_SEGMENT_READONLY = @compat (UInt32)(1)
-const HSA_REGION_SEGMENT_PRIVATE = @compat (UInt32)(2)
-const HSA_REGION_SEGMENT_GROUP = @compat (UInt32)(3)
-const HSA_REGION_SEGMENT_ARG = @compat (UInt32)(4)
-const HSA_REGION_SEGMENT_KERNARG = @compat (UInt32)(5)
-const HSA_REGION_SEGMENT_SPILL = @compat (UInt32)(6)
+const HSA_REGION_SEGMENT_GLOBAL = (UInt32)(0)
+const HSA_REGION_SEGMENT_READONLY = (UInt32)(1)
+const HSA_REGION_SEGMENT_PRIVATE = (UInt32)(2)
+const HSA_REGION_SEGMENT_GROUP = (UInt32)(3)
 # end enum hsa_region_segment_t
 
 # begin enum hsa_region_global_flag_t
 typealias hsa_region_global_flag_t Uint32
-const HSA_REGION_GLOBAL_FLAG_KERNARG = @compat (UInt32)(1)
-const HSA_REGION_GLOBAL_FLAG_FINE_GRAINED = @compat (UInt32)(2)
-const HSA_REGION_GLOBAL_FLAG_COARSE_GRAINED = @compat (UInt32)(4)
+const HSA_REGION_GLOBAL_FLAG_KERNARG = (UInt32)(1)
+const HSA_REGION_GLOBAL_FLAG_FINE_GRAINED = (UInt32)(2)
+const HSA_REGION_GLOBAL_FLAG_COARSE_GRAINED = (UInt32)(4)
 # end enum hsa_region_global_flag_t
 
 # begin enum hsa_region_info_t
 typealias hsa_region_info_t Uint32
-const HSA_REGION_INFO_SEGMENT = @compat (UInt32)(0)
-const HSA_REGION_INFO_GLOBAL_FLAGS = @compat (UInt32)(1)
-const HSA_REGION_INFO_SIZE = @compat (UInt32)(2)
-const HSA_REGION_INFO_ALLOC_MAX_SIZE = @compat (UInt32)(4)
-const HSA_REGION_INFO_RUNTIME_ALLOC_ALLOWED = @compat (UInt32)(5)
-const HSA_REGION_INFO_RUNTIME_ALLOC_GRANULE = @compat (UInt32)(6)
-const HSA_REGION_INFO_RUNTIME_ALLOC_ALIGNMENT = @compat (UInt32)(7)
-const HSA_REGION_INFO_COUNT = @compat (UInt32)(8)
+const HSA_REGION_INFO_SEGMENT = (UInt32)(0)
+const HSA_REGION_INFO_GLOBAL_FLAGS = (UInt32)(1)
+const HSA_REGION_INFO_SIZE = (UInt32)(2)
+const HSA_REGION_INFO_ALLOC_MAX_SIZE = (UInt32)(4)
+const HSA_REGION_INFO_RUNTIME_ALLOC_ALLOWED = (UInt32)(5)
+const HSA_REGION_INFO_RUNTIME_ALLOC_GRANULE = (UInt32)(6)
+const HSA_REGION_INFO_RUNTIME_ALLOC_ALIGNMENT = (UInt32)(7)
 # end enum hsa_region_info_t
 
 # begin enum hsa_symbol_kind_t
 typealias hsa_symbol_kind_t Uint32
-const HSA_SYMBOL_KIND_VARIABLE = @compat (UInt32)(0)
-const HSA_SYMBOL_KIND_KERNEL = @compat (UInt32)(1)
-const HSA_SYMBOL_KIND_INDIRECT_FUNCTION = @compat (UInt32)(2)
+const HSA_SYMBOL_KIND_VARIABLE = (UInt32)(0)
+const HSA_SYMBOL_KIND_KERNEL = (UInt32)(1)
+const HSA_SYMBOL_KIND_INDIRECT_FUNCTION = (UInt32)(2)
 # end enum hsa_symbol_kind_t
 
 # begin enum hsa_variable_allocation_t
 typealias hsa_variable_allocation_t Uint32
-const HSA_VARIABLE_ALLOCATION_AGENT = @compat (UInt32)(0)
-const HSA_VARIABLE_ALLOCATION_PROGRAM = @compat (UInt32)(1)
+const HSA_VARIABLE_ALLOCATION_AGENT = (UInt32)(0)
+const HSA_VARIABLE_ALLOCATION_PROGRAM = (UInt32)(1)
 # end enum hsa_variable_allocation_t
 
 # begin enum hsa_symbol_linkage_t
 typealias hsa_symbol_linkage_t Uint32
-const HSA_SYMBOL_LINKAGE_MODULE = @compat (UInt32)(0)
-const HSA_SYMBOL_LINKAGE_PROGRAM = @compat (UInt32)(1)
+const HSA_SYMBOL_LINKAGE_MODULE = (UInt32)(0)
+const HSA_SYMBOL_LINKAGE_PROGRAM = (UInt32)(1)
 # end enum hsa_symbol_linkage_t
 
 # begin enum hsa_variable_segment_t
 typealias hsa_variable_segment_t Uint32
-const HSA_VARIABLE_SEGMENT_GLOBAL = @compat (UInt32)(0)
-const HSA_VARIABLE_SEGMENT_READONLY = @compat (UInt32)(1)
+const HSA_VARIABLE_SEGMENT_GLOBAL = (UInt32)(0)
+const HSA_VARIABLE_SEGMENT_READONLY = (UInt32)(1)
 # end enum hsa_variable_segment_t
 
 type hsa_isa_t
@@ -362,11 +356,11 @@ end
 
 # begin enum hsa_isa_info_t
 typealias hsa_isa_info_t Uint32
-const HSA_ISA_INFO_NAME_LENGTH = @compat (UInt32)(0)
-const HSA_ISA_INFO_NAME = @compat (UInt32)(1)
-const HSA_ISA_INFO_CALL_CONVENTION_COUNT = @compat (UInt32)(2)
-const HSA_ISA_INFO_CALL_CONVENTION_INFO_WAVEFRONT_SIZE = @compat (UInt32)(3)
-const HSA_ISA_INFO_CALL_CONVENTION_INFO_WAVEFRONTS_PER_COMPUTE_UNIT = @compat (UInt32)(4)
+const HSA_ISA_INFO_NAME_LENGTH = (UInt32)(0)
+const HSA_ISA_INFO_NAME = (UInt32)(1)
+const HSA_ISA_INFO_CALL_CONVENTION_COUNT = (UInt32)(2)
+const HSA_ISA_INFO_CALL_CONVENTION_INFO_WAVEFRONT_SIZE = (UInt32)(3)
+const HSA_ISA_INFO_CALL_CONVENTION_INFO_WAVEFRONTS_PER_COMPUTE_UNIT = (UInt32)(4)
 # end enum hsa_isa_info_t
 
 type hsa_code_object_t
@@ -379,17 +373,17 @@ end
 
 # begin enum hsa_code_object_type_t
 typealias hsa_code_object_type_t Uint32
-const HSA_CODE_OBJECT_TYPE_PROGRAM = @compat (UInt32)(0)
+const HSA_CODE_OBJECT_TYPE_PROGRAM = (UInt32)(0)
 # end enum hsa_code_object_type_t
 
 # begin enum hsa_code_object_info_t
 typealias hsa_code_object_info_t Uint32
-const HSA_CODE_OBJECT_INFO_VERSION = @compat (UInt32)(0)
-const HSA_CODE_OBJECT_INFO_TYPE = @compat (UInt32)(1)
-const HSA_CODE_OBJECT_INFO_ISA = @compat (UInt32)(2)
-const HSA_CODE_OBJECT_INFO_MACHINE_MODEL = @compat (UInt32)(3)
-const HSA_CODE_OBJECT_INFO_PROFILE = @compat (UInt32)(4)
-const HSA_CODE_OBJECT_INFO_DEFAULT_FLOAT_ROUNDING_MODE = @compat (UInt32)(5)
+const HSA_CODE_OBJECT_INFO_VERSION = (UInt32)(0)
+const HSA_CODE_OBJECT_INFO_TYPE = (UInt32)(1)
+const HSA_CODE_OBJECT_INFO_ISA = (UInt32)(2)
+const HSA_CODE_OBJECT_INFO_MACHINE_MODEL = (UInt32)(3)
+const HSA_CODE_OBJECT_INFO_PROFILE = (UInt32)(4)
+const HSA_CODE_OBJECT_INFO_DEFAULT_FLOAT_ROUNDING_MODE = (UInt32)(5)
 # end enum hsa_code_object_info_t
 
 type hsa_code_symbol_t
@@ -398,24 +392,24 @@ end
 
 # begin enum hsa_code_symbol_info_t
 typealias hsa_code_symbol_info_t Uint32
-const HSA_CODE_SYMBOL_INFO_TYPE = @compat (UInt32)(0)
-const HSA_CODE_SYMBOL_INFO_NAME_LENGTH = @compat (UInt32)(1)
-const HSA_CODE_SYMBOL_INFO_NAME = @compat (UInt32)(2)
-const HSA_CODE_SYMBOL_INFO_MODULE_NAME_LENGTH = @compat (UInt32)(3)
-const HSA_CODE_SYMBOL_INFO_MODULE_NAME = @compat (UInt32)(4)
-const HSA_CODE_SYMBOL_INFO_LINKAGE = @compat (UInt32)(5)
-const HSA_CODE_SYMBOL_INFO_IS_DEFINITION = @compat (UInt32)(17)
-const HSA_CODE_SYMBOL_INFO_VARIABLE_ALLOCATION = @compat (UInt32)(6)
-const HSA_CODE_SYMBOL_INFO_VARIABLE_SEGMENT = @compat (UInt32)(7)
-const HSA_CODE_SYMBOL_INFO_VARIABLE_ALIGNMENT = @compat (UInt32)(8)
-const HSA_CODE_SYMBOL_INFO_VARIABLE_SIZE = @compat (UInt32)(9)
-const HSA_CODE_SYMBOL_INFO_VARIABLE_IS_CONST = @compat (UInt32)(10)
-const HSA_CODE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE = @compat (UInt32)(11)
-const HSA_CODE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT = @compat (UInt32)(12)
-const HSA_CODE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE = @compat (UInt32)(13)
-const HSA_CODE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE = @compat (UInt32)(14)
-const HSA_CODE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK = @compat (UInt32)(15)
-const HSA_CODE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION = @compat (UInt32)(16)
+const HSA_CODE_SYMBOL_INFO_TYPE = (UInt32)(0)
+const HSA_CODE_SYMBOL_INFO_NAME_LENGTH = (UInt32)(1)
+const HSA_CODE_SYMBOL_INFO_NAME = (UInt32)(2)
+const HSA_CODE_SYMBOL_INFO_MODULE_NAME_LENGTH = (UInt32)(3)
+const HSA_CODE_SYMBOL_INFO_MODULE_NAME = (UInt32)(4)
+const HSA_CODE_SYMBOL_INFO_LINKAGE = (UInt32)(5)
+const HSA_CODE_SYMBOL_INFO_IS_DEFINITION = (UInt32)(17)
+const HSA_CODE_SYMBOL_INFO_VARIABLE_ALLOCATION = (UInt32)(6)
+const HSA_CODE_SYMBOL_INFO_VARIABLE_SEGMENT = (UInt32)(7)
+const HSA_CODE_SYMBOL_INFO_VARIABLE_ALIGNMENT = (UInt32)(8)
+const HSA_CODE_SYMBOL_INFO_VARIABLE_SIZE = (UInt32)(9)
+const HSA_CODE_SYMBOL_INFO_VARIABLE_IS_CONST = (UInt32)(10)
+const HSA_CODE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE = (UInt32)(11)
+const HSA_CODE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT = (UInt32)(12)
+const HSA_CODE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE = (UInt32)(13)
+const HSA_CODE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE = (UInt32)(14)
+const HSA_CODE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK = (UInt32)(15)
+const HSA_CODE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION = (UInt32)(16)
 # end enum hsa_code_symbol_info_t
 
 type hsa_executable_t
@@ -424,14 +418,14 @@ end
 
 # begin enum hsa_executable_state_t
 typealias hsa_executable_state_t Uint32
-const HSA_EXECUTABLE_STATE_UNFROZEN = @compat (UInt32)(0)
-const HSA_EXECUTABLE_STATE_FROZEN = @compat (UInt32)(1)
+const HSA_EXECUTABLE_STATE_UNFROZEN = (UInt32)(0)
+const HSA_EXECUTABLE_STATE_FROZEN = (UInt32)(1)
 # end enum hsa_executable_state_t
 
 # begin enum hsa_executable_info_t
 typealias hsa_executable_info_t Uint32
-const HSA_EXECUTABLE_INFO_PROFILE = @compat (UInt32)(1)
-const HSA_EXECUTABLE_INFO_STATE = @compat (UInt32)(2)
+const HSA_EXECUTABLE_INFO_PROFILE = (UInt32)(1)
+const HSA_EXECUTABLE_INFO_STATE = (UInt32)(2)
 # end enum hsa_executable_info_t
 
 type hsa_executable_symbol_t
@@ -440,31 +434,34 @@ end
 
 # begin enum hsa_executable_symbol_info_t
 typealias hsa_executable_symbol_info_t Uint32
-const HSA_EXECUTABLE_SYMBOL_INFO_TYPE = @compat (UInt32)(0)
-const HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH = @compat (UInt32)(1)
-const HSA_EXECUTABLE_SYMBOL_INFO_NAME = @compat (UInt32)(2)
-const HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH = @compat (UInt32)(3)
-const HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME = @compat (UInt32)(4)
-const HSA_EXECUTABLE_SYMBOL_INFO_AGENT = @compat (UInt32)(20)
-const HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS = @compat (UInt32)(21)
-const HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE = @compat (UInt32)(5)
-const HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION = @compat (UInt32)(17)
-const HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION = @compat (UInt32)(6)
-const HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT = @compat (UInt32)(7)
-const HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT = @compat (UInt32)(8)
-const HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE = @compat (UInt32)(9)
-const HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST = @compat (UInt32)(10)
-const HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT = @compat (UInt32)(22)
-const HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE = @compat (UInt32)(11)
-const HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT = @compat (UInt32)(12)
-const HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE = @compat (UInt32)(13)
-const HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE = @compat (UInt32)(14)
-const HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK = @compat (UInt32)(15)
-const HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT = @compat (UInt32)(23)
-const HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION = @compat (UInt32)(16)
+const HSA_EXECUTABLE_SYMBOL_INFO_TYPE = (UInt32)(0)
+const HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH = (UInt32)(1)
+const HSA_EXECUTABLE_SYMBOL_INFO_NAME = (UInt32)(2)
+const HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH = (UInt32)(3)
+const HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME = (UInt32)(4)
+const HSA_EXECUTABLE_SYMBOL_INFO_AGENT = (UInt32)(20)
+const HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS = (UInt32)(21)
+const HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE = (UInt32)(5)
+const HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION = (UInt32)(17)
+const HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION = (UInt32)(6)
+const HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT = (UInt32)(7)
+const HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT = (UInt32)(8)
+const HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE = (UInt32)(9)
+const HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST = (UInt32)(10)
+const HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT = (UInt32)(22)
+const HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE = (UInt32)(11)
+const HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT = (UInt32)(12)
+const HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE = (UInt32)(13)
+const HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE = (UInt32)(14)
+const HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK = (UInt32)(15)
+const HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT = (UInt32)(23)
+const HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION = (UInt32)(16)
 # end enum hsa_executable_symbol_info_t
 
-typealias BrigModule_t Ptr{Void}
+type BrigModuleHeader
+end
+
+typealias BrigModule_t Ptr{BrigModuleHeader}
 typealias hsa_ext_module_t BrigModule_t
 
 type hsa_ext_program_t
@@ -473,14 +470,14 @@ end
 
 # begin enum hsa_ext_program_info_t
 typealias hsa_ext_program_info_t Uint32
-const HSA_EXT_PROGRAM_INFO_MACHINE_MODEL = @compat (UInt32)(0)
-const HSA_EXT_PROGRAM_INFO_PROFILE = @compat (UInt32)(1)
-const HSA_EXT_PROGRAM_INFO_DEFAULT_FLOAT_ROUNDING_MODE = @compat (UInt32)(2)
+const HSA_EXT_PROGRAM_INFO_MACHINE_MODEL = (UInt32)(0)
+const HSA_EXT_PROGRAM_INFO_PROFILE = (UInt32)(1)
+const HSA_EXT_PROGRAM_INFO_DEFAULT_FLOAT_ROUNDING_MODE = (UInt32)(2)
 # end enum hsa_ext_program_info_t
 
 # begin enum hsa_ext_finalizer_call_convention_t
 typealias hsa_ext_finalizer_call_convention_t Cint
-const HSA_EXT_FINALIZER_CALL_CONVENTION_AUTO = @compat (Int32)(-1)
+const HSA_EXT_FINALIZER_CALL_CONVENTION_AUTO = (Int32)(-1)
 # end enum hsa_ext_finalizer_call_convention_t
 
 immutable Array_3_Uint64
@@ -489,7 +486,7 @@ immutable Array_3_Uint64
     d3::Uint64
 end
 
-Base.zero(::Type{Array_3_Uint64}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 265:
+Base.zero(::Type{Array_3_Uint64}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
         Array_3_Uint64(fill(zero(Uint64),3)...)
     end
 
@@ -571,7 +568,7 @@ immutable Array_75_Uint8
     d75::Uint8
 end
 
-Base.zero(::Type{Array_75_Uint8}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 265:
+Base.zero(::Type{Array_75_Uint8}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
         Array_75_Uint8(fill(zero(Uint8),75)...)
     end
 
@@ -604,58 +601,58 @@ end
 
 # begin enum hsa_ext_image_geometry_t
 typealias hsa_ext_image_geometry_t Uint32
-const HSA_EXT_IMAGE_GEOMETRY_1D = @compat (UInt32)(0)
-const HSA_EXT_IMAGE_GEOMETRY_2D = @compat (UInt32)(1)
-const HSA_EXT_IMAGE_GEOMETRY_3D = @compat (UInt32)(2)
-const HSA_EXT_IMAGE_GEOMETRY_1DA = @compat (UInt32)(3)
-const HSA_EXT_IMAGE_GEOMETRY_2DA = @compat (UInt32)(4)
-const HSA_EXT_IMAGE_GEOMETRY_1DB = @compat (UInt32)(5)
-const HSA_EXT_IMAGE_GEOMETRY_2DDEPTH = @compat (UInt32)(6)
-const HSA_EXT_IMAGE_GEOMETRY_2DADEPTH = @compat (UInt32)(7)
+const HSA_EXT_IMAGE_GEOMETRY_1D = (UInt32)(0)
+const HSA_EXT_IMAGE_GEOMETRY_2D = (UInt32)(1)
+const HSA_EXT_IMAGE_GEOMETRY_3D = (UInt32)(2)
+const HSA_EXT_IMAGE_GEOMETRY_1DA = (UInt32)(3)
+const HSA_EXT_IMAGE_GEOMETRY_2DA = (UInt32)(4)
+const HSA_EXT_IMAGE_GEOMETRY_1DB = (UInt32)(5)
+const HSA_EXT_IMAGE_GEOMETRY_2DDEPTH = (UInt32)(6)
+const HSA_EXT_IMAGE_GEOMETRY_2DADEPTH = (UInt32)(7)
 # end enum hsa_ext_image_geometry_t
 
 # begin enum hsa_ext_image_channel_type_t
 typealias hsa_ext_image_channel_type_t Uint32
-const HSA_EXT_IMAGE_CHANNEL_TYPE_SNORM_INT8 = @compat (UInt32)(0)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_SNORM_INT16 = @compat (UInt32)(1)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_INT8 = @compat (UInt32)(2)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_INT16 = @compat (UInt32)(3)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_INT24 = @compat (UInt32)(4)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_SHORT_555 = @compat (UInt32)(5)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_SHORT_565 = @compat (UInt32)(6)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_SHORT_101010 = @compat (UInt32)(7)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_SIGNED_INT8 = @compat (UInt32)(8)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_SIGNED_INT16 = @compat (UInt32)(9)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_SIGNED_INT32 = @compat (UInt32)(10)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_UNSIGNED_INT8 = @compat (UInt32)(11)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_UNSIGNED_INT16 = @compat (UInt32)(12)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_UNSIGNED_INT32 = @compat (UInt32)(13)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_HALF_FLOAT = @compat (UInt32)(14)
-const HSA_EXT_IMAGE_CHANNEL_TYPE_FLOAT = @compat (UInt32)(15)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_SNORM_INT8 = (UInt32)(0)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_SNORM_INT16 = (UInt32)(1)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_INT8 = (UInt32)(2)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_INT16 = (UInt32)(3)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_INT24 = (UInt32)(4)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_SHORT_555 = (UInt32)(5)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_SHORT_565 = (UInt32)(6)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_SHORT_101010 = (UInt32)(7)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_SIGNED_INT8 = (UInt32)(8)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_SIGNED_INT16 = (UInt32)(9)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_SIGNED_INT32 = (UInt32)(10)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_UNSIGNED_INT8 = (UInt32)(11)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_UNSIGNED_INT16 = (UInt32)(12)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_UNSIGNED_INT32 = (UInt32)(13)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_HALF_FLOAT = (UInt32)(14)
+const HSA_EXT_IMAGE_CHANNEL_TYPE_FLOAT = (UInt32)(15)
 # end enum hsa_ext_image_channel_type_t
 
 # begin enum hsa_ext_image_channel_order_t
 typealias hsa_ext_image_channel_order_t Uint32
-const HSA_EXT_IMAGE_CHANNEL_ORDER_A = @compat (UInt32)(0)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_R = @compat (UInt32)(1)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_RX = @compat (UInt32)(2)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_RG = @compat (UInt32)(3)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_RGX = @compat (UInt32)(4)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_RA = @compat (UInt32)(5)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_RGB = @compat (UInt32)(6)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_RGBX = @compat (UInt32)(7)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_RGBA = @compat (UInt32)(8)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_BGRA = @compat (UInt32)(9)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_ARGB = @compat (UInt32)(10)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_ABGR = @compat (UInt32)(11)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_SRGB = @compat (UInt32)(12)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_SRGBX = @compat (UInt32)(13)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_SRGBA = @compat (UInt32)(14)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_SBGRA = @compat (UInt32)(15)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_INTENSITY = @compat (UInt32)(16)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_LUMINANCE = @compat (UInt32)(17)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_DEPTH = @compat (UInt32)(18)
-const HSA_EXT_IMAGE_CHANNEL_ORDER_DEPTH_STENCIL = @compat (UInt32)(19)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_A = (UInt32)(0)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_R = (UInt32)(1)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_RX = (UInt32)(2)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_RG = (UInt32)(3)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_RGX = (UInt32)(4)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_RA = (UInt32)(5)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_RGB = (UInt32)(6)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_RGBX = (UInt32)(7)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_RGBA = (UInt32)(8)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_BGRA = (UInt32)(9)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_ARGB = (UInt32)(10)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_ABGR = (UInt32)(11)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_SRGB = (UInt32)(12)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_SRGBX = (UInt32)(13)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_SRGBA = (UInt32)(14)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_SBGRA = (UInt32)(15)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_INTENSITY = (UInt32)(16)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_LUMINANCE = (UInt32)(17)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_DEPTH = (UInt32)(18)
+const HSA_EXT_IMAGE_CHANNEL_ORDER_DEPTH_STENCIL = (UInt32)(19)
 # end enum hsa_ext_image_channel_order_t
 
 type hsa_ext_image_format_t
@@ -674,12 +671,12 @@ end
 
 # begin enum hsa_ext_image_capability_t
 typealias hsa_ext_image_capability_t Uint32
-const HSA_EXT_IMAGE_CAPABILITY_NOT_SUPPORTED = @compat (UInt32)(0)
-const HSA_EXT_IMAGE_CAPABILITY_READ_ONLY = @compat (UInt32)(1)
-const HSA_EXT_IMAGE_CAPABILITY_WRITE_ONLY = @compat (UInt32)(2)
-const HSA_EXT_IMAGE_CAPABILITY_READ_WRITE = @compat (UInt32)(4)
-const HSA_EXT_IMAGE_CAPABILITY_READ_MODIFY_WRITE = @compat (UInt32)(8)
-const HSA_EXT_IMAGE_CAPABILITY_ACCESS_INVARIANT_DATA_LAYOUT = @compat (UInt32)(16)
+const HSA_EXT_IMAGE_CAPABILITY_NOT_SUPPORTED = (UInt32)(0)
+const HSA_EXT_IMAGE_CAPABILITY_READ_ONLY = (UInt32)(1)
+const HSA_EXT_IMAGE_CAPABILITY_WRITE_ONLY = (UInt32)(2)
+const HSA_EXT_IMAGE_CAPABILITY_READ_WRITE = (UInt32)(4)
+const HSA_EXT_IMAGE_CAPABILITY_READ_MODIFY_WRITE = (UInt32)(8)
+const HSA_EXT_IMAGE_CAPABILITY_ACCESS_INVARIANT_DATA_LAYOUT = (UInt32)(16)
 # end enum hsa_ext_image_capability_t
 
 type hsa_ext_image_data_info_t
@@ -698,23 +695,23 @@ end
 
 # begin enum hsa_ext_sampler_addressing_mode_t
 typealias hsa_ext_sampler_addressing_mode_t Uint32
-const HSA_EXT_SAMPLER_ADDRESSING_MODE_UNDEFINED = @compat (UInt32)(0)
-const HSA_EXT_SAMPLER_ADDRESSING_MODE_CLAMP_TO_EDGE = @compat (UInt32)(1)
-const HSA_EXT_SAMPLER_ADDRESSING_MODE_CLAMP_TO_BORDER = @compat (UInt32)(2)
-const HSA_EXT_SAMPLER_ADDRESSING_MODE_REPEAT = @compat (UInt32)(3)
-const HSA_EXT_SAMPLER_ADDRESSING_MODE_MIRRORED_REPEAT = @compat (UInt32)(4)
+const HSA_EXT_SAMPLER_ADDRESSING_MODE_UNDEFINED = (UInt32)(0)
+const HSA_EXT_SAMPLER_ADDRESSING_MODE_CLAMP_TO_EDGE = (UInt32)(1)
+const HSA_EXT_SAMPLER_ADDRESSING_MODE_CLAMP_TO_BORDER = (UInt32)(2)
+const HSA_EXT_SAMPLER_ADDRESSING_MODE_REPEAT = (UInt32)(3)
+const HSA_EXT_SAMPLER_ADDRESSING_MODE_MIRRORED_REPEAT = (UInt32)(4)
 # end enum hsa_ext_sampler_addressing_mode_t
 
 # begin enum hsa_ext_sampler_coordinate_mode_t
 typealias hsa_ext_sampler_coordinate_mode_t Uint32
-const HSA_EXT_SAMPLER_COORDINATE_MODE_UNNORMALIZED = @compat (UInt32)(0)
-const HSA_EXT_SAMPLER_COORDINATE_MODE_NORMALIZED = @compat (UInt32)(1)
+const HSA_EXT_SAMPLER_COORDINATE_MODE_UNNORMALIZED = (UInt32)(0)
+const HSA_EXT_SAMPLER_COORDINATE_MODE_NORMALIZED = (UInt32)(1)
 # end enum hsa_ext_sampler_coordinate_mode_t
 
 # begin enum hsa_ext_sampler_filter_mode_t
 typealias hsa_ext_sampler_filter_mode_t Uint32
-const HSA_EXT_SAMPLER_FILTER_MODE_NEAREST = @compat (UInt32)(0)
-const HSA_EXT_SAMPLER_FILTER_MODE_LINEAR = @compat (UInt32)(1)
+const HSA_EXT_SAMPLER_FILTER_MODE_NEAREST = (UInt32)(0)
+const HSA_EXT_SAMPLER_FILTER_MODE_LINEAR = (UInt32)(1)
 # end enum hsa_ext_sampler_filter_mode_t
 
 type hsa_ext_sampler_descriptor_t
@@ -819,7 +816,6 @@ const AgentInfoIsa = HSA_AGENT_INFO_ISA
 const AgentInfoExtensions = HSA_AGENT_INFO_EXTENSIONS
 const AgentInfoVersionMajor = HSA_AGENT_INFO_VERSION_MAJOR
 const AgentInfoVersionMinor = HSA_AGENT_INFO_VERSION_MINOR
-const AgentInfoCount = HSA_AGENT_INFO_COUNT
 const ExceptionPolicyBreak = HSA_EXCEPTION_POLICY_BREAK
 const ExceptionPolicyDetect = HSA_EXCEPTION_POLICY_DETECT
 const SignalConditionEq = HSA_SIGNAL_CONDITION_EQ
@@ -838,7 +834,6 @@ const PacketTypeKernelDispatch = Uint8(HSA_PACKET_TYPE_KERNEL_DISPATCH)
 const PacketTypeBarrierAnd = Uint8(HSA_PACKET_TYPE_BARRIER_AND)
 const PacketTypeAgentDispatch = Uint8(HSA_PACKET_TYPE_AGENT_DISPATCH)
 const PacketTypeBarrierOr = Uint8(HSA_PACKET_TYPE_BARRIER_OR)
-const PacketTypeCount = Uint8(HSA_PACKET_TYPE_COUNT)
 const FenceScopeNone = HSA_FENCE_SCOPE_NONE
 const FenceScopeAgent = HSA_FENCE_SCOPE_AGENT
 const FenceScopeSystem = HSA_FENCE_SCOPE_SYSTEM
@@ -856,9 +851,6 @@ const RegionSegmentGlobal = HSA_REGION_SEGMENT_GLOBAL
 const RegionSegmentReadonly = HSA_REGION_SEGMENT_READONLY
 const RegionSegmentPrivate = HSA_REGION_SEGMENT_PRIVATE
 const RegionSegmentGroup = HSA_REGION_SEGMENT_GROUP
-const RegionSegmentArg = HSA_REGION_SEGMENT_ARG
-const RegionSegmentKernarg = HSA_REGION_SEGMENT_KERNARG
-const RegionSegmentSpill = HSA_REGION_SEGMENT_SPILL
 const RegionGlobalFlagKernarg = HSA_REGION_GLOBAL_FLAG_KERNARG
 const RegionGlobalFlagFineGrained = HSA_REGION_GLOBAL_FLAG_FINE_GRAINED
 const RegionGlobalFlagCoarseGrained = HSA_REGION_GLOBAL_FLAG_COARSE_GRAINED
@@ -869,7 +861,6 @@ const RegionInfoAllocMaxSize = HSA_REGION_INFO_ALLOC_MAX_SIZE
 const RegionInfoRuntimeAllocAllowed = HSA_REGION_INFO_RUNTIME_ALLOC_ALLOWED
 const RegionInfoRuntimeAllocGranule = HSA_REGION_INFO_RUNTIME_ALLOC_GRANULE
 const RegionInfoRuntimeAllocAlignment = HSA_REGION_INFO_RUNTIME_ALLOC_ALIGNMENT
-const RegionInfoCount = HSA_REGION_INFO_COUNT
 const SymbolKindVariable = HSA_SYMBOL_KIND_VARIABLE
 const SymbolKindKernel = HSA_SYMBOL_KIND_KERNEL
 const SymbolKindIndirectFunction = HSA_SYMBOL_KIND_INDIRECT_FUNCTION
@@ -1403,7 +1394,7 @@ end
 
 function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
     begin 
-        len = executable_symbol_info_type(symbol)
+        len = executable_symbol_info_name_length(symbol)
         value = Array(Uint8,len)
     end # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:

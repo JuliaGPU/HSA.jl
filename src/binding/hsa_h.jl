@@ -1,4 +1,4 @@
-# Julia wrapper for header: /opt/hsa/include/hsa.h
+# Julia wrapper for header: /opt/hsa/lib/../include/hsa.h
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
@@ -881,7 +881,7 @@ end
 
 function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
     begin 
-        len = executable_symbol_info_type(symbol)
+        len = executable_symbol_info_name_length(symbol)
         value = Array(Uint8,len)
     end # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:
@@ -1017,7 +1017,7 @@ function executable_symbol_info_indirect_function_call_convention(symbol) # /hom
     test_status(err) # line 71:
     value = value.x
 end
-# Julia wrapper for header: /opt/hsa/include/hsa_ext_finalize.h
+# Julia wrapper for header: /opt/hsa/lib/../include/hsa_ext_finalize.h
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
@@ -1924,7 +1924,7 @@ end
 
 function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
     begin 
-        len = executable_symbol_info_type(symbol)
+        len = executable_symbol_info_name_length(symbol)
         value = Array(Uint8,len)
     end # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:
@@ -2060,7 +2060,7 @@ function executable_symbol_info_indirect_function_call_convention(symbol) # /hom
     test_status(err) # line 71:
     value = value.x
 end
-# Julia wrapper for header: /opt/hsa/include/hsa_ext_image.h
+# Julia wrapper for header: /opt/hsa/lib/../include/hsa_ext_image.h
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
@@ -2478,10 +2478,6 @@ end
 
 function hsa_ext_image_clear(agent::Agent,image::hsa_ext_image_t,data::Ptr{Void},image_region::Ptr{hsa_ext_image_region_t})
     ccall((:hsa_ext_image_clear,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_t,Ptr{Void},Ptr{hsa_ext_image_region_t}),agent,image,data,image_region)
-end
-
-function hsa_ext_get_image_info_max_dim(component::Agent,attribute::hsa_agent_info_t,value::Ptr{Void})
-    ccall((:hsa_ext_get_image_info_max_dim,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),component,attribute,value)
 end
 
 function hsa_ext_sampler_create(agent::Agent,sampler_descriptor::Ptr{hsa_ext_sampler_descriptor_t},sampler::Ptr{hsa_ext_sampler_t})
@@ -2987,7 +2983,7 @@ end
 
 function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
     begin 
-        len = executable_symbol_info_type(symbol)
+        len = executable_symbol_info_name_length(symbol)
         value = Array(Uint8,len)
     end # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:

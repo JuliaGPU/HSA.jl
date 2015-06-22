@@ -4,32 +4,40 @@
 using Clang.cindex
 using Clang.wrap_c
 
-HSA_RUNTIME_PATH = get(ENV, "HSA_RUNTIME_PATH", "../../runtime")
+script_path = dirname(Base.source_path())
 
-inc_path = joinpath(HSA_RUNTIME_PATH, "include")
+include("$script_path/../src/binding/def.jl") # pull in include path
 
-hsa_hdrs = map(x->joinpath(inc_path, x), [
+hsa_hdrs = map(x->joinpath(hsa_include_path, x), [
     "hsa.h",
     "hsa_ext_finalize.h",
     "hsa_ext_image.h"
 ])
 
 clang_includes = [
-    joinpath(HSA_RUNTIME_PATH, "include")
+    hsa_include_path
 ]
 
+if haskey(ENV, "INCLUDE_PATH")
+	unshift!(clang_includes, ENV["INCLUDE_PATH"])
+else
+	warn("environment variable INCLUDE_PATH is not set, generator may not be able to find all headers included by hsa.h")
+end
+
 excluded_symbols = Set([
+   # ignore noise
    "HSA_API",
    "HSA_IMPORT",
    # Custom wrappers for
    "hsa_system_get_info",
    "hsa_iterate_agents",
+   "hsa_executable_iterate_symbols"
 ])
 
 const wc = wrap_c.init(
     common_file = "hsa_common.jl",
     output_file = "hsa_h.jl",
-    output_dir = "../src/binding"
+    output_dir = "$script_path/../src/binding"
 )
 
 wc.clang_includes = clang_includes
@@ -54,7 +62,7 @@ end
 
 wc.headers = hsa_hdrs
 
-include("../src/def.jl") # pull in type mappings
+include("$script_path/../src/def.jl") # pull in type mappings
 
 include("gen_argtypes.jl")
 include("gen_atomics.jl")
