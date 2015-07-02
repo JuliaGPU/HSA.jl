@@ -1,25 +1,7 @@
-# Copyright 2014 HSA Foundation Inc.  All Rights Reserved.
-#
-# HSAF is granting you permission to use this software and documentation (if
-# any) (collectively, the "Materials") pursuant to the terms and conditions
-# of the Software License Agreement included with the Materials.  If you do
-# not have a copy of the Software License Agreement, contact the  HSA Foundation for a copy.
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-# 1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright
-#    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the distribution
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-# FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-# CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
 using HSA
 using HSA.ExtFinalization
+
+USE_CODEGEN = true
 
 function check(message)
 	println("✓ $message")
@@ -51,22 +33,46 @@ queue = Queue(agent, queue_size, typ = HSA.QueueTypeSingle, error_callback = (s,
 end)
 check("Creating the queue")
 
-mod_bytes = open(readbytes, "vector_copy.brig")
+if !USE_CODEGEN
+	# Load the precompiled .brig file containing the
+	# kernel to be executed
 
-program = Program()
-check("Create the program")
+	mod_bytes = open(readbytes, "vector_copy.brig")
 
-HSA.ExtFinalization.program_add_module(program, pointer(mod_bytes))
-check("Adding the brig module to the program")
+	program = Program()
+	check("Create the program")
 
-isa = HSA.agent_info_isa(agent)
-check("Query the agents isa")
+	HSA.ExtFinalization.program_add_module(program, pointer(mod_bytes))
+	check("Adding the brig module to the program")
 
-code_object = HSA.ExtFinalization.program_finalize(program, isa, 0)
-check("Finalizing the program")
+	isa = HSA.agent_info_isa(agent)
+	check("Query the agents isa")
 
-finalize(program)
-check("Destroying the program")
+	code_object = HSA.ExtFinalization.program_finalize(program, isa, 0)
+	check("Finalizing the program")
+
+	finalize(program)
+	check("Destroying the program")
+else # USE_CODEGEN
+	# Use the HSAIL Code Generator to compile a
+	# kernel function to BRIG
+	import HSA.Intrinsics
+
+	HSA.init_spir_codegen()
+
+	@target spir function vector_copy_kernel(a::Ptr{Int64},b::Ptr{Int64})
+		idx = get_global_id(0)
+
+		x = Base.unsafe_load(b, idx)
+        Base.unsafe_store!(a, x, idx)
+	end
+
+	code_spir(vector_copy_kernel, (Ptr{Int64}, Ptr{Int64}))
+
+	HSA.destroy_spir_codegen()
+
+	exit()
+end
 
 executable = Executable()
 check("Create the executable")
@@ -77,7 +83,20 @@ check("Loading the code object")
 HSA.executable_freeze(executable)
 check("Freeze the executable")
 
-symbol = HSA.executable_get_symbol(executable, "", "&__vector_copy_kernel", agent, 0)
+println("Symbols in the executable:")
+symbols = HSA.symbols(executable)
+last_symbol_name = ""
+last_symbol = ""
+for (s, n) in symbols
+	m = HSA.executable_symbol_info_module_name(s)
+	println("$m :: $n")
+
+	last_symbol_name = n
+	last_symbol = s
+end
+
+symbol = last_symbol
+symbol = HSA.executable_get_symbol(executable,"&vector_copy_kernel")
 check("Extract the symbol from the executable")
 
 kernel_object = HSA.executable_symbol_info_kernel_object(symbol)
