@@ -1,4 +1,4 @@
-export code_spir
+export code_spir, code_hsa, src_hsail
 
 function to_tuple_type(t::ANY)
     if isa(t,Tuple) || isa(t,AbstractArray) || isa(t,SimpleVector)
@@ -53,7 +53,7 @@ code_hsa(f::ANY, t::ANY) = code_hsa(STDOUT, f, t)
 # output final hsail code
 function src_hsail(f::Function, types::ANY)
     t = to_tuple_type(types)
-    llvmf = ccall(:jl_get_hsailf, Ptr{Void}, (Any, Any, Bool), f, t, false)
+    llvmf = ccall(:jl_get_hsailf, Ptr{Void}, (Any, Any), f, t)
 
     if llvmf == C_NULL
         error("no method found for the specified argument types")
@@ -72,4 +72,11 @@ init_spir_codegen() = init_codegen(:spir)
 init_hsail_codegen() = init_codegen(:hsail)
 
 function destroy_spir_codegen()
+end
+
+function brig(f::Function, types::ANY)
+    t = to_tuple_type(types)
+	brig = ccall(:jl_get_brigf, Ptr{Void}, (Any, Any), f, t)
+
+	return brig
 end
