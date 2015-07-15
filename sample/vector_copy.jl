@@ -1,5 +1,6 @@
 using HSA
 using HSA.ExtFinalization
+using HSA.Intrinsics
 
 USE_CODEGEN = true
 
@@ -33,46 +34,50 @@ queue = Queue(agent, queue_size, typ = HSA.QueueTypeSingle, error_callback = (s,
 end)
 check("Creating the queue")
 
+brig_ptr = C_NULL
+
 if !USE_CODEGEN
 	# Load the precompiled .brig file containing the
 	# kernel to be executed
 
 	mod_bytes = open(readbytes, "vector_copy.brig")
 
-	program = Program()
-	check("Create the program")
-
-	HSA.ExtFinalization.program_add_module(program, pointer(mod_bytes))
-	check("Adding the brig module to the program")
-
-	isa = HSA.agent_info_isa(agent)
-	check("Query the agents isa")
-
-	code_object = HSA.ExtFinalization.program_finalize(program, isa, 0)
-	check("Finalizing the program")
-
-	finalize(program)
-	check("Destroying the program")
+	brig_ptr = pointer(mod_bytes)
 else # USE_CODEGEN
 	# Use the HSAIL Code Generator to compile a
 	# kernel function to BRIG
 	import HSA.Intrinsics
 
-	HSA.init_spir_codegen()
+	HSA.init_hsail_codegen()
+	check("Initialize HSAIL CodeGen")
 
-	@target spir function vector_copy_kernel(a::Ptr{Int64},b::Ptr{Int64})
-		idx = get_global_id(0)
+	@target hsail function vector_copy_kernel(a::Ptr{Int64},b::Ptr{Int64})
+		idx = get_global_id(Int32(0))
 
 		x = Base.unsafe_load(b, idx)
         Base.unsafe_store!(a, x, idx)
+		return nothing
 	end
 
-	code_spir(vector_copy_kernel, (Ptr{Int64}, Ptr{Int64}))
-
-	HSA.destroy_spir_codegen()
-
-	exit()
+	brig_ptr = HSA.brig(vector_copy_kernel, Tuple{Ptr{Int64}, Ptr{Int64}})
+    assert(brig_ptr != C_NULL)
+	check("Compile Kernel to BRIG")
 end
+
+program = Program()
+check("Create the program")
+
+HSA.ExtFinalization.program_add_module(program, brig_ptr)
+check("Adding the brig module to the program")
+
+isa = HSA.agent_info_isa(agent)
+check("Query the agents isa")
+
+code_object = HSA.ExtFinalization.program_finalize(program, isa, 0)
+check("Finalizing the program")
+
+finalize(program)
+check("Destroying the program")
 
 executable = Executable()
 check("Create the executable")
@@ -96,7 +101,10 @@ for (s, n) in symbols
 end
 
 symbol = last_symbol
-symbol = HSA.executable_get_symbol(executable,"&vector_copy_kernel")
+try
+	symbol = HSA.executable_get_symbol(executable,"&vector_copy_kernel")
+catch ex
+end
 check("Extract the symbol from the executable")
 
 kernel_object = HSA.executable_symbol_info_kernel_object(symbol)
