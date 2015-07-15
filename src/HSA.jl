@@ -29,6 +29,7 @@ include("binding.jl")
 include("reflection.jl")
 include("execution.jl")
 include("intrinsics.jl")
+include("emulation.jl")
 #end
 
 end
