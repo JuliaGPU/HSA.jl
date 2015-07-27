@@ -12,6 +12,8 @@ include("memory.jl")
 include("ext_finalization.jl")
 include("code.jl")
 include("isa.jl")
+include("intrinsics.jl")
 include("emulation.jl")
+include("execution.jl")
 
 end
