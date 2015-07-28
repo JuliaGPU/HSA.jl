@@ -1,7 +1,3 @@
-const INTRINSICS = [:get_global_id]
-
-module Intrinsics
-
 using Core.Intrinsics.llvmcall
 
 const int_intrinsics = [
@@ -130,12 +126,9 @@ function intrinsic_impl()
 			$impl_expr
 		end
 
-		println(final_expr)
-
+		# Add final code to the module
 		eval(final_expr)
  	end
 end
 
 intrinsic_impl()
-
-end

@@ -17,7 +17,7 @@ end
 # display ir of the generated spir function
 function src_spir(f::Function, types::ANY)
     t = to_tuple_type(types)
-    llvmf = ccall(:jl_get_spirf, Ptr{Void}, (Any, Any, Bool), f, t, false)
+    llvmf = ccall(:jl_get_spirf, Ptr{Void}, (Any, Any), f, t)
 
     if llvmf == C_NULL
         error("no method found for the specified argument types")

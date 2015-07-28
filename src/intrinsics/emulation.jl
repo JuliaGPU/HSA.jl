@@ -1,4 +1,6 @@
-using .Intrinsics
+const EMULATED_INTRINSICS = [
+    :get_global_id
+]
 
 export @hsa_kernel, run_cpu
 
@@ -14,7 +16,6 @@ end
 
 # Emulated version of intrinsic functions
 # mainly for testing and execution on the CPU
-import .Intrinsics.get_global_id
 function get_global_id(ctx::EmulationContext, dim::Int32)
 	return ctx.global_id[dim + 1]
 end
@@ -36,7 +37,7 @@ function add_intrinsics_ctx_arg(ex)
 	if isa(ex, Expr) && ex.head == :call
 		fname = ex.args[1]
 
-		if in(fname, INTRINSICS)
+		if in(fname, EMULATED_INTRINSICS)
 			# add context as first argument (after the function name)
 			insert!(ex.args, 2, CTX)
 		end
@@ -46,7 +47,7 @@ end
 function add_emulation(fun::Expr)
    sig = fun.args[1]
    # insert ctx as first argument (after the function name)
-   insert!(sig.args, 2, :($CTX :: HSA.EmulationContext))
+   insert!(sig.args, 2, :($CTX :: HSA.Intrinsics.EmulationContext))
 
    visit_ast(add_intrinsics_ctx_arg, fun)
 end
@@ -77,4 +78,3 @@ function run_cpu(rng::Tuple{Int,Int,Int}, kernel::Function, args...)
 		end
 	end
 end
-

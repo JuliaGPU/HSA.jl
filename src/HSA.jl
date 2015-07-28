@@ -4,17 +4,7 @@ include("binding/def.jl") # library path definitions
 include("binding/hsa_common.jl") # generated type definitions
 include("binding/custom.jl") # manual implementations
 
-include("def.jl")
-include("util_iter.jl")
-include("util_macros.jl")
-include("error.jl")
-include("runtime.jl")
-include("agent.jl")
-include("signal.jl")
-include("aql.jl")
-include("memory.jl")
-include("queue.jl")
-include("code.jl")
+include("runtime/module.jl") # wrapper classes
 
 if libhsaext != ""
 include("ext_def.jl")
@@ -26,10 +16,9 @@ include("binding.jl")
 
 # julia codegen integration
 #if isdefined(Base, :HSA_TARGET)
-include("reflection.jl")
-include("execution.jl")
-include("intrinsics.jl")
-include("emulation.jl")
+include("compilation/Compilation.jl")
+include("execution/Execution.jl")
+include("intrinsics/Intrinsics.jl")
 #end
 
 end
