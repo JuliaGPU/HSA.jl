@@ -17,6 +17,12 @@ function show(io::IO, e::HSAError)
     print(io, typeof(e), "(", e.status, ") ", message)
 end
 
+status_string(status) = status_string(convert(hsa_status_t, status))
+
+function test_status(status; warn_only :: Bool = false)
+	status = convert(hsa_status_t, status)
+	return test_status(status, warn_only)
+end
 function test_status(status::hsa_status_t; warn_only :: Bool = false)
     if status & HSA_STATUS_ERROR == HSA_STATUS_ERROR
 		ex = HSAError(status)

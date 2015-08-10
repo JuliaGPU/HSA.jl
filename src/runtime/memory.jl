@@ -57,6 +57,29 @@ function memory_register(
 	test_status(err)
 end
 
+function memory_deregister(
+	ptr,
+	size)
+
+	err = ccall((:hsa_memory_deregister, libhsa), hsa_status_t, (Ptr{Void}, Csize_t),
+	ptr, size)
+
+	test_status(err)
+end
+
+type Allocation
+	ptr::Ptr{Void}
+
+	function Allocation(ptr)
+		a = new(ptr)
+		finalizer(a, memory_free)
+
+		return a
+	end
+end
+
+convert(::Type{Ptr{Void}}, a::Allocation) = a.ptr
+
 function memory_allocate(
 	region,
 	size)
@@ -71,5 +94,13 @@ function memory_allocate(
 
 	test_status(err)
 
-	return res.x
+	return Allocation(res.x)
+end
+
+function memory_free(ptr)
+	err = ccall((:hsa_memory_free, libhsa), hsa_status_t, (
+	Ptr{Void},),
+	ptr)
+
+	test_status(err)
 end

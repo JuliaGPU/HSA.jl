@@ -555,7 +555,7 @@ function agent_info_vendor_name(agent) # /home/strollinger/hsa/jl/gen/gen_getter
     value = Array(Uint8,64) # line 67:
     err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VENDOR_NAME,value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function agent_info_default_float_rounding_mode(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -590,7 +590,7 @@ function agent_info_name(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, l
     value = Array(Uint8,64) # line 67:
     err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NAME,value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function agent_info_profile(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -841,7 +841,7 @@ function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 
     end # line 67:
     err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME,Base.zero(UInt32),value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function executable_info_state(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -886,7 +886,7 @@ function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_
     end # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function executable_symbol_info_kernel_group_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -966,7 +966,7 @@ function executable_symbol_info_module_name(symbol) # /home/strollinger/hsa/jl/g
     end # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function executable_symbol_info_variable_address(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -1598,7 +1598,7 @@ function agent_info_vendor_name(agent) # /home/strollinger/hsa/jl/gen/gen_getter
     value = Array(Uint8,64) # line 67:
     err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VENDOR_NAME,value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function agent_info_default_float_rounding_mode(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -1633,7 +1633,7 @@ function agent_info_name(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, l
     value = Array(Uint8,64) # line 67:
     err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NAME,value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function agent_info_profile(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -1884,7 +1884,7 @@ function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 
     end # line 67:
     err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME,Base.zero(UInt32),value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function executable_info_state(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -1929,7 +1929,7 @@ function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_
     end # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function executable_symbol_info_kernel_group_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -2009,7 +2009,7 @@ function executable_symbol_info_module_name(symbol) # /home/strollinger/hsa/jl/g
     end # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function executable_symbol_info_variable_address(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -2657,7 +2657,7 @@ function agent_info_vendor_name(agent) # /home/strollinger/hsa/jl/gen/gen_getter
     value = Array(Uint8,64) # line 67:
     err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VENDOR_NAME,value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function agent_info_default_float_rounding_mode(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -2692,7 +2692,7 @@ function agent_info_name(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, l
     value = Array(Uint8,64) # line 67:
     err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NAME,value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function agent_info_profile(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -2943,7 +2943,7 @@ function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 
     end # line 67:
     err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME,Base.zero(UInt32),value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function executable_info_state(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -2988,7 +2988,7 @@ function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_
     end # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function executable_symbol_info_kernel_group_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
@@ -3068,7 +3068,7 @@ function executable_symbol_info_module_name(symbol) # /home/strollinger/hsa/jl/g
     end # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # line 69:
     test_status(err) # line 71:
-    value = ascii(value)
+    value = strip(ascii(value),'\0')
 end
 
 function executable_symbol_info_variable_address(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:

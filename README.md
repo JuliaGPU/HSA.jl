@@ -14,4 +14,7 @@ Module overview
     +   Execution
 	    Convenience macros and functions that abstract away most of the boilerplate for running an HSA Kernel
 
+Known Issues
+*   HSA.executable\_get\_symbol does not find symbols
+
 [![Build Status](https://travis-ci.org/rollingthunder/HSA.jl.svg?branch=master)](https://travis-ci.org/rollingthunder/HSA.jl)

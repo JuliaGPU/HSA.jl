@@ -63,20 +63,3 @@ function src_hsail(f::Function, types::ANY)
 
     return str
 end
-
-function init_codegen(cgname::Symbol)
-	ccall(:jl_init_device_codegen, Bool, (Any,), cgname)
-end
-
-init_spir_codegen() = init_codegen(:spir)
-init_hsail_codegen() = init_codegen(:hsail)
-
-function destroy_spir_codegen()
-end
-
-function brig(f::Function, types::ANY)
-    t = to_tuple_type(types)
-	brig = ccall(:jl_get_brigf, Ptr{Void}, (Any, Any), f, t)
-
-	return brig
-end

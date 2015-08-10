@@ -48,9 +48,6 @@ else # USE_CODEGEN
 	# kernel function to BRIG
 	import HSA.Intrinsics
 
-	HSA.init_hsail_codegen()
-	check("Initialize HSAIL CodeGen")
-
 	@target hsail function vector_copy_kernel(a::Ptr{Int64},b::Ptr{Int64})
 		idx = get_global_id(Int32(0))
 
@@ -59,7 +56,9 @@ else # USE_CODEGEN
 		return nothing
 	end
 
-	brig_ptr = HSA.brig(vector_copy_kernel, Tuple{Ptr{Int64}, Ptr{Int64}})
+	println(HSA.Compilation.src_hsail(vector_copy_kernel, Tuple{Ptr{Int64}, Ptr{Int64}}))
+
+	brig_ptr = HSA.Compilation.brig(vector_copy_kernel, Tuple{Ptr{Int64}, Ptr{Int64}})
     assert(brig_ptr != C_NULL)
 	check("Compile Kernel to BRIG")
 end
@@ -102,8 +101,10 @@ end
 
 symbol = last_symbol
 try
-	symbol = HSA.executable_get_symbol(executable,"&vector_copy_kernel")
+	symbol = HSA.executable_get_symbol(executable,last_symbol_name)
 catch ex
+	warn("expected kernel symbol '$last_symbol_name' not found, using any symbol in the executable\n Exception: $ex")
+
 end
 check("Extract the symbol from the executable")
 
@@ -155,10 +156,13 @@ end
 kernarg_region = regions[karg_region_idx]
 check("Finding a kernarg memory region")
 
-kernarg_address = convert(Ptr{Ptr{Int}}, HSA.memory_allocate(kernarg_region, kernarg_segment_size))
-check("Allocating kernel argument memory buffer")
+alloc = HSA.memory_allocate(kernarg_region, kernarg_segment_size)
+#kernarg_address = convert(Ptr{Ptr{Int}}, alloc.ptr)
+kernarg_address = convert(Ptr{Uint32}, alloc.ptr)
+check("Allocating kernel argument memory buffer of size $kernarg_segment_size")
 unsafe_store!(kernarg_address, pointer(a_in))
-unsafe_store!(kernarg_address + sizeof(pointer(a_in)), pointer(b_out))
+#unsafe_store!(kernarg_address + sizeof(pointer(a_in)), pointer(b_out))
+unsafe_store!(kernarg_address + 4, pointer(b_out))
 
 index = HSA.load_write_index(queue) # HSA.add_write_index!(queue, Uint64(1))
 

@@ -62,7 +62,7 @@ end
 
 wc.headers = hsa_hdrs
 
-include("$script_path/../src/def.jl") # pull in type mappings
+include("$script_path/../src/runtime/def.jl") # pull in type mappings
 
 include("gen_argtypes.jl")
 include("gen_atomics.jl")

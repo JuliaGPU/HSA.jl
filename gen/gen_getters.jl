@@ -104,7 +104,7 @@ function getter_code(getter_spec, eltype :: Type{Val{String}}, count :: Int)
 	else
 		# max size string
 		return :($var = Array(Uint8, $count)),
-		    :($var = ascii($var))
+		    :($var = strip(ascii($var), '\0'))
 	end
 end
 
@@ -114,7 +114,7 @@ function getter_code(getter_spec, eltype :: Type{Val{String}}, count :: Symbol)
 
 	return :(len = $len_sig;
 		$var = Array(Uint8, len)),
-		:($var = ascii($var))
+		:($var = strip(ascii($var), '\0'))
 end
 
 function getter_signature(getter_spec, key)
