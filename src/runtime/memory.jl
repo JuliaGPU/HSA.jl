@@ -72,9 +72,16 @@ type Allocation
 
 	function Allocation(ptr)
 		a = new(ptr)
-		finalizer(a, memory_free)
+		finalizer(a, deallocate)
 
 		return a
+	end
+end
+
+function deallocate(a :: Allocation)
+	if a.ptr != C_NULL
+		memory_free(a.ptr)
+		a.ptr = C_NULL
 	end
 end
 
