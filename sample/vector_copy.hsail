@@ -32,12 +32,12 @@ prog kernel &__vector_copy_kernel(
 	// BB#0:                                // %entry
 	workitemabsid_u32	$s0, 0;
 	cvt_s64_s32	$d0, $s0;
-	shl_u64	$d0, $d0, 2;
+	shl_u64	$d0, $d0, 3;
 	ld_kernarg_align(8)_width(all)_u64	$d1, [%b];
 	add_u64	$d1, $d1, $d0;
 	ld_kernarg_align(8)_width(all)_u64	$d2, [%a];
 	add_u64	$d0, $d2, $d0;
-	ld_global_u32	$s0, [$d0];
-	st_global_u32	$s0, [$d1];
+	ld_global_u64	$d2, [$d0];
+	st_global_u64	$d2, [$d1];
 	ret;
 };
