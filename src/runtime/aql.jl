@@ -39,8 +39,8 @@ function unsafe_convert(::Type{PacketHeader}, ptr :: Ptr{Void})
 
     h_type = unsafe_load(h_ptr)
     byte2 = unsafe_load(h_ptr + 1)
-    h_barrier = (byte2 & 0x80) != 0x00
-    h_acq_fen = (byte2 >> 5) & 0x03
+    h_barrier = (byte2 & 0x01) != 0x00
+    h_acq_fen = (byte2 >> 1) & 0x03
     h_rel_fen = (byte2 >> 3) & 0x03
 
     return PacketHeader(h_type, h_barrier, h_acq_fen, h_rel_fen)
@@ -52,8 +52,8 @@ function unsafe_store!(ptr :: Ptr{Void}, hdr :: PacketHeader)
     h_ptr = convert(Ptr{Uint8}, ptr)
 
     h_byte2 =
-        ((hdr.barrier) ? 0x01 << 7 : 0x00) |
-        hdr.acquire_fence_scope << 5 |
+        ((hdr.barrier) ? 0x01 : 0x00) |
+        hdr.acquire_fence_scope << 1 |
         hdr.release_fence_scope << 3
     unsafe_store!(h_ptr + 1, h_byte2)
 
@@ -119,12 +119,11 @@ type KernelDispatchPacket <: AQLPacket
 		end
 
 		argc = length(sizes)
+		argc_half = argc / 2
 
 		if (argc > dimension) && (argc % 2 != 0)
 			error("incorrect number of dimension arguments, expected either $dimension or $(2*dimension) but got $argc")
 		end
-
-		argc_half = argc / 2
 
 		grid_size = [1,1,1]
 
@@ -199,7 +198,7 @@ function unsafe_store!(ptr :: Ptr{Void}, dp :: KernelDispatchPacket)
 		error("not a dispatch packet")
 	end
 
-    unsafe_store!(convert(Ptr{Uint16}, ptr + 2), convert(Uint16, dp.dimensions))
+    unsafe_store!(convert(Ptr{Uint16}, ptr + 2), convert(Uint16, dp.dimensions)) # setup
     unsafe_store!(convert(Ptr{Uint16}, ptr + 4), dp.workgroup_size_x)
     unsafe_store!(convert(Ptr{Uint16}, ptr + 6), dp.workgroup_size_y)
     unsafe_store!(convert(Ptr{Uint16}, ptr + 8), dp.workgroup_size_z)
