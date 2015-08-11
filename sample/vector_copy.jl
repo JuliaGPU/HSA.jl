@@ -2,7 +2,7 @@ using HSA
 using HSA.ExtFinalization
 using HSA.Intrinsics
 
-USE_CODEGEN = true
+USE_CODEGEN = false
 
 function check(message)
 	println("✓ $message")
@@ -124,14 +124,16 @@ if HSA.load(signal) != Uint64(1)
 end
 check("Verify initial signal value")
 
-a_in = Array(Int, 1024*1024)
-fill(a_in, 1)
-HSA.memory_register(a_in, 1024*1024*4)
+const N = 16
+
+a_in = Array(Int, N)
+fill!(a_in, 1)
+HSA.memory_register(a_in, sizeof(a_in))
 check("Registering argument memory for input parameter")
 
-b_out = Array(Int, 1024*1024)
-fill(b_out, 0)
-HSA.memory_register(b_out, 1024*1024*4)
+b_out = Array(Int, N)
+fill!(b_out, 0)
+HSA.memory_register(b_out, sizeof(b_out))
 check("Registering argument memory for output parameter")
 
 regions = HSA.regions(agent)
@@ -157,16 +159,14 @@ kernarg_region = regions[karg_region_idx]
 check("Finding a kernarg memory region")
 
 alloc = HSA.memory_allocate(kernarg_region, kernarg_segment_size)
-#kernarg_address = convert(Ptr{Ptr{Int}}, alloc.ptr)
-kernarg_address = convert(Ptr{Uint32}, alloc.ptr)
+kernarg_address = convert(Ptr{Ptr{Int}}, alloc.ptr)
 check("Allocating kernel argument memory buffer of size $kernarg_segment_size")
 unsafe_store!(kernarg_address, pointer(a_in))
-#unsafe_store!(kernarg_address + sizeof(pointer(a_in)), pointer(b_out))
-unsafe_store!(kernarg_address + 4, pointer(b_out))
+unsafe_store!(kernarg_address + sizeof(pointer(a_in)), pointer(b_out))
 
 index = HSA.load_write_index(queue) # HSA.add_write_index!(queue, Uint64(1))
 
-dispatch_packet = KernelDispatchPacket(1, 1024*1024, 256)
+dispatch_packet = KernelDispatchPacket(1, N)
 dispatch_packet.header.acquire_fence_scope = HSA.HSA_FENCE_SCOPE_SYSTEM
 dispatch_packet.header.release_fence_scope = HSA.HSA_FENCE_SCOPE_SYSTEM
 dispatch_packet.completion_signal = signal
@@ -175,29 +175,45 @@ dispatch_packet.kernarg_address = kernarg_address
 dispatch_packet.private_segment_size = private_segment_size
 dispatch_packet.group_segment_size = group_segment_size
 
+pkg_bytes = Array(Uint8, 64)
+unsafe_store!(convert(Ptr{Void}, pointer(pkg_bytes)), dispatch_packet)
+
+println("""
+    Header: $(pkg_bytes[1:2])
+    Setup: $(pkg_bytes[3:4])
+    Workgroup X: $(pkg_bytes[5:6])
+	""")
+
 queue[index] = dispatch_packet
 
 HSA.store_write_index!(queue, Uint64(index + 1))
 HSA.store!(queue.doorbell_signal, Int64(index))
 check("Dispatching the kernel")
 
+value = 1
+while value != 0
 value = wait(signal, :(<), 1, wait_state_hint = HSA.HSA_WAIT_STATE_ACTIVE)
 check("Waiting for the kernel")
+end
 
-valid=true
-fail_index=0
-for (i in 1:1024*1024)
+failed = 0
+for (i in 1:N)
 	if (b_out[i]!=a_in[i])
-		fail_index=i
-		valid=0
-		break
+		failed = failed + 1
+
+		if failed > 10
+			println("...")
+			break
+		end
+
+        println("Bad index: $i\n$(a_in[i]) --> $(b_out[i])")
 	end
 end
 
-if(valid)
+if(failed == 0)
 	println("Passed validation.")
 else
-	println("VALIDATION FAILED!\nBad index: $fail_index\n")
+	println("VALIDATION FAILED!\n")
 end
 
 finalize(signal)
