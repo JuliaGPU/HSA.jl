@@ -2,9 +2,18 @@ type Config
 	runtime::Runtime
 	agent::Agent
 	queue::Queue
+	is_alive::Bool
 end
 
 const DefaultQueueSize = 32
+
+const debug_output = false
+
+function debug_print(args...)
+	if debug_output
+		println(args...)
+	end
+end
 
 global Defaults = Nullable{Config}()
 
@@ -32,10 +41,12 @@ function set_defaults(rt::Runtime;
 	end
 
 	cfg = Config(
-			rt,agent,queue
+			rt,agent,queue,true
 		)
 
 	Defaults = Nullable{Config}(cfg)
+
+	finalizer(cfg, shutdown_managed_hsa)
 
 	return cfg
 end
@@ -51,7 +62,7 @@ function get_defaults()
 end
 
 function get_or_init_defaults()
-	if isnull(Defaults)
+	if isnull(Defaults) || !get_defaults().is_alive
 		return set_defaults()
 	else
 		return get_defaults()
@@ -61,3 +72,24 @@ end
 function clear_defaults()
 	Defaults = Nullable{Config}()
 end
+
+function shutdown_managed_hsa(cfg)
+	if isa(cfg, Nullable) && isnull(cfg)
+		return
+	elseif !isa(cfg, Config)
+		error("cfg must be an HSA Config object to shut down")
+	end
+
+	if !cfg.is_alive
+		return
+	end
+
+	# perform orderly shutdown of the referenced objects
+	finalize(cfg.agent)
+	finalize(cfg.queue)
+	finalize(cfg.runtime)
+	cfg.is_alive = false
+end
+
+
+
