@@ -2,7 +2,7 @@ using HSA
 using HSA.ExtFinalization
 using HSA.Intrinsics
 
-USE_CODEGEN = false
+USE_CODEGEN = true
 
 function check(message)
 	println("✓ $message")
@@ -48,8 +48,8 @@ else # USE_CODEGEN
 	# kernel function to BRIG
 	import HSA.Intrinsics
 
-	@target hsail function vector_copy_kernel(a::Ptr{Int64},b::Ptr{Int64})
-		idx = get_global_id(Int32(0))
+	@hsa_kernel function vector_copy_kernel(a::Ptr{Int64},b::Ptr{Int64})
+		idx = get_global_id(Int32(0)) + 1
 
 		x = Base.unsafe_load(b, idx)
         Base.unsafe_store!(a, x, idx)
