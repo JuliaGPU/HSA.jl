@@ -1,4 +1,5 @@
 function build_dispatch(range, kernel_info, karg_memory, signal)
+	debug_print("build_dispatch: Building $range KernelDispatchPacket for $(string(kernel_info.func))($(join(kernel_info.argtypes,',')))")
 	dispatch_packet = KernelDispatchPacket(length(range), range...)
 	dispatch_packet.header.acquire_fence_scope = HSA.HSA_FENCE_SCOPE_SYSTEM
 	dispatch_packet.header.release_fence_scope = HSA.HSA_FENCE_SCOPE_SYSTEM

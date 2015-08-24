@@ -30,6 +30,8 @@ function allocate_args(agent, kernel_info, kernel_args)
 		sizeof(x)
 	end
 
+	debug_print("allocate_args: Allocate $karg_size bytes of kernarg memory for $(string(kernel_info.func))")
+
 	karg_region = find_kernarg_region(agent)
 
 	karg_mem = HSA.memory_allocate(karg_region, karg_size)

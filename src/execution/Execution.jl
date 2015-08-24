@@ -43,9 +43,12 @@ macro hsa(range, call)
 		packet = build_dispatch($(esc(range)), kernel_info, karg_memory, signal)
 
 		# Enqueue Dispatch
-		idx = HSA.add_write_index!(queue, Uint64(1))
+		#idx = HSA.add_write_index!(queue, Uint64(1))
+		idx = HSA.load_write_index(queue)
 
 		queue[idx] = packet
+
+		HSA.store_write_index!(queue, Uint64(idx + 1))
 
 		HSA.store!(queue.doorbell_signal, Int64(idx))
 
