@@ -20,6 +20,7 @@ global Defaults = Nullable{Config}()
 function set_defaults(rt::Runtime;
 	agent = nothing,
 	queue = nothing)
+	global Defaults
 
 	if agent == nothing
 		# Prefer GPU Agents
@@ -70,12 +71,18 @@ function get_or_init_defaults()
 end
 
 function clear_defaults()
+	global Defaults
+	shutdown_managed_hsa(Defaults)
 	Defaults = Nullable{Config}()
 end
 
 function shutdown_managed_hsa(cfg)
-	if isa(cfg, Nullable) && isnull(cfg)
-		return
+	if isa(cfg, Nullable)
+		if isnull(cfg)
+			return
+		else
+			cfg = get(cfg)
+		end
 	elseif !isa(cfg, Config)
 		error("cfg must be an HSA Config object to shut down")
 	end

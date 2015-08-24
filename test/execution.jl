@@ -31,7 +31,10 @@ facts("The execution framework") do
 		@fact cfg.queue --> anything
 		@fact cfg.agent --> anything
 
+		# disposes runtime reference
 		clear_defaults()
+
+		@fact_throws HSA.status_string(4107)
 	end
 
 	context("can automatically convert kernel arguments") do
