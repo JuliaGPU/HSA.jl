@@ -20,6 +20,27 @@ end
 	return nothing
 end
 
+@hsa_kernel function mmul(a,b,c,n)
+	i = get_global_id(Int32(0)) + 1
+	for j = 1:n
+		c[i,j] = 0
+		for k = 1:n
+			c[i,j] += a[i,k] + b[k,i]
+		end
+	end
+	return nothing
+end
+
+@hsa_kernel function mmul2d(a,b,c,n)
+	i = get_global_id(Int32(0)) + 1
+	j = get_global_id(Int32(1)) + 1
+	c[i,j] = 0
+	for k = 1:n
+		c[i,j] += a[i,k] + b[k,i]
+	end
+	return nothing
+end
+
 facts("The execution framework") do
 	context("manages the configuration details for kernel invocations") do
 		# does not hold a runtime reference initially
@@ -41,7 +62,7 @@ facts("The execution framework") do
 		rt = Runtime()
 
 		context("Arrays to pointers, registering the Memory with the runtime") do
-		    args = Array[ Array(Int, 10), Array(Float64, 5) ]
+			args = Array[ Array(Int, 10), Array(Float64, 5) ]
 
 			kargs = prepare_args(args)
 
@@ -127,32 +148,19 @@ facts("The execution framework") do
 
 		@fact args[3] --> expected
 	end
-#
-#	context("can execute a simple matrix multiplication") do
-#		const arows = 5
-#		const acols = 10
-#
-#		@hsa_kernel function mmul(a,b,c,n)
-#			i = get_global_id(Int32(0)) + 1
-#			j = get_global_id(Int32(1)) + 1
-#
-#			x = 0.0
-#			for k = 1:n
-#				x += a[i,k] * b[k,j]
-#			end
-#			c[i,j] = x
-#
-#			return nothing
-#		end
-#
-#		a = Array(Float64, arows, acols); rand!(a)
-#		b = Array(Float64, acols, arows); rand!(b)
-#		c = Array(Float64, arows, arows); rand!(c)
-#		c_expected = a * b
-#
-#		println(macroexpand(:(@hsa (arows, acols) mmul(a,b,c,acols))))
-#		@hsa (arows, acols) mmul(a,b,c,acols)
-#
-#		@fact c --> c_expected
-#	end
+
+	context("can execute a simple matrix multiplication") do
+		const arows = 5
+		const acols = 10
+
+		a = Array(Float64, arows, acols); rand!(a)
+		b = Array(Float64, acols, arows); rand!(b)
+		c = Array(Float64, arows, arows); rand!(c)
+		c_expected = a * b
+
+		println(macroexpand(:(@hsa (arows, acols) mmul(a,b,c,acols))))
+		@hsa (arows, acols) mmul(a,b,c,acols)
+
+		@fact c --> c_expected
+	end
 end
