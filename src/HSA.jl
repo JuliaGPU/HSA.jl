@@ -17,8 +17,8 @@ include("binding.jl")
 # julia codegen integration
 #if isdefined(Base, :HSA_TARGET)
 include("compilation/Compilation.jl")
-include("execution/Execution.jl")
 include("intrinsics/Intrinsics.jl")
+include("execution/Execution.jl")
 #end
 
 end

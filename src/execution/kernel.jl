@@ -64,6 +64,8 @@ function find_kernel_symbol(executable, kernel::Function)
 end
 
 function build_kernel(agent, kernel, types)
+	global kernel_cache
+
 	blob = get!(kernel_cache, (kernel, types)) do
 		debug_print("build_kernel: Build BRIG for $(string(kernel))($(join(types,',')))")
 		KernelBlob(brig(kernel, types))
