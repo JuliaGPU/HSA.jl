@@ -1,6 +1,16 @@
-function convert_arg(arr::AbstractArray) pointer(arr) end
-function prepare_arg(arr::AbstractArray) HSA.memory_register(arr, sizeof(arr)) end
-function cleanup_arg(arr::AbstractArray) HSA.memory_deregister(arr, sizeof(arr)) end
+using HSA.Intrinsics: DeviceArray
+
+function convert_arg(arr::AbstractArray)
+convert(Ptr{DeviceArray{eltype(arr)}},pointer_from_objref(arr))
+end
+function prepare_arg(arr::AbstractArray)
+HSA.memory_register(arr, sizeof(arr))
+HSA.memory_register(pointer_from_objref(arr), sizeof(DeviceArray{eltype(arr)}))
+end
+function cleanup_arg(arr::AbstractArray)
+HSA.memory_deregister(arr, sizeof(arr))
+HSA.memory_deregister(pointer_from_objref(arr), sizeof(DeviceArray{eltype(arr)}))
+end
 
 function convert_arg(x) x end
 function prepare_arg(x) end
