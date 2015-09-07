@@ -9,19 +9,6 @@ using HSA.Execution: prepare_args, cleanup_args, get_or_init_defaults, clear_def
 include("kernels.jl")
 
 facts("The execution framework") do
-	context("can execute a 2d matrix multiplication") do
-		const arows = 3
-		const acols = 4
-
-		a = Array(Float64, arows, acols); rand!(a)
-		b = Array(Float64, acols, arows); rand!(b)
-		c = Array(Float64, arows, arows); rand!(c)
-		c_expected = a * b
-
-		@hsa (arows, arows) mmul2d(a,b,c,acols)
-
-		@fact c --> c_expected
-	end
 	context("manages the configuration details for kernel invocations") do
 		# does not hold a runtime reference initially
 		@fact_throws HSA.status_string(4107)
@@ -152,6 +139,20 @@ facts("The execution framework") do
 
 		println(macroexpand(:(@hsa (acols) mmul(a,b,c,arows,acols))))
 		@hsa (arows) mmul(a,b,c,arows,acols)
+
+		@fact c --> c_expected
+	end
+
+	context("can execute a 2d matrix multiplication") do
+		const arows = 3
+		const acols = 4
+
+		a = Array(Float64, arows, acols); rand!(a)
+		b = Array(Float64, acols, arows); rand!(b)
+		c = Array(Float64, arows, arows); rand!(c)
+		c_expected = a * b
+
+		@hsa (arows, arows) mmul2d(a,b,c,acols)
 
 		@fact c --> c_expected
 	end
