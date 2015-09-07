@@ -39,17 +39,41 @@ end
 	return nothing
 end
 
-@hsa_kernel function mmul2d(a,b,c,n)
-	i = get_global_id(Int32(0)) + 1
+@hsa_kernel function mmul2d(a,b,c,acols)
+	# one kernel invocation per cell of the result matrix
+	arows = get_global_size(Int32(0))
+	# i = col
+	i = get_global_id(Int32(0))
+	# j = row
 	j = get_global_id(Int32(1)) + 1
-	c[i,j] = 0
-	for k = 1:n
-		c[i,j] += a[i,k] + b[k,i]
+
+	c_ij = 0.0
+	for k = 1:acols
+		a_idx = (k-1) * arows + j
+		b_idx = i * acols + k
+		c_ij += a[a_idx] * b[b_idx]
 	end
+
+	c_idx = i * arows + j
+	c[c_idx] = c_ij
+
 	return nothing
 end
 
 facts("The execution framework") do
+	context("can execute a 2d matrix multiplication") do
+		const arows = 3
+		const acols = 4
+
+		a = Array(Float64, arows, acols); rand!(a)
+		b = Array(Float64, acols, arows); rand!(b)
+		c = Array(Float64, arows, arows); rand!(c)
+		c_expected = a * b
+
+		@hsa (arows, arows) mmul2d(a,b,c,acols)
+
+		@fact c --> c_expected
+	end
 	context("manages the configuration details for kernel invocations") do
 		# does not hold a runtime reference initially
 		@fact_throws HSA.status_string(4107)
