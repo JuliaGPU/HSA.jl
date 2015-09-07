@@ -6,7 +6,7 @@ using FactCheck
 using HSA.Execution: prepare_args, cleanup_args, get_or_init_defaults, clear_defaults,
                      build_kernel, allocate_args, kernel_cache, build_dispatch
 
-@hsa_kernel function vcopy(a::Ptr{Int64},b::Ptr{Int64})
+@hsa_kernel function vcopy(a,b)
 	idx = get_global_id(Int32(0)) + 1
 
 	x = Base.unsafe_load(a, idx)
@@ -20,13 +20,21 @@ end
 	return nothing
 end
 
-@hsa_kernel function mmul(a,b,c,n)
-	i = get_global_id(Int32(0)) + 1
-	for j = 1:n
-		c[i,j] = 0
-		for k = 1:n
-			c[i,j] += a[i,k] + b[k,i]
+@hsa_kernel function mmul(a,b,c,arows,acols)
+	# one kernel invocation per column of the result matrix
+	# i = col
+	i = get_global_id(Int32(0))
+	# j = row
+	for j = 1:arows
+		c_ij = 0.0
+		for k = 1:acols
+			a_idx = (k-1) * arows + j
+			b_idx = i * acols + k
+			c_ij += a[a_idx] * b[b_idx]
 		end
+
+		c_idx = i * arows + j
+		c[c_idx] = c_ij
 	end
 	return nothing
 end
@@ -133,6 +141,18 @@ facts("The execution framework") do
 		@fact b --> expected
 	end
 
+	context("can execute a float vector copy") do
+		const N = 1000
+
+        a = Array(Float64,N); rand!(a)
+        b = Array(Float64,N); rand!(b)
+		expected = copy(a)
+
+		@hsa (N) vcopy(a,b)
+
+		@fact b --> expected
+	end
+
 	context("can execute a vector add") do
 		const n = 100
 		args = Array[ Array(Int, n), Array(Int, n), Array(Int, n) ]
@@ -150,16 +170,16 @@ facts("The execution framework") do
 	end
 
 	context("can execute a simple matrix multiplication") do
-		const arows = 5
-		const acols = 10
+		const arows = 3
+		const acols = 4
 
 		a = Array(Float64, arows, acols); rand!(a)
 		b = Array(Float64, acols, arows); rand!(b)
 		c = Array(Float64, arows, arows); rand!(c)
 		c_expected = a * b
 
-		println(macroexpand(:(@hsa (arows, acols) mmul(a,b,c,acols))))
-		@hsa (arows, acols) mmul(a,b,c,acols)
+		println(macroexpand(:(@hsa (acols) mmul(a,b,c,arows,acols))))
+		@hsa (arows) mmul(a,b,c,arows,acols)
 
 		@fact c --> c_expected
 	end

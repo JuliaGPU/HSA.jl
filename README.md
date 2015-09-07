@@ -25,16 +25,31 @@ Known Issues
 ToDo
 *   Implement multidimensional Array access from kernel
     -   Idea: Directly access the information (size etc.) stored in the julia
-        jl_array_t so as to avoid having to pass that seperately
+        jl\_array\_t so as to avoid having to pass that seperately
         -> bound to be inefficient ?
 *   kernel pointer arguments are generated as kernarg\_u32 despite large machine model
     because they are in address space 0 but we can't just mark the arguments types 
     as address space 1, because they confuse the code generator...
     Solution: Implement AddAddrSpacePass LLVM Pass that inserts and propagates
     address space after the function is generated
+    Issues:
     -   Does not remove obsolete instructions
+    -   Still breaks many assumptions about types in julia: 
+        jl_is_datatype, ....
+        -> copy over julia type metadata when creating new values
+*   work around optimization that converts a loop to a memset
+    and leads to a call to the llvm.memset intrinsic which shows up as @0 
+    and breaks everything
+
+*   allow boxing of arguments/temporaries
+    -   Using plain alloca instead of gc frame allocation
+    -   By translating locals to internal module globals as described in SPIR
+        1.2 Spec
+
 *   generate a functional jlcall\_wrapper to allow calling kernels directly from julia
     -   How do we pass range information? (additional arguments, some kind of context...)
+
+*   Julia Arrays are Column first!
 
 
 [![Build Status](https://travis-ci.org/rollingthunder/HSA.jl.svg?branch=master)](https://travis-ci.org/rollingthunder/HSA.jl)

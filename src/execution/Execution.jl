@@ -46,17 +46,25 @@ macro hsa(range, call)
 		#idx = HSA.add_write_index!(queue, Uint64(1))
 		idx = HSA.load_write_index(queue)
 
+		println("Kernel launch prepared")
+
 		queue[idx] = packet
 
 		HSA.store_write_index!(queue, Uint64(idx + 1))
 
 		HSA.store!(queue.doorbell_signal, Int64(idx))
 
+		println("Kernel launched, waiting for completion")
+
 		wait(signal, :(<), 1, wait_state_hint = HSA.HSA_WAIT_STATE_ACTIVE)
+
+		println("Kernel launch completed, cleaning up")
 
 		cleanup_args(call_args)
 
 		finalize(signal)
+
+		println("Kernel launch cleaned up")
 	end
 end
 
