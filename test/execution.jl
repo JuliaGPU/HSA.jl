@@ -6,59 +6,7 @@ using FactCheck
 using HSA.Execution: prepare_args, cleanup_args, get_or_init_defaults, clear_defaults,
                      build_kernel, allocate_args, kernel_cache, build_dispatch
 
-@hsa_kernel function vcopy(a,b)
-	idx = get_global_id(Int32(0)) + 1
-
-	x = Base.unsafe_load(a, idx)
-	Base.unsafe_store!(b, x, idx)
-	return nothing
-end
-
-@hsa_kernel function vadd(a,b,c)
-	i = get_global_id(Int32(0)) + 1
-	c[i] = a[i] + b[i]
-	return nothing
-end
-
-@hsa_kernel function mmul(a,b,c,arows,acols)
-	# one kernel invocation per column of the result matrix
-	# i = col
-	i = get_global_id(Int32(0))
-	# j = row
-	for j = 1:arows
-		c_ij = 0.0
-		for k = 1:acols
-			a_idx = (k-1) * arows + j
-			b_idx = i * acols + k
-			c_ij += a[a_idx] * b[b_idx]
-		end
-
-		c_idx = i * arows + j
-		c[c_idx] = c_ij
-	end
-	return nothing
-end
-
-@hsa_kernel function mmul2d(a,b,c,acols)
-	# one kernel invocation per cell of the result matrix
-	arows = get_global_size(Int32(0))
-	# i = col
-	i = get_global_id(Int32(0))
-	# j = row
-	j = get_global_id(Int32(1)) + 1
-
-	c_ij = 0.0
-	for k = 1:acols
-		a_idx = (k-1) * arows + j
-		b_idx = i * acols + k
-		c_ij += a[a_idx] * b[b_idx]
-	end
-
-	c_idx = i * arows + j
-	c[c_idx] = c_ij
-
-	return nothing
-end
+include("kernels.jl")
 
 facts("The execution framework") do
 	context("can execute a 2d matrix multiplication") do
