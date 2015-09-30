@@ -27,11 +27,11 @@ ToDo
     -   Idea: Directly access the information (size etc.) stored in the julia
         jl\_array\_t so as to avoid having to pass that seperately
         -> bound to be inefficient ?
-	-   or: Rewrite the kernel in the macro to convert n-d indexing to linear
-	-   or: Fix issues preventing use of standard accessors
+    -   or: Rewrite the kernel in the macro to convert n-d indexing to linear
+    -   or: Fix issues preventing use of standard accessors
 *   allow function calls
 *   kernel pointer arguments are generated as kernarg\_u32 despite large machine model
-    because they are in address space 0 but we can't just mark the arguments types 
+    because they are in address space 0 but we cant just mark the arguments types 
     as address space 1, because they confuse the code generator...
     Solution: Implement AddAddrSpacePass LLVM Pass that inserts and propagates
     address space after the function is generated
@@ -54,5 +54,9 @@ ToDo
 
 *   Julia Arrays are Column first!
 
+*   Maybe force kernel return type to void instead of failing when it doesnt?
+
+*   @llvm.trap intrinsic is not supported by HSAIL Target and is therefore
+    lowered to a call to abort() which is also unsupported... *sigh*
 
 [![Build Status](https://travis-ci.org/rollingthunder/HSA.jl.svg?branch=master)](https://travis-ci.org/rollingthunder/HSA.jl)
