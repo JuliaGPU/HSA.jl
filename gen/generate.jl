@@ -19,9 +19,9 @@ clang_includes = [
 ]
 
 if haskey(ENV, "INCLUDE_PATH")
-	unshift!(clang_includes, ENV["INCLUDE_PATH"])
+    unshift!(clang_includes, ENV["INCLUDE_PATH"])
 else
-	warn("environment variable INCLUDE_PATH is not set, generator may not be able to find all headers included by hsa.h")
+    warn("environment variable INCLUDE_PATH is not set, generator may not be able to find all headers included by hsa.h")
 end
 
 excluded_symbols = Set([
@@ -48,10 +48,15 @@ wc.header_wrapped = (x,y)-> begin
     contains(y,"hsa")
 end
 
+# This function determines for each clang cursor encountered
+# whether it should be included in the generated julia files
 wc.cursor_wrapped = (name, cursor)-> begin
     if in(name, excluded_symbols)
         return false
     elseif endswith(name, "_s") || endswith(name, "_u")
+        # Names ending in _s are the underlying struct types
+        # those ending in _u underlying union types
+        # typedefd to something ending in _t
         return false
     elseif cindex.name(cursor) == ""
         return false
@@ -74,9 +79,9 @@ include("gen_fieldgetters.jl")
 wc.rewriter = function(obuf)
     map_argtypes(obuf)
     map_memspec_funcs(obuf)
-	map_constants(obuf)
-	gen_fieldgetters(obuf)
-	gen_getters(obuf)
+    map_constants(obuf)
+    gen_fieldgetters(obuf)
+    gen_getters(obuf)
 
     return obuf
 end

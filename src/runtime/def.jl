@@ -2,7 +2,7 @@ export Relaxed, Acquire, AcquRel, Release
 
 const argtype_map = Dict(
     :hsa_signal_t => :Signal,
-	:hsa_agent_t => :Agent,
+    :hsa_agent_t => :Agent,
     :(Ptr{hsa_queue_t}) => :Queue,
     :hsa_region_t => :Region,
 )

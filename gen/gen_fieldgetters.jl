@@ -1,5 +1,5 @@
 function field_getter(
-	obuf,
+    obuf,
     prefix :: Symbol,
     struct_type,
     map :: Dict{Symbol, Any})
@@ -27,18 +27,18 @@ end
 
 function gen_fieldgetters(obuf)
 
-	field_getter(
-	    obuf,
-		:queue_info_,
-		:hsa_queue_t,
-		Dict(
-			:type => (:hsa_queue_type_t, 0),
-			:features => (:hsa_queue_feature_t, 4),
-			:base_address => (Uint64, 8), # TODO handle ifdefs for machine_model/endianness
-			:doorbell_signal => (Uint64, 16),
-			:size => (Uint32, 24),
-			# Uint32 reserved
-			:id => (Uint64, 32),
-		)
-	)
+    field_getter(
+        obuf,
+        :queue_info_,
+        :hsa_queue_t,
+        Dict(
+            :type => (:hsa_queue_type_t, 0),
+            :features => (:hsa_queue_feature_t, 4),
+            :base_address => (Uint64, 8), # TODO handle ifdefs for machine_model/endianness
+            :doorbell_signal => (Uint64, 16),
+            :size => (Uint32, 24),
+            # Uint32 reserved
+            :id => (Uint64, 32),
+        )
+    )
 end

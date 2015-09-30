@@ -1,6 +1,9 @@
+"Maps some argument types from hsa_*_t to special wrapper types in the julia API"
 function map_argtypes(obuf)
     for exu in obuf
         if isa(exu, Expr) && exu.head == :function
+            # Go through all generated functions and extract
+
             sig = exu.args[1]
             args = sig.args[2:end]
 
