@@ -15,7 +15,7 @@ type Signal
         if haskey(signal_by_id, h.handle)
             existing = signal_by_id[h.handle].value
             if existing != nothing
-				println("matched existing Signal: $(h.handle)")
+                println("matched existing Signal: $(h.handle)")
                 return existing
             end
         end
@@ -70,7 +70,7 @@ function signal_create(initial_value::hsa_signal_value_t, consumers)
     if !isempty(consumers)
         num_consumers = size(consumers,1)
         consumer_arr = hsa_agent_t[ a.handle for a in consumers ]
-		consumer_ptr = pointer(consumer_arr)
+        consumer_ptr = pointer(consumer_arr)
     else
         num_consumers = 0x0
         consumer_ptr = C_NULL

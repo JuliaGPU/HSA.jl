@@ -18,96 +18,96 @@ hash(r::Region) = r.handle
 const iterate_regions_cb_ptr = cfunction(iterate_cb, hsa_status_t, (hsa_region_t, Ptr{Void}))
 
 function iterate_regions(a :: Agent, callback :: Function)
-	state = IterState(
-	    function(x::hsa_region_t)
-			r = Region(x)
-			callback(r)
-		end)
+    state = IterState(
+        function(x::hsa_region_t)
+            r = Region(x)
+            callback(r)
+        end)
 
-	state_ptr = pointer_from_objref(state)
+    state_ptr = pointer_from_objref(state)
 
-	err = ccall((:hsa_agent_iterate_regions, libhsa), hsa_status_t, (hsa_agent_t, Ptr{Void}, Ptr{Void}),
-	            a, iterate_regions_cb_ptr, state_ptr)
+    err = ccall((:hsa_agent_iterate_regions, libhsa), hsa_status_t, (hsa_agent_t, Ptr{Void}, Ptr{Void}),
+                a, iterate_regions_cb_ptr, state_ptr)
 
-	if !isnull(state.err)
-		rethrow(state.err.value)
-	end
+    if !isnull(state.err)
+        rethrow(state.err.value)
+    end
 
-	test_status(err)
+    test_status(err)
 end
 
 function regions(a :: Agent)
-	reg = Array(Region, 0)
+    reg = Array(Region, 0)
 
-	iterate_regions(a,
-	    function(r)
-			push!(reg, r)
-		end)
+    iterate_regions(a,
+        function(r)
+            push!(reg, r)
+        end)
 
-	return reg
+    return reg
 end
 
 function memory_register(
-	ptr,
-	size)
+    ptr,
+    size)
 
-	err = ccall((:hsa_memory_register, libhsa), hsa_status_t, (Ptr{Void}, Csize_t),
-	ptr, size)
+    err = ccall((:hsa_memory_register, libhsa), hsa_status_t, (Ptr{Void}, Csize_t),
+    ptr, size)
 
-	test_status(err)
+    test_status(err)
 end
 
 function memory_deregister(
-	ptr,
-	size)
+    ptr,
+    size)
 
-	err = ccall((:hsa_memory_deregister, libhsa), hsa_status_t, (Ptr{Void}, Csize_t),
-	ptr, size)
+    err = ccall((:hsa_memory_deregister, libhsa), hsa_status_t, (Ptr{Void}, Csize_t),
+    ptr, size)
 
-	test_status(err)
+    test_status(err)
 end
 
 type Allocation
-	ptr::Ptr{Void}
+    ptr::Ptr{Void}
 
-	function Allocation(ptr)
-		a = new(ptr)
-		finalizer(a, deallocate)
+    function Allocation(ptr)
+        a = new(ptr)
+        finalizer(a, deallocate)
 
-		return a
-	end
+        return a
+    end
 end
 
 function deallocate(a :: Allocation)
-	if a.ptr != C_NULL
-		memory_free(a.ptr)
-		a.ptr = C_NULL
-	end
+    if a.ptr != C_NULL
+        memory_free(a.ptr)
+        a.ptr = C_NULL
+    end
 end
 
 convert(::Type{Ptr{Void}}, a::Allocation) = a.ptr
 
 function memory_allocate(
-	region,
-	size)
+    region,
+    size)
 
-	res = Ref{Ptr{Void}}(0)
+    res = Ref{Ptr{Void}}(0)
 
-	err = ccall((:hsa_memory_allocate, libhsa), hsa_status_t, (
-	hsa_region_t,
-	Csize_t,
-	Ptr{Ptr{Void}}),
-	region, size, res)
+    err = ccall((:hsa_memory_allocate, libhsa), hsa_status_t, (
+    hsa_region_t,
+    Csize_t,
+    Ptr{Ptr{Void}}),
+    region, size, res)
 
-	test_status(err)
+    test_status(err)
 
-	return Allocation(res.x)
+    return Allocation(res.x)
 end
 
 function memory_free(ptr)
-	err = ccall((:hsa_memory_free, libhsa), hsa_status_t, (
-	Ptr{Void},),
-	ptr)
+    err = ccall((:hsa_memory_free, libhsa), hsa_status_t, (
+    Ptr{Void},),
+    ptr)
 
-	test_status(err)
+    test_status(err)
 end
