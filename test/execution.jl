@@ -156,8 +156,7 @@ facts("The execution framework") do
         c = Array(Float64, arows, arows); rand!(c)
         c_expected = a * b
 
-        println(macroexpand(:(@hsa (acols) mmul(a,b,c,arows,acols))))
-        @hsa (arows) mmul(a,b,c,arows,acols)
+        @hsa (arows) mmul(a,b,c,acols)
 
         @fact c --> c_expected
     end

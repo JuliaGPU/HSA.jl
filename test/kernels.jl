@@ -23,8 +23,9 @@ end
     return nothing
 end
 
-@hsa_kernel function mmul(a,b,c,arows,acols)
+@hsa_kernel function mmul(a,b,c,acols)
     # one kernel invocation per column of the result matrix
+    arows = get_global_size(Int32(0))
     # i = col
     i = get_global_id(Int32(0))
     # j = row
