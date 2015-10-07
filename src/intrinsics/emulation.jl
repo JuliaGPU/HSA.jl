@@ -1,14 +1,17 @@
 const EMULATED_INTRINSICS = [
-    :get_global_id
+    :get_global_id,
+    :get_global_size
 ]
 
 export @hsa_kernel, run_cpu
 
 type EmulationContext
     global_id
+    global_size
 
     function EmulationContext()
         new(
+            [0,0,0],
             [0,0,0]
         )
     end
@@ -18,6 +21,10 @@ end
 # mainly for testing and execution on the CPU
 function get_global_id(ctx::EmulationContext, dim::Int32)
     return ctx.global_id[dim + 1]
+end
+
+function get_global_size(ctx::EmulationContext, dim::Int32)
+    return ctx.global_size[dim + 1]
 end
 
 # Helpers for adding an emulation overload for a kernel
@@ -69,6 +76,7 @@ end
 
 function run_cpu(rng::Tuple{Int,Int,Int}, kernel::Function, args...)
     ctx = EmulationContext()
+    ctx.global_size = [rng...]
     for x = 0:rng[1]-1
         for y = 0:rng[2]-1
             for z = 0:rng[3]-1
