@@ -3,26 +3,26 @@ using HSA.ExtFinalization
 using FactCheck
 
 facts("The Finalization API") do
-	rt = NewRT()
+    rt = HSA.Runtime()
 
-	context("A Program") do
-		context("Can be created") do
-			@use p = Program() begin
+    context("A Program") do
+        context("Can be created") do
+            @use p = Program() begin
 
-				@fact isa(p, Program) => true
-				@fact p.handle.handle => not(0)
+                @fact isa(p, Program) --> true
+                @fact p.handle.handle --> not(0)
 
-			end
-		end
+            end
+        end
 
-		context("Can be destroyed") do
-			p = Program()
+        context("Can be destroyed") do
+            p = Program()
 
-			finalize(p)
+            finalize(p)
 
-			@fact p.handle => nothing
-		end
-	end
+            @fact p.handle --> nothing
+        end
+    end
 
-	finalize(rt)
+    finalize(rt)
 end

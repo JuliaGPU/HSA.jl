@@ -16,7 +16,6 @@ Module overview
 
 Known Issues
 *   HSA.executable\_get\_symbol does not find symbols
-*   HSA.add\_write\_index(queue, idx) does not seem to work
 *   Cannot compile Kernels not declared in top level scope (or something like that)
     +   argument type jl\_value\_type\* not found
         Maybe because of hidden environment arguments that are passed to the nested function?

@@ -1,7 +1,5 @@
 module Test
 
-include("common.jl")
-
 include("util_macros.jl")
 include("runtime.jl")
 include("agent.jl")

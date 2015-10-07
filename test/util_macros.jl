@@ -5,36 +5,19 @@ type Fable
 end
 
 facts("The Macros") do
+    context("can provide deterministic destruction") do
+        finalized = false
 
-	context("can provide deterministic destruction") do
-		finalized = false
+        function finalize_fable(f)
+            finalized = true
+        end
 
-		function finalize_fable(f)
-			finalized = true
-		end
+        @use f = Fable() begin
+            finalizer(f, finalize_fable)
 
-		@use f = Fable() begin
-			finalizer(f, finalize_fable)
+            @fact finalized --> false
+        end
 
-			@fact finalized => false
-		end
-
-		@fact finalized => true
-	end
-
-	#context("can be debugged") do
-	#	finalized = false
-
-	#	function finalize_fable(f)
-	#		finalized = true
-	#	end
-
-	#	@dbgmacro @use f = Fable() begin
-	#		finalizer(f, finalize_fable)
-
-	#		@fact finalized => false
-	#	end
-
-	#	@fact finalized => true
-	#end
+        @fact finalized --> true
+    end
 end

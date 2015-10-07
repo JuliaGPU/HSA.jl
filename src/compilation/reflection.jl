@@ -23,7 +23,7 @@ function src_spir(f::Function, types::ANY)
         error("no method found for the specified argument types")
     end
 
-	str = ccall(:jl_dump_function_ir, Any, (Ptr{Void},), llvmf)::ByteString
+    str = ccall(:jl_dump_function_ir, Any, (Ptr{Void},), llvmf)::ByteString
 
     return str
 end
@@ -41,7 +41,7 @@ function src_hsa(f::Function, types::ANY)
         error("no method found for the specified argument types")
     end
 
-	str = ccall(:jl_dump_function_ir, Any, (Ptr{Void},), llvmf)::ByteString
+    str = ccall(:jl_dump_function_ir, Any, (Ptr{Void},), llvmf)::ByteString
 
     return str
 end
@@ -59,7 +59,7 @@ function src_hsail(f::Function, types::ANY)
         error("no method found for the specified argument types")
     end
 
-	str = ccall(:jl_dump_function_hsail, Any, (Ptr{Void},), llvmf)::ByteString
+    str = ccall(:jl_dump_function_hsail, Any, (Ptr{Void},), llvmf)::ByteString
 
     return str
 end
