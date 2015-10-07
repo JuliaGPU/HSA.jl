@@ -11,7 +11,7 @@ type Queue
     base_address :: Uint64
     doorbell_signal :: Signal
     size :: Uint32
-    size_mask :: Uint32
+    size_mask :: Uint32 # used for indexing
     id :: Uint32
 
     # Info for "hardware" queues

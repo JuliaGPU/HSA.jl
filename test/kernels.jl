@@ -3,8 +3,7 @@ using HSA.Intrinsics
 @hsa_kernel function vcopy(a,b)
 	idx = get_global_id(Int32(0)) + 1
 
-	x = Base.unsafe_load(a, idx)
-	Base.unsafe_store!(b, x, idx)
+	b[idx] = a[idx]
 	return nothing
 end
 

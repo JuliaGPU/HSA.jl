@@ -43,7 +43,7 @@ type KernelBlob
 	brig::Ptr{BrigModuleHeader}
 	executable_by_isa
 	function KernelBlob(brig)
-		new(brig, Dict{hsa_isa_t, KernelInfo}())
+		new(brig, Dict{String, KernelInfo}())
 	end
 end
 
@@ -66,15 +66,19 @@ end
 function build_kernel(agent, kernel, types)
 	global kernel_cache
 
+    debug_print("build_kernel: Kernel $(string(kernel))($(join(types,','))) for Agent '$(HSA.agent_info_name(agent))'")
+
 	blob = get!(kernel_cache, (kernel, types)) do
-		debug_print("build_kernel: Build BRIG for $(string(kernel))($(join(types,',')))")
+		debug_print("build_kernel: build BRIG")
 		KernelBlob(brig(kernel, types))
 	end
 
 	isa = HSA.agent_info_isa(agent)
+    isa_name = HSA.isa_info_name(isa)
+    debug_print("build_kernel: for ISA '$(isa_name)' ($(isa.handle))")
 
-    kernel_info = get!(blob.executable_by_isa, isa) do
-		debug_print("build_kernel: Build Executable for $(string(kernel))($(join(types,',')))")
+    kernel_info = get!(blob.executable_by_isa, isa_name) do
+		debug_print("build_kernel: build Executable")
 		code_object = finalize_brig(blob.brig, isa)
 
 		executable = Executable()
