@@ -3,7 +3,7 @@ function map_argtypes(obuf)
     for exu in obuf
         if isa(exu, Expr) && exu.head == :function
             # Go through all generated functions and extract
-
+            # the arguments from the signature
             sig = exu.args[1]
             args = sig.args[2:end]
 
