@@ -36,9 +36,9 @@ end
 	# one kernel invocation per cell of the result matrix
 	arows = get_global_size(Int32(0))
 	# i = col
-	i = get_global_id(Int32(0))
+	i = get_global_id(Int32(1))
 	# j = row
-	j = get_global_id(Int32(1)) + 1
+	j = get_global_id(Int32(0)) + 1
 
 	c_ij = 0.0
 	for k = 1:acols
