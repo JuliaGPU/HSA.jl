@@ -1,15 +1,7 @@
 using HSA
+using HSA.Test
 using FactCheck
 
-macro with_agents(args...)
-	quote
-    if size(HSA.all_agents(),1) > 0
-		$(esc(args...))
-	else
-		@pending x => y #no agents
-	end
-    end
-end
 
 facts("The Agents") do
     rt = NewRT()

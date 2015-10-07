@@ -21,4 +21,6 @@ include("intrinsics/Intrinsics.jl")
 include("execution/Execution.jl")
 #end
 
+include("test/helpers.jl")
+
 end
