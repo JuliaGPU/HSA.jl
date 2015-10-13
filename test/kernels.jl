@@ -80,3 +80,26 @@ end
 
     return nothing
 end
+
+@hsa_kernel function prefix_sum(a)
+    g = get_group_id(Int32(0))
+    wg = get_local_size(Int32(0))
+    g_base = g * wg + 1
+    l = get_local_id(Int32(0))
+
+
+    round_bit = 1
+
+    while round_bit < wg
+        if l & round_bit != 0
+            base = (l & ~round_bit) | (round_bit - 1)
+
+            a[g_base + l] = a[g_base + base] + a[g_base + l]
+        end
+
+       # work_group_barrier(CLK_GLOBAL_MEM_FENCE)
+
+        round_bit = round_bit << 1
+    end
+end
+

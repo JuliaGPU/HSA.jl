@@ -1,5 +1,10 @@
 using Core.Intrinsics.llvmcall
 
+export CLK_LOCAL_MEM_FENCE
+const CLK_LOCAL_MEM_FENCE = Int32(1)
+export CLK_GLOBAL_MEM_FENCE
+const CLK_GLOBAL_MEM_FENCE = Int32(2)
+
 const int_intrinsics = [
     ("@_Z13get_global_idj", Int64),
     ("@_Z12get_local_idj", Int64),
@@ -12,6 +17,7 @@ const int_intrinsics = [
     ("@_Z23get_enqueued_local_sizej", Int64),
     ("@_Z20get_global_linear_idv", Int64),
     ("@_Z19get_local_linear_idv", Int64),
+    ("@_Z18work_group_barrierj", Void),
     ]
 
 type IntrinsicDef
@@ -25,13 +31,15 @@ type IntrinsicDef
 end
 
 const typeMap = Dict(
+    "m" => Int64,
     "j" => Int32,
     "v" => Void
     )
 
 const llvmTypeMap = Dict(
     Int32 => "i32",
-    Int64 => "i64"
+    Int64 => "i64",
+    Void => "void"
     )
 
 function parse_mangled_name(name)

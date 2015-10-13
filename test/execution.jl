@@ -174,4 +174,21 @@ facts("The execution framework") do
 
         @fact c --> c_expected
     end
+
+    context("can execute a prefix sum using barriers") do
+        const alen = 32
+        const wg = 32
+
+        a = Array(Int64, alen); rand!(a)
+        b = Array(Int64, alen); rand!(b)
+
+        b[1] = a[1]
+        for i = 2:alen
+            b[i] = b[i-1] + a[i]
+        end
+
+        @hsa (alen,wg) prefix_sum(a)
+
+        @fact a --> b
+    end
 end
