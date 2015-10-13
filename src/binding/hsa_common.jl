@@ -1,7 +1,5 @@
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
-using Compat
-
 # begin enum hsa_status_t
 typealias hsa_status_t Uint32
 const HSA_STATUS_SUCCESS = (UInt32)(0)
@@ -737,7 +735,7 @@ end
 # Convenience Constants
 # with HSA_ prefix removed and
 # in CamelCase
-	
+
 const StatusSuccess = HSA_STATUS_SUCCESS
 const StatusInfoBreak = HSA_STATUS_INFO_BREAK
 const StatusError = HSA_STATUS_ERROR
@@ -1041,7 +1039,7 @@ function system_info_version_minor() # /home/strollinger/hsa/jl/gen/gen_getters.
 end
 
 function system_info_extensions() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    begin 
+    begin
         v_arr = Array(UInt8,128)
         value = pointer(v_arr)
     end # line 67:
@@ -1135,7 +1133,7 @@ function agent_info_workgroup_max_size(agent) # /home/strollinger/hsa/jl/gen/gen
 end
 
 function agent_info_extensions(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    begin 
+    begin
         v_arr = Array(UInt8,128)
         value = pointer(v_arr)
     end # line 67:
@@ -1348,7 +1346,7 @@ function isa_info_name_length(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl
 end
 
 function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    begin 
+    begin
         len = isa_info_name_length(isa)
         value = Array(Uint8,len)
     end # line 67:
@@ -1393,7 +1391,7 @@ function executable_symbol_info_kernel_kernarg_segment_size(symbol) # /home/stro
 end
 
 function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    begin 
+    begin
         len = executable_symbol_info_name_length(symbol)
         value = Array(Uint8,len)
     end # line 67:
@@ -1473,7 +1471,7 @@ function executable_symbol_info_type(symbol) # /home/strollinger/hsa/jl/gen/gen_
 end
 
 function executable_symbol_info_module_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    begin 
+    begin
         len = executable_symbol_info_module_name_length(symbol)
         value = Array(Uint8,len)
     end # line 67:
