@@ -1,7 +1,8 @@
 using HSA
+include("helpers.jl")
 using FactCheck
 
-facts("The Intrinsics generation logic") do
+@with_codegen facts("The Intrinsics generation logic") do
     context("can parse a mangled name") do
         defi32 = HSA.Builtins.parse_mangled_name("@_Z13get_global_idj")
 

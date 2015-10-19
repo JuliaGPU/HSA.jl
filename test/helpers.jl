@@ -22,6 +22,23 @@ macro with_agents(args...)
     end
 end
 
+macro with_codegen(context)
+    if context.head != :call
+        error("use with_codegen only on facts(...) or context(...) calls")
+    end
+
+    title = context.args[3]
+	quote
+    if HSA.has_hsa_codegen()
+		$context
+	else
+        # no codegen
+        title = $title
+        warn("codegen is unavailable: skipping '$title'")
+    end
+    end
+end
+
 function get_softqueue(agent, s = HSA.Signal(value = 0), r_out = Ref{Nullable{HSA.Region}}())
     regs = HSA.regions(agent)
 

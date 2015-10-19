@@ -42,9 +42,10 @@ function has_libhsaext()
 end
 
 function has_hsa_codegen()
+    return false
     try
-        return ccall(:jl_has_device_target, Bool, (Symbol,), :hsail)
-    catch
+        return ccall(:jl_has_device_target, Bool, (Any,), :hsail)
+    catch err
         # Something went wrong, probably the method was not found
         # meaning we are running on a version of julia without device target support
         return false
