@@ -1,8 +1,6 @@
-module Test
+using HSA
 
-using ..HSA
-
-export get_testagent, get_softqueue, @with_agents
+if !isdefined(:get_testagent)
 
 function get_testagent(agents = HSA.all_agents())
 	spectre_idx = findfirst(a -> begin
@@ -45,5 +43,4 @@ function get_softqueue(agent, s = HSA.Signal(value = 0), r_out = Ref{Nullable{HS
 
 	return HSA.Queue(gl_reg, 0x04, s)
 end
-
 end

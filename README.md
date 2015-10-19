@@ -14,6 +14,19 @@ Module overview
     +   Execution
         Convenience macros and functions that abstract away most of the boilerplate for running an HSA Kernel
 
+Source Folder
+*   binding
+    Contains the code that interfaces with the various parts of the HSA Runtime
+    +   generated
+        Files generated from the hsa headers via gen/generate.jl 
+    +   runtime
+    +
+*   codegen
+    Contains all code that relies on the modified julia code generator to work
+*   emulation
+    Provides emulation for some parts of the codegen infrastructure even when no
+    hsa or codegen are available
+
 Known Issues
 *   HSA.executable\_get\_symbol does not find symbols
     +   Maybe the name string for the symbol is not being passed correctly?
@@ -23,6 +36,7 @@ Known Issues
     +   HSA intrinsics not declared...
 
 ToDo
+*   Wrapper Generation: Avoid duplicates
 *   Improve emulation
     -   any ideas for implementing barriers?
 *   Implement a barrier/workgroup example (prefix_sum)

@@ -1,9 +1,9 @@
 using HSA
-using HSA.Test
+include("helpers.jl")
 using FactCheck
 
 @with_agents facts("The ISA") do
-    rt = NewRT()
+    rt = Runtime()
 
     context("Can be retrieved from an agent") do
         agent = get_testagent()

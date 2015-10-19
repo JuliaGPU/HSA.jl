@@ -1,10 +1,10 @@
 using HSA
-using HSA.Test
+include("helpers.jl")
 using FactCheck
 
 
 facts("The Agents") do
-    rt = NewRT()
+    rt = Runtime()
     agents = Array(HSA.Agent,0)
 
     context("Can be iterated over") do

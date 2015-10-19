@@ -35,9 +35,9 @@ excluded_symbols = Set([
 ])
 
 const wc = wrap_c.init(
-    common_file = "hsa_common.jl",
-    output_file = "hsa_h.jl",
-    output_dir = "$script_path/../src/binding"
+    common_file = "hsa_datatypes.jl",
+    output_file = "hsa_wrappers.jl",
+    output_dir = "$script_path/../src/binding/generated"
 )
 
 wc.clang_includes = clang_includes

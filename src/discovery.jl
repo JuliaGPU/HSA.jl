@@ -1,3 +1,4 @@
+# Library Path Discovery
 if haskey(ENV, "HSA_RUNTIME_PATH")
     const hsa_runtime_path = ENV["HSA_RUNTIME_PATH"]
 else
@@ -29,3 +30,23 @@ const libhsakmt = Libdl.find_library(["libhsakmt"], hsa_paths)
 const libhsakmt_dl = dlopen_or_warn_if_not_found("libhsakmt", libhsakmt)
 
 const hsa_include_path = joinpath(dirname(libhsa), "../include")
+
+# Capability Checks
+
+function has_libhsa()
+    return libhsa != ""
+end
+
+function has_libhsaext()
+    return libhsaext != ""
+end
+
+function has_hsa_codegen()
+    try
+        return ccall(:jl_has_device_target, Bool, (Symbol,), :hsail)
+    catch
+        # Something went wrong, probably the method was not found
+        # meaning we are running on a version of julia without device target support
+        return false
+    end
+end

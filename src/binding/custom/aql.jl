@@ -101,8 +101,11 @@ type KernelDispatchPacket <: AQLPacket
     completion_signal :: hsa_signal_t
 
     function KernelDispatchPacket(
-        dimension :: Integer,
-        sizes::Integer...;
+        kernel_object,
+        range;
+        dimensions = 0,
+        wg_size = nothing,
+        kernarg_address = 0,
         header :: PacketHeader = PacketHeader(
                 PacketTypeKernelDispatch,
                 barrier = false,
@@ -114,44 +117,62 @@ type KernelDispatchPacket <: AQLPacket
         completion_signal = hsa_signal_t(0)
         )
 
-        if dimension < 1 || dimension > 3
-            error("dimensions out of range, expected 1-3, got $dimension")
-        end
-
-        argc = length(sizes)
-        argc_half = argc / 2
-
-        if (argc > dimension) && (argc % 2 != 0)
-            error("incorrect number of dimension arguments, expected either $dimension or $(2*dimension) but got $argc")
-        end
-
         grid_size = [1,1,1]
+        wg_size_3d = [1,1,1]
 
-        for i = 1:dimension
-            grid_size[i] = sizes[i]
+        if dimensions == 0
+            if isa(range, Tuple)
+                dimensions = length(range)
+            else
+                dimensions = 1
+            end
         end
 
-        wg_size = [1,1,1]
+        if dimensions < 1 || dimensions > 3
+            error("range dimensions out of range, expected 1-3, got $dimensions")
+        end
 
-        if argc > dimension
-            for i = 1:dimension
-                wg_size[i] = sizes[argc_half + i]
+        if isa(range, Tuple)
+            if length(range) < dimensions
+                error("too few workgroup dimensions specified")
+            end
+
+            for i = 1:dimensions
+                grid_size[i] = range[i]
+            end
+        else
+            grid_size[1] = range
+        end
+
+        if wg_size != nothing
+            if isa(wg_size, Tuple)
+                if length(wg_size) < dimensions
+                    error("too few workgroup dimensions specified")
+                end
+                for i = 1:dimensions
+                    wg_size_3d[i] = wg_size[i]
+                end
+            else
+                if 1 < dimensions
+                    error("too few workgroup dimensions specified")
+                end
+                wg_size_3d[1] = wg_size
             end
         end
 
         return new(
             header,
-            dimension, # dimensions
-            wg_size[1],
-            wg_size[2],
-            wg_size[3],
+            dimensions, # dimensions
+            wg_size_3d[1],
+            wg_size_3d[2],
+            wg_size_3d[3],
             grid_size[1],
             grid_size[2],
             grid_size[3],
             private_segment_size, # private_segment_size
             group_segment_size, # group_segment_size
-            0, # kernel_object
-            0, # kernarg_address
+            kernel_object, # kernel_object
+            kernarg_address, # kernarg_address
             completion_signal, # completion_signal
         )
     end
@@ -179,15 +200,15 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeKernelDispatch}}, ptr :: P
     p_comp_sign = unsafe_load(convert(Ptr{hsa_signal_t}, ptr + 56))
 
     res = KernelDispatchPacket(
-        p_dims,
-        p_gr_x, p_gr_y, p_gr_z,
-        p_wg_x, p_wg_y, p_wg_z;
+        p_kobj_addr,
+        (p_gr_x, p_gr_y, p_gr_z),
+        wg_size = (p_wg_x, p_wg_y, p_wg_z),
+        dimensions = p_dims,
         header = p_hdr,
         private_segment_size = p_pseg_size,
         group_segment_size = p_gseg_size,
         completion_signal = p_comp_sign
         )
-    res.kernel_object = p_kobj_addr
     res.kernarg_address = p_karg_addr
 
     return res

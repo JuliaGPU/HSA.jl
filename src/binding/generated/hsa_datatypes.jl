@@ -1,5 +1,7 @@
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
+using Compat
+
 # begin enum hsa_status_t
 typealias hsa_status_t Uint32
 const HSA_STATUS_SUCCESS = (UInt32)(0)

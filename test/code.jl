@@ -1,5 +1,5 @@
 using HSA
-using HSA.Test
+include("helpers.jl")
 using FactCheck
 
 facts("Code Objects and Executables") do

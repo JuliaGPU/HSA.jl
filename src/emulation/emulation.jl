@@ -61,7 +61,7 @@ end
 
 macro hsa_kernel(fun::Expr)
     if(fun.head != :function)
-        error("@hsail must be applied to a function definition")
+        error("@hsa_kernel must be applied to a function definition")
     end
 
     emu_fun = copy(fun)
@@ -85,4 +85,16 @@ function run_cpu(rng::Tuple{Int,Int,Int}, kernel::Function, args...)
             end
         end
     end
+end
+
+# if codegen is not available, we need to emulate @hsa
+if !has_hsa_codegen()
+export @hsa_cpu
+macro hsa_cpu(range, call)
+    if call.head != :call
+        error("the second argument of @hsa must be a function call")
+    end
+
+    :(run_cpu($range, $(call...)))
+end
 end

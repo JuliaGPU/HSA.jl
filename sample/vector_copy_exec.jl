@@ -1,6 +1,6 @@
 using HSA
 using HSA.ExtFinalization
-using HSA.Intrinsics
+using HSA.Builtins
 using HSA.Execution: @hsa
 
 function check(message)

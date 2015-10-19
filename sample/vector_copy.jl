@@ -166,14 +166,14 @@ unsafe_store!(kernarg_address + sizeof(pointer(a_in)), pointer(b_out))
 
 index = HSA.load_write_index(queue) # HSA.add_write_index!(queue, Uint64(1))
 
-dispatch_packet = KernelDispatchPacket(1, N)
+dispatch_packet = KernelDispatchPacket(kernel_object,N;
+    kernarg_address = kernarg_address,
+    private_segment_size = private_segment_size,
+    group_segment_size = group_segment_size,
+    completion_signal = signal
+)
 dispatch_packet.header.acquire_fence_scope = HSA.HSA_FENCE_SCOPE_SYSTEM
 dispatch_packet.header.release_fence_scope = HSA.HSA_FENCE_SCOPE_SYSTEM
-dispatch_packet.completion_signal = signal
-dispatch_packet.kernel_object = kernel_object
-dispatch_packet.kernarg_address = kernarg_address
-dispatch_packet.private_segment_size = private_segment_size
-dispatch_packet.group_segment_size = group_segment_size
 
 pkg_bytes = Array(Uint8, 64)
 unsafe_store!(convert(Ptr{Void}, pointer(pkg_bytes)), dispatch_packet)

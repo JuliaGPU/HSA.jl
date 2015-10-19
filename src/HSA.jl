@@ -1,26 +1,22 @@
 module HSA
 
-include("binding/def.jl") # library path definitions
-include("binding/hsa_common.jl") # generated type definitions
-include("binding/custom.jl") # manual implementations
+include("discovery.jl")
 
-include("runtime/module.jl") # wrapper classes
+# Some things are always available
+include("emulation/emulation.jl")
 
-if libhsaext != ""
-include("ext_def.jl")
-include("ext_finalization.jl")
+if has_libhsa()
+include("binding/binding.jl")
+
+if has_libhsaext()
+include("binding/ext_finalization.jl")
+
+if has_hsa_codegen()
+println("Experimental HSA CodeGen found, enabling.")
+include("codegen/codegen.jl")
+end
 end
 
-include("binding/hsa_h.jl")
-include("binding.jl")
-
-# julia codegen integration
-#if isdefined(Base, :HSA_TARGET)
-include("compilation/Compilation.jl")
-include("intrinsics/Intrinsics.jl")
-include("execution/Execution.jl")
-#end
-
-include("test/helpers.jl")
+end
 
 end

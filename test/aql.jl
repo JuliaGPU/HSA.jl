@@ -133,26 +133,6 @@ facts("AQL Packets") do
 
     end
 
-    context("InvalidPackets") do
-        in_disp_bytes = copy(dispatch_bytes)
-        in_disp_bytes[1] = HSA.PacketTypeInvalid
-        in_disp_ptr = convert(Ptr{Void}, pointer(in_disp_bytes))
-
-        context("Can be loaded") do
-            p = HSA.unsafe_convert(HSA.AQLPacket, in_disp_ptr)
-
-            @fact isa(p, InvalidPacket) --> true
-            @fact p.bytes --> in_disp_bytes
-        end
-
-        context("Can be reinterpreted as a KernelDispatchPacket") do
-            p = HSA.unsafe_convert(HSA.AQLPacket, in_disp_ptr)
-            id = convert(KernelDispatchPacket, p)
-
-            @fact id.header.typ --> HSA.PacketTypeInvalid
-        end
-    end
-
     context("KernelDispatchPackets") do
         context("can be loaded") do
             dp = HSA.unsafe_convert(HSA.AQLPacket, dispatch_ptr)
@@ -195,7 +175,7 @@ facts("AQL Packets") do
             @fact_throws HSA.KernelDispatchPacket(0)
             @fact_throws HSA.KernelDispatchPacket(4, 1,2,3,4,5,6,7,8)
 
-            dp1 = HSA.KernelDispatchPacket(1,2)
+            dp1 = HSA.KernelDispatchPacket(0x0, (2,))
             @fact dp1.dimensions --> 1
             @fact dp1.workgroup_size_x --> 1
             @fact dp1.workgroup_size_y --> 1
@@ -208,6 +188,26 @@ facts("AQL Packets") do
             @fact dp1.kernel_object --> 0
             @fact dp1.kernarg_address --> 0
             @fact dp1.completion_signal.handle --> 0
+        end
+    end
+
+    context("InvalidPackets") do
+        in_disp_bytes = copy(dispatch_bytes)
+        in_disp_bytes[1] = HSA.PacketTypeInvalid
+        in_disp_ptr = convert(Ptr{Void}, pointer(in_disp_bytes))
+
+        context("Can be loaded") do
+            p = HSA.unsafe_convert(HSA.AQLPacket, in_disp_ptr)
+
+            @fact isa(p, InvalidPacket) --> true
+            @fact p.bytes --> in_disp_bytes
+        end
+
+        context("Can be reinterpreted as a KernelDispatchPacket") do
+            p = HSA.unsafe_convert(HSA.AQLPacket, in_disp_ptr)
+            id = convert(KernelDispatchPacket, p)
+
+            @fact id.header.typ --> HSA.PacketTypeInvalid
         end
     end
 

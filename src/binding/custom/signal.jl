@@ -15,7 +15,6 @@ type Signal
         if haskey(signal_by_id, h.handle)
             existing = signal_by_id[h.handle].value
             if existing != nothing
-                println("matched existing Signal: $(h.handle)")
                 return existing
             end
         end
