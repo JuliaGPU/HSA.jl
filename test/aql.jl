@@ -3,7 +3,7 @@ using FactCheck
 
 facts("AQL Packets") do
     # Little Endian!
-    dispatch_bytes = Uint8[
+    dispatch_bytes = UInt8[
         HSA.PacketTypeKernelDispatch,
         (0x01 << 0) | # Barrier Bit
         (HSA.FenceScopeAgent << 1) | # Acquire Scope
@@ -33,7 +33,7 @@ facts("AQL Packets") do
 
     dispatch_1d_ptr = convert(Ptr{Void}, pointer(dispatch_1d_bytes))
 
-    agent_bytes = Uint8[
+    agent_bytes = UInt8[
         HSA.PacketTypeAgentDispatch,
         (0x00 << 0) | # Barrier Bit
         (HSA.FenceScopeNone << 1) | # Acquire Scope
@@ -51,14 +51,14 @@ facts("AQL Packets") do
     ]
     agent_ptr = convert(Ptr{Void}, pointer(agent_bytes))
 
-    barrier_bytes = Uint8[
+    barrier_bytes = UInt8[
         HSA.PacketTypeBarrierAnd,
         (0x00 << 0) | # Barrier Bit
         (HSA.FenceScopeNone << 1) | # Acquire Scope
         (HSA.FenceScopeNone << 3), # Release Scope
         # Barrier Packet
-        0x00, 0x00, # Uint16 reserved
-        0x00, 0x00, 0x00, 0x00, # Uint32 reserved
+        0x00, 0x00, # UInt16 reserved
+        0x00, 0x00, 0x00, 0x00, # UInt32 reserved
         0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # dep1
         0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # dep2
         0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # dep3
@@ -79,7 +79,7 @@ facts("AQL Packets") do
         end
 
         context("can be stored") do
-            hdr_bytes = Array(Uint8, 2)
+            hdr_bytes = Array(UInt8, 2)
             hdr_ptr = convert(Ptr{Void}, pointer(hdr_bytes))
 
             hdr = HSA.unsafe_convert(HSA.PacketHeader, dispatch_ptr)
@@ -162,7 +162,7 @@ facts("AQL Packets") do
         end
 
         context("can be stored") do
-            pkt_bytes = Array(Uint8, 64)
+            pkt_bytes = Array(UInt8, 64)
             pkt_ptr = convert(Ptr{Void}, pointer(pkt_bytes))
 
             dp = HSA.unsafe_convert(HSA.AQLPacket, dispatch_ptr)
@@ -232,7 +232,7 @@ facts("AQL Packets") do
         end
 
         context("can be stored") do
-            pkt_bytes = Array(Uint8, 64)
+            pkt_bytes = Array(UInt8, 64)
             pkt_ptr = convert(Ptr{Void}, pointer(pkt_bytes))
 
             ad = HSA.unsafe_convert(HSA.AQLPacket, agent_ptr)
@@ -259,7 +259,7 @@ facts("AQL Packets") do
         end
 
         context("can be stored") do
-            pkt_bytes = Array(Uint8, 64)
+            pkt_bytes = Array(UInt8, 64)
             pkt_ptr = convert(Ptr{Void}, pointer(pkt_bytes))
 
             b = HSA.unsafe_convert(HSA.AQLPacket, barrier_ptr)

@@ -4,8 +4,8 @@ typealias Region hsa_region_t
 
 import Base.convert
 
-convert(::Type{Uint64}, r::Region) = r.handle
-convert(::Type{Region}, r::Uint64) = Region(r)
+convert(::Type{UInt64}, r::Region) = r.handle
+convert(::Type{Region}, r::UInt64) = Region(r)
 
 import Base.==
 

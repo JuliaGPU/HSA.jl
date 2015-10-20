@@ -1,7 +1,7 @@
 function map_constants(obuf)
     function getCustomType(camelName)
         const custom_type = [
-            ( r"PacketType*", :Uint8 )
+            ( r"PacketType*", :UInt8 )
         ]
 
         match_idx = findfirst(x -> ismatch(x[1], camelName), custom_type)

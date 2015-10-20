@@ -1,4 +1,4 @@
-const signal_by_id = Dict{Uint64, WeakRef}()
+const signal_by_id = Dict{UInt64, WeakRef}()
 
 export Signal
 
@@ -51,13 +51,13 @@ end
 
 import Base.convert
 
-convert(::Type{hsa_signal_t}, s::Uint64) = hsa_signal_t(s)
-convert(::Type{Uint64}, s::hsa_signal_t) = s.handle
+convert(::Type{hsa_signal_t}, s::UInt64) = hsa_signal_t(s)
+convert(::Type{UInt64}, s::hsa_signal_t) = s.handle
 
 convert(::Type{hsa_signal_t}, s::Signal) = s.handle
-convert(::Type{Uint64}, s::Signal) = s.handle.handle
+convert(::Type{UInt64}, s::Signal) = s.handle.handle
 
-convert(::Type{Signal}, h :: Uint64) = Signal(hsa_signal_t(h))
+convert(::Type{Signal}, h :: UInt64) = Signal(hsa_signal_t(h))
 convert(::Type{Signal}, h :: hsa_signal_t) = Signal(h)
 
 import Base.get
@@ -77,7 +77,7 @@ function signal_create(initial_value::hsa_signal_value_t, consumers)
 
     res = Ref(hsa_signal_t(0))
 
-    err = ccall((:hsa_signal_create, libhsa), hsa_status_t, (hsa_signal_value_t, Uint32, Ptr{hsa_agent_t}, Ptr{hsa_signal_t}),
+    err = ccall((:hsa_signal_create, libhsa), hsa_status_t, (hsa_signal_value_t, UInt32, Ptr{hsa_agent_t}, Ptr{hsa_signal_t}),
                 initial_value, num_consumers, consumer_ptr, res)
 
     test_status(err)
@@ -88,7 +88,7 @@ end
 import Base.wait
 
 function wait(s::Signal, cond::Symbol, compare_value::hsa_signal_value_t;
-    timeout_hint = typemax(Uint64),
+    timeout_hint = typemax(UInt64),
     wait_state_hint::hsa_wait_state_t = WaitBlocked
     )
     const cond_map = Dict(
@@ -104,7 +104,7 @@ function wait(s::Signal, cond::Symbol, compare_value::hsa_signal_value_t;
 
     hsa_cond = cond_map[cond]
 
-    timeout_hint = convert(Uint64, timeout_hint)
+    timeout_hint = convert(UInt64, timeout_hint)
 
     return wait(s, hsa_cond, compare_value, timeout_hint, wait_state_hint)
 end

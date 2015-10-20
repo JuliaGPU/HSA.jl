@@ -3,7 +3,7 @@
 using Compat
 
 # begin enum hsa_status_t
-typealias hsa_status_t Uint32
+typealias hsa_status_t UInt32
 const HSA_STATUS_SUCCESS = (UInt32)(0)
 const HSA_STATUS_INFO_BREAK = (UInt32)(1)
 const HSA_STATUS_ERROR = (UInt32)(4096)
@@ -33,38 +33,38 @@ const HSA_STATUS_ERROR_EXCEPTION = (UInt32)(4118)
 # end enum hsa_status_t
 
 type hsa_dim3_t
-    x::Uint32
-    y::Uint32
-    z::Uint32
+    x::UInt32
+    y::UInt32
+    z::UInt32
 end
 
 # begin enum hsa_access_permission_t
-typealias hsa_access_permission_t Uint32
+typealias hsa_access_permission_t UInt32
 const HSA_ACCESS_PERMISSION_RO = (UInt32)(1)
 const HSA_ACCESS_PERMISSION_WO = (UInt32)(2)
 const HSA_ACCESS_PERMISSION_RW = (UInt32)(3)
 # end enum hsa_access_permission_t
 
 # begin enum hsa_endianness_t
-typealias hsa_endianness_t Uint32
+typealias hsa_endianness_t UInt32
 const HSA_ENDIANNESS_LITTLE = (UInt32)(0)
 const HSA_ENDIANNESS_BIG = (UInt32)(1)
 # end enum hsa_endianness_t
 
 # begin enum hsa_machine_model_t
-typealias hsa_machine_model_t Uint32
+typealias hsa_machine_model_t UInt32
 const HSA_MACHINE_MODEL_SMALL = (UInt32)(0)
 const HSA_MACHINE_MODEL_LARGE = (UInt32)(1)
 # end enum hsa_machine_model_t
 
 # begin enum hsa_profile_t
-typealias hsa_profile_t Uint32
+typealias hsa_profile_t UInt32
 const HSA_PROFILE_BASE = (UInt32)(0)
 const HSA_PROFILE_FULL = (UInt32)(1)
 # end enum hsa_profile_t
 
 # begin enum hsa_system_info_t
-typealias hsa_system_info_t Uint32
+typealias hsa_system_info_t UInt32
 const HSA_SYSTEM_INFO_VERSION_MAJOR = (UInt32)(0)
 const HSA_SYSTEM_INFO_VERSION_MINOR = (UInt32)(1)
 const HSA_SYSTEM_INFO_TIMESTAMP = (UInt32)(2)
@@ -76,38 +76,38 @@ const HSA_SYSTEM_INFO_EXTENSIONS = (UInt32)(7)
 # end enum hsa_system_info_t
 
 # begin enum hsa_extension_t
-typealias hsa_extension_t Uint32
+typealias hsa_extension_t UInt32
 const HSA_EXTENSION_FINALIZER = (UInt32)(0)
 const HSA_EXTENSION_IMAGES = (UInt32)(1)
 const HSA_EXTENSION_AMD_PROFILER = (UInt32)(2)
 # end enum hsa_extension_t
 
 type hsa_agent_t
-    handle::Uint64
+    handle::UInt64
 end
 
 # begin enum hsa_agent_feature_t
-typealias hsa_agent_feature_t Uint32
+typealias hsa_agent_feature_t UInt32
 const HSA_AGENT_FEATURE_KERNEL_DISPATCH = (UInt32)(1)
 const HSA_AGENT_FEATURE_AGENT_DISPATCH = (UInt32)(2)
 # end enum hsa_agent_feature_t
 
 # begin enum hsa_device_type_t
-typealias hsa_device_type_t Uint32
+typealias hsa_device_type_t UInt32
 const HSA_DEVICE_TYPE_CPU = (UInt32)(0)
 const HSA_DEVICE_TYPE_GPU = (UInt32)(1)
 const HSA_DEVICE_TYPE_DSP = (UInt32)(2)
 # end enum hsa_device_type_t
 
 # begin enum hsa_default_float_rounding_mode_t
-typealias hsa_default_float_rounding_mode_t Uint32
+typealias hsa_default_float_rounding_mode_t UInt32
 const HSA_DEFAULT_FLOAT_ROUNDING_MODE_DEFAULT = (UInt32)(0)
 const HSA_DEFAULT_FLOAT_ROUNDING_MODE_ZERO = (UInt32)(1)
 const HSA_DEFAULT_FLOAT_ROUNDING_MODE_NEAR = (UInt32)(2)
 # end enum hsa_default_float_rounding_mode_t
 
 # begin enum hsa_agent_info_t
-typealias hsa_agent_info_t Uint32
+typealias hsa_agent_info_t UInt32
 const HSA_AGENT_INFO_NAME = (UInt32)(0)
 const HSA_AGENT_INFO_VENDOR_NAME = (UInt32)(1)
 const HSA_AGENT_INFO_FEATURE = (UInt32)(2)
@@ -136,19 +136,19 @@ const HSA_AGENT_INFO_VERSION_MINOR = (UInt32)(22)
 # end enum hsa_agent_info_t
 
 # begin enum hsa_exception_policy_t
-typealias hsa_exception_policy_t Uint32
+typealias hsa_exception_policy_t UInt32
 const HSA_EXCEPTION_POLICY_BREAK = (UInt32)(1)
 const HSA_EXCEPTION_POLICY_DETECT = (UInt32)(2)
 # end enum hsa_exception_policy_t
 
 type hsa_signal_t
-    handle::Uint64
+    handle::UInt64
 end
 
 typealias hsa_signal_value_t Int64
 
 # begin enum hsa_signal_condition_t
-typealias hsa_signal_condition_t Uint32
+typealias hsa_signal_condition_t UInt32
 const HSA_SIGNAL_CONDITION_EQ = (UInt32)(0)
 const HSA_SIGNAL_CONDITION_NE = (UInt32)(1)
 const HSA_SIGNAL_CONDITION_LT = (UInt32)(2)
@@ -156,39 +156,39 @@ const HSA_SIGNAL_CONDITION_GTE = (UInt32)(3)
 # end enum hsa_signal_condition_t
 
 # begin enum hsa_wait_state_t
-typealias hsa_wait_state_t Uint32
+typealias hsa_wait_state_t UInt32
 const HSA_WAIT_STATE_BLOCKED = (UInt32)(0)
 const HSA_WAIT_STATE_ACTIVE = (UInt32)(1)
 # end enum hsa_wait_state_t
 
 type hsa_region_t
-    handle::Uint64
+    handle::UInt64
 end
 
 # begin enum hsa_queue_type_t
-typealias hsa_queue_type_t Uint32
+typealias hsa_queue_type_t UInt32
 const HSA_QUEUE_TYPE_MULTI = (UInt32)(0)
 const HSA_QUEUE_TYPE_SINGLE = (UInt32)(1)
 # end enum hsa_queue_type_t
 
 # begin enum hsa_queue_feature_t
-typealias hsa_queue_feature_t Uint32
+typealias hsa_queue_feature_t UInt32
 const HSA_QUEUE_FEATURE_KERNEL_DISPATCH = (UInt32)(1)
 const HSA_QUEUE_FEATURE_AGENT_DISPATCH = (UInt32)(2)
 # end enum hsa_queue_feature_t
 
 type hsa_queue_t
     _type::hsa_queue_type_t
-    features::Uint32
+    features::UInt32
     base_address::Ptr{Void}
     doorbell_signal::hsa_signal_t
-    size::Uint32
-    reserved1::Uint32
-    id::Uint64
+    size::UInt32
+    reserved1::UInt32
+    id::UInt64
 end
 
 # begin enum hsa_packet_type_t
-typealias hsa_packet_type_t Uint32
+typealias hsa_packet_type_t UInt32
 const HSA_PACKET_TYPE_VENDOR_SPECIFIC = (UInt32)(0)
 const HSA_PACKET_TYPE_INVALID = (UInt32)(1)
 const HSA_PACKET_TYPE_KERNEL_DISPATCH = (UInt32)(2)
@@ -198,14 +198,14 @@ const HSA_PACKET_TYPE_BARRIER_OR = (UInt32)(5)
 # end enum hsa_packet_type_t
 
 # begin enum hsa_fence_scope_t
-typealias hsa_fence_scope_t Uint32
+typealias hsa_fence_scope_t UInt32
 const HSA_FENCE_SCOPE_NONE = (UInt32)(0)
 const HSA_FENCE_SCOPE_AGENT = (UInt32)(1)
 const HSA_FENCE_SCOPE_SYSTEM = (UInt32)(2)
 # end enum hsa_fence_scope_t
 
 # begin enum hsa_packet_header_t
-typealias hsa_packet_header_t Uint32
+typealias hsa_packet_header_t UInt32
 const HSA_PACKET_HEADER_TYPE = (UInt32)(0)
 const HSA_PACKET_HEADER_BARRIER = (UInt32)(8)
 const HSA_PACKET_HEADER_ACQUIRE_FENCE_SCOPE = (UInt32)(9)
@@ -213,7 +213,7 @@ const HSA_PACKET_HEADER_RELEASE_FENCE_SCOPE = (UInt32)(11)
 # end enum hsa_packet_header_t
 
 # begin enum hsa_packet_header_width_t
-typealias hsa_packet_header_width_t Uint32
+typealias hsa_packet_header_width_t UInt32
 const HSA_PACKET_HEADER_WIDTH_TYPE = (UInt32)(8)
 const HSA_PACKET_HEADER_WIDTH_BARRIER = (UInt32)(1)
 const HSA_PACKET_HEADER_WIDTH_ACQUIRE_FENCE_SCOPE = (UInt32)(2)
@@ -221,51 +221,51 @@ const HSA_PACKET_HEADER_WIDTH_RELEASE_FENCE_SCOPE = (UInt32)(2)
 # end enum hsa_packet_header_width_t
 
 # begin enum hsa_kernel_dispatch_packet_setup_t
-typealias hsa_kernel_dispatch_packet_setup_t Uint32
+typealias hsa_kernel_dispatch_packet_setup_t UInt32
 const HSA_KERNEL_DISPATCH_PACKET_SETUP_DIMENSIONS = (UInt32)(0)
 # end enum hsa_kernel_dispatch_packet_setup_t
 
 # begin enum hsa_kernel_dispatch_packet_setup_width_t
-typealias hsa_kernel_dispatch_packet_setup_width_t Uint32
+typealias hsa_kernel_dispatch_packet_setup_width_t UInt32
 const HSA_KERNEL_DISPATCH_PACKET_SETUP_WIDTH_DIMENSIONS = (UInt32)(2)
 # end enum hsa_kernel_dispatch_packet_setup_width_t
 
 type hsa_kernel_dispatch_packet_t
-    header::Uint16
-    setup::Uint16
-    workgroup_size_x::Uint16
-    workgroup_size_y::Uint16
-    workgroup_size_z::Uint16
-    reserved0::Uint16
-    grid_size_x::Uint32
-    grid_size_y::Uint32
-    grid_size_z::Uint32
-    private_segment_size::Uint32
-    group_segment_size::Uint32
-    kernel_object::Uint64
+    header::UInt16
+    setup::UInt16
+    workgroup_size_x::UInt16
+    workgroup_size_y::UInt16
+    workgroup_size_z::UInt16
+    reserved0::UInt16
+    grid_size_x::UInt32
+    grid_size_y::UInt32
+    grid_size_z::UInt32
+    private_segment_size::UInt32
+    group_segment_size::UInt32
+    kernel_object::UInt64
     kernarg_address::Ptr{Void}
-    reserved2::Uint64
+    reserved2::UInt64
     completion_signal::hsa_signal_t
 end
 
-immutable Array_4_Uint64
-    d1::Uint64
-    d2::Uint64
-    d3::Uint64
-    d4::Uint64
+immutable Array_4_UInt64
+    d1::UInt64
+    d2::UInt64
+    d3::UInt64
+    d4::UInt64
 end
 
-Base.zero(::Type{Array_4_Uint64}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
-        Array_4_Uint64(fill(zero(Uint64),4)...)
+Base.zero(::Type{Array_4_UInt64}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
+        Array_4_UInt64(fill(zero(UInt64),4)...)
     end
 
 type hsa_agent_dispatch_packet_t
-    header::Uint16
-    _type::Uint16
-    reserved0::Uint32
+    header::UInt16
+    _type::UInt16
+    reserved0::UInt32
     return_address::Ptr{Void}
-    arg::Array_4_Uint64
-    reserved2::Uint64
+    arg::Array_4_UInt64
+    reserved2::UInt64
     completion_signal::hsa_signal_t
 end
 
@@ -282,25 +282,25 @@ Base.zero(::Type{Array_5_hsa_signal_t}) = begin  # /home/strollinger/.julia/v0.4
     end
 
 type hsa_barrier_and_packet_t
-    header::Uint16
-    reserved0::Uint16
-    reserved1::Uint32
+    header::UInt16
+    reserved0::UInt16
+    reserved1::UInt32
     dep_signal::Array_5_hsa_signal_t
-    reserved2::Uint64
+    reserved2::UInt64
     completion_signal::hsa_signal_t
 end
 
 type hsa_barrier_or_packet_t
-    header::Uint16
-    reserved0::Uint16
-    reserved1::Uint32
+    header::UInt16
+    reserved0::UInt16
+    reserved1::UInt32
     dep_signal::Array_5_hsa_signal_t
-    reserved2::Uint64
+    reserved2::UInt64
     completion_signal::hsa_signal_t
 end
 
 # begin enum hsa_region_segment_t
-typealias hsa_region_segment_t Uint32
+typealias hsa_region_segment_t UInt32
 const HSA_REGION_SEGMENT_GLOBAL = (UInt32)(0)
 const HSA_REGION_SEGMENT_READONLY = (UInt32)(1)
 const HSA_REGION_SEGMENT_PRIVATE = (UInt32)(2)
@@ -308,14 +308,14 @@ const HSA_REGION_SEGMENT_GROUP = (UInt32)(3)
 # end enum hsa_region_segment_t
 
 # begin enum hsa_region_global_flag_t
-typealias hsa_region_global_flag_t Uint32
+typealias hsa_region_global_flag_t UInt32
 const HSA_REGION_GLOBAL_FLAG_KERNARG = (UInt32)(1)
 const HSA_REGION_GLOBAL_FLAG_FINE_GRAINED = (UInt32)(2)
 const HSA_REGION_GLOBAL_FLAG_COARSE_GRAINED = (UInt32)(4)
 # end enum hsa_region_global_flag_t
 
 # begin enum hsa_region_info_t
-typealias hsa_region_info_t Uint32
+typealias hsa_region_info_t UInt32
 const HSA_REGION_INFO_SEGMENT = (UInt32)(0)
 const HSA_REGION_INFO_GLOBAL_FLAGS = (UInt32)(1)
 const HSA_REGION_INFO_SIZE = (UInt32)(2)
@@ -326,36 +326,36 @@ const HSA_REGION_INFO_RUNTIME_ALLOC_ALIGNMENT = (UInt32)(7)
 # end enum hsa_region_info_t
 
 # begin enum hsa_symbol_kind_t
-typealias hsa_symbol_kind_t Uint32
+typealias hsa_symbol_kind_t UInt32
 const HSA_SYMBOL_KIND_VARIABLE = (UInt32)(0)
 const HSA_SYMBOL_KIND_KERNEL = (UInt32)(1)
 const HSA_SYMBOL_KIND_INDIRECT_FUNCTION = (UInt32)(2)
 # end enum hsa_symbol_kind_t
 
 # begin enum hsa_variable_allocation_t
-typealias hsa_variable_allocation_t Uint32
+typealias hsa_variable_allocation_t UInt32
 const HSA_VARIABLE_ALLOCATION_AGENT = (UInt32)(0)
 const HSA_VARIABLE_ALLOCATION_PROGRAM = (UInt32)(1)
 # end enum hsa_variable_allocation_t
 
 # begin enum hsa_symbol_linkage_t
-typealias hsa_symbol_linkage_t Uint32
+typealias hsa_symbol_linkage_t UInt32
 const HSA_SYMBOL_LINKAGE_MODULE = (UInt32)(0)
 const HSA_SYMBOL_LINKAGE_PROGRAM = (UInt32)(1)
 # end enum hsa_symbol_linkage_t
 
 # begin enum hsa_variable_segment_t
-typealias hsa_variable_segment_t Uint32
+typealias hsa_variable_segment_t UInt32
 const HSA_VARIABLE_SEGMENT_GLOBAL = (UInt32)(0)
 const HSA_VARIABLE_SEGMENT_READONLY = (UInt32)(1)
 # end enum hsa_variable_segment_t
 
 type hsa_isa_t
-    handle::Uint64
+    handle::UInt64
 end
 
 # begin enum hsa_isa_info_t
-typealias hsa_isa_info_t Uint32
+typealias hsa_isa_info_t UInt32
 const HSA_ISA_INFO_NAME_LENGTH = (UInt32)(0)
 const HSA_ISA_INFO_NAME = (UInt32)(1)
 const HSA_ISA_INFO_CALL_CONVENTION_COUNT = (UInt32)(2)
@@ -364,20 +364,20 @@ const HSA_ISA_INFO_CALL_CONVENTION_INFO_WAVEFRONTS_PER_COMPUTE_UNIT = (UInt32)(4
 # end enum hsa_isa_info_t
 
 type hsa_code_object_t
-    handle::Uint64
+    handle::UInt64
 end
 
 type hsa_callback_data_t
-    handle::Uint64
+    handle::UInt64
 end
 
 # begin enum hsa_code_object_type_t
-typealias hsa_code_object_type_t Uint32
+typealias hsa_code_object_type_t UInt32
 const HSA_CODE_OBJECT_TYPE_PROGRAM = (UInt32)(0)
 # end enum hsa_code_object_type_t
 
 # begin enum hsa_code_object_info_t
-typealias hsa_code_object_info_t Uint32
+typealias hsa_code_object_info_t UInt32
 const HSA_CODE_OBJECT_INFO_VERSION = (UInt32)(0)
 const HSA_CODE_OBJECT_INFO_TYPE = (UInt32)(1)
 const HSA_CODE_OBJECT_INFO_ISA = (UInt32)(2)
@@ -387,11 +387,11 @@ const HSA_CODE_OBJECT_INFO_DEFAULT_FLOAT_ROUNDING_MODE = (UInt32)(5)
 # end enum hsa_code_object_info_t
 
 type hsa_code_symbol_t
-    handle::Uint64
+    handle::UInt64
 end
 
 # begin enum hsa_code_symbol_info_t
-typealias hsa_code_symbol_info_t Uint32
+typealias hsa_code_symbol_info_t UInt32
 const HSA_CODE_SYMBOL_INFO_TYPE = (UInt32)(0)
 const HSA_CODE_SYMBOL_INFO_NAME_LENGTH = (UInt32)(1)
 const HSA_CODE_SYMBOL_INFO_NAME = (UInt32)(2)
@@ -413,27 +413,27 @@ const HSA_CODE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION = (UInt32)(16)
 # end enum hsa_code_symbol_info_t
 
 type hsa_executable_t
-    handle::Uint64
+    handle::UInt64
 end
 
 # begin enum hsa_executable_state_t
-typealias hsa_executable_state_t Uint32
+typealias hsa_executable_state_t UInt32
 const HSA_EXECUTABLE_STATE_UNFROZEN = (UInt32)(0)
 const HSA_EXECUTABLE_STATE_FROZEN = (UInt32)(1)
 # end enum hsa_executable_state_t
 
 # begin enum hsa_executable_info_t
-typealias hsa_executable_info_t Uint32
+typealias hsa_executable_info_t UInt32
 const HSA_EXECUTABLE_INFO_PROFILE = (UInt32)(1)
 const HSA_EXECUTABLE_INFO_STATE = (UInt32)(2)
 # end enum hsa_executable_info_t
 
 type hsa_executable_symbol_t
-    handle::Uint64
+    handle::UInt64
 end
 
 # begin enum hsa_executable_symbol_info_t
-typealias hsa_executable_symbol_info_t Uint32
+typealias hsa_executable_symbol_info_t UInt32
 const HSA_EXECUTABLE_SYMBOL_INFO_TYPE = (UInt32)(0)
 const HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH = (UInt32)(1)
 const HSA_EXECUTABLE_SYMBOL_INFO_NAME = (UInt32)(2)
@@ -465,11 +465,11 @@ typealias BrigModule_t Ptr{BrigModuleHeader}
 typealias hsa_ext_module_t BrigModule_t
 
 type hsa_ext_program_t
-    handle::Uint64
+    handle::UInt64
 end
 
 # begin enum hsa_ext_program_info_t
-typealias hsa_ext_program_info_t Uint32
+typealias hsa_ext_program_info_t UInt32
 const HSA_EXT_PROGRAM_INFO_MACHINE_MODEL = (UInt32)(0)
 const HSA_EXT_PROGRAM_INFO_PROFILE = (UInt32)(1)
 const HSA_EXT_PROGRAM_INFO_DEFAULT_FLOAT_ROUNDING_MODE = (UInt32)(2)
@@ -480,110 +480,110 @@ typealias hsa_ext_finalizer_call_convention_t Cint
 const HSA_EXT_FINALIZER_CALL_CONVENTION_AUTO = (Int32)(-1)
 # end enum hsa_ext_finalizer_call_convention_t
 
-immutable Array_3_Uint64
-    d1::Uint64
-    d2::Uint64
-    d3::Uint64
+immutable Array_3_UInt64
+    d1::UInt64
+    d2::UInt64
+    d3::UInt64
 end
 
-Base.zero(::Type{Array_3_Uint64}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
-        Array_3_Uint64(fill(zero(Uint64),3)...)
+Base.zero(::Type{Array_3_UInt64}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
+        Array_3_UInt64(fill(zero(UInt64),3)...)
     end
 
-immutable Array_75_Uint8
-    d1::Uint8
-    d2::Uint8
-    d3::Uint8
-    d4::Uint8
-    d5::Uint8
-    d6::Uint8
-    d7::Uint8
-    d8::Uint8
-    d9::Uint8
-    d10::Uint8
-    d11::Uint8
-    d12::Uint8
-    d13::Uint8
-    d14::Uint8
-    d15::Uint8
-    d16::Uint8
-    d17::Uint8
-    d18::Uint8
-    d19::Uint8
-    d20::Uint8
-    d21::Uint8
-    d22::Uint8
-    d23::Uint8
-    d24::Uint8
-    d25::Uint8
-    d26::Uint8
-    d27::Uint8
-    d28::Uint8
-    d29::Uint8
-    d30::Uint8
-    d31::Uint8
-    d32::Uint8
-    d33::Uint8
-    d34::Uint8
-    d35::Uint8
-    d36::Uint8
-    d37::Uint8
-    d38::Uint8
-    d39::Uint8
-    d40::Uint8
-    d41::Uint8
-    d42::Uint8
-    d43::Uint8
-    d44::Uint8
-    d45::Uint8
-    d46::Uint8
-    d47::Uint8
-    d48::Uint8
-    d49::Uint8
-    d50::Uint8
-    d51::Uint8
-    d52::Uint8
-    d53::Uint8
-    d54::Uint8
-    d55::Uint8
-    d56::Uint8
-    d57::Uint8
-    d58::Uint8
-    d59::Uint8
-    d60::Uint8
-    d61::Uint8
-    d62::Uint8
-    d63::Uint8
-    d64::Uint8
-    d65::Uint8
-    d66::Uint8
-    d67::Uint8
-    d68::Uint8
-    d69::Uint8
-    d70::Uint8
-    d71::Uint8
-    d72::Uint8
-    d73::Uint8
-    d74::Uint8
-    d75::Uint8
+immutable Array_75_UInt8
+    d1::UInt8
+    d2::UInt8
+    d3::UInt8
+    d4::UInt8
+    d5::UInt8
+    d6::UInt8
+    d7::UInt8
+    d8::UInt8
+    d9::UInt8
+    d10::UInt8
+    d11::UInt8
+    d12::UInt8
+    d13::UInt8
+    d14::UInt8
+    d15::UInt8
+    d16::UInt8
+    d17::UInt8
+    d18::UInt8
+    d19::UInt8
+    d20::UInt8
+    d21::UInt8
+    d22::UInt8
+    d23::UInt8
+    d24::UInt8
+    d25::UInt8
+    d26::UInt8
+    d27::UInt8
+    d28::UInt8
+    d29::UInt8
+    d30::UInt8
+    d31::UInt8
+    d32::UInt8
+    d33::UInt8
+    d34::UInt8
+    d35::UInt8
+    d36::UInt8
+    d37::UInt8
+    d38::UInt8
+    d39::UInt8
+    d40::UInt8
+    d41::UInt8
+    d42::UInt8
+    d43::UInt8
+    d44::UInt8
+    d45::UInt8
+    d46::UInt8
+    d47::UInt8
+    d48::UInt8
+    d49::UInt8
+    d50::UInt8
+    d51::UInt8
+    d52::UInt8
+    d53::UInt8
+    d54::UInt8
+    d55::UInt8
+    d56::UInt8
+    d57::UInt8
+    d58::UInt8
+    d59::UInt8
+    d60::UInt8
+    d61::UInt8
+    d62::UInt8
+    d63::UInt8
+    d64::UInt8
+    d65::UInt8
+    d66::UInt8
+    d67::UInt8
+    d68::UInt8
+    d69::UInt8
+    d70::UInt8
+    d71::UInt8
+    d72::UInt8
+    d73::UInt8
+    d74::UInt8
+    d75::UInt8
 end
 
-Base.zero(::Type{Array_75_Uint8}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
-        Array_75_Uint8(fill(zero(Uint8),75)...)
+Base.zero(::Type{Array_75_UInt8}) = begin  # /home/strollinger/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
+        Array_75_UInt8(fill(zero(UInt8),75)...)
     end
 
 type hsa_ext_control_directives_t
-    control_directives_mask::Uint64
-    break_exceptions_mask::Uint16
-    detect_exceptions_mask::Uint16
-    max_dynamic_group_size::Uint32
-    max_flat_grid_size::Uint64
-    max_flat_workgroup_size::Uint32
-    reserved1::Uint32
-    required_grid_size::Array_3_Uint64
+    control_directives_mask::UInt64
+    break_exceptions_mask::UInt16
+    detect_exceptions_mask::UInt16
+    max_dynamic_group_size::UInt32
+    max_flat_grid_size::UInt64
+    max_flat_workgroup_size::UInt32
+    reserved1::UInt32
+    required_grid_size::Array_3_UInt64
     required_workgroup_size::hsa_dim3_t
-    required_dim::Uint8
-    reserved2::Array_75_Uint8
+    required_dim::UInt8
+    reserved2::Array_75_UInt8
 end
 
 type hsa_ext_finalizer_1_00_pfn_t
@@ -596,11 +596,11 @@ type hsa_ext_finalizer_1_00_pfn_t
 end
 
 type hsa_ext_image_t
-    handle::Uint64
+    handle::UInt64
 end
 
 # begin enum hsa_ext_image_geometry_t
-typealias hsa_ext_image_geometry_t Uint32
+typealias hsa_ext_image_geometry_t UInt32
 const HSA_EXT_IMAGE_GEOMETRY_1D = (UInt32)(0)
 const HSA_EXT_IMAGE_GEOMETRY_2D = (UInt32)(1)
 const HSA_EXT_IMAGE_GEOMETRY_3D = (UInt32)(2)
@@ -612,7 +612,7 @@ const HSA_EXT_IMAGE_GEOMETRY_2DADEPTH = (UInt32)(7)
 # end enum hsa_ext_image_geometry_t
 
 # begin enum hsa_ext_image_channel_type_t
-typealias hsa_ext_image_channel_type_t Uint32
+typealias hsa_ext_image_channel_type_t UInt32
 const HSA_EXT_IMAGE_CHANNEL_TYPE_SNORM_INT8 = (UInt32)(0)
 const HSA_EXT_IMAGE_CHANNEL_TYPE_SNORM_INT16 = (UInt32)(1)
 const HSA_EXT_IMAGE_CHANNEL_TYPE_UNORM_INT8 = (UInt32)(2)
@@ -632,7 +632,7 @@ const HSA_EXT_IMAGE_CHANNEL_TYPE_FLOAT = (UInt32)(15)
 # end enum hsa_ext_image_channel_type_t
 
 # begin enum hsa_ext_image_channel_order_t
-typealias hsa_ext_image_channel_order_t Uint32
+typealias hsa_ext_image_channel_order_t UInt32
 const HSA_EXT_IMAGE_CHANNEL_ORDER_A = (UInt32)(0)
 const HSA_EXT_IMAGE_CHANNEL_ORDER_R = (UInt32)(1)
 const HSA_EXT_IMAGE_CHANNEL_ORDER_RX = (UInt32)(2)
@@ -670,7 +670,7 @@ type hsa_ext_image_descriptor_t
 end
 
 # begin enum hsa_ext_image_capability_t
-typealias hsa_ext_image_capability_t Uint32
+typealias hsa_ext_image_capability_t UInt32
 const HSA_EXT_IMAGE_CAPABILITY_NOT_SUPPORTED = (UInt32)(0)
 const HSA_EXT_IMAGE_CAPABILITY_READ_ONLY = (UInt32)(1)
 const HSA_EXT_IMAGE_CAPABILITY_WRITE_ONLY = (UInt32)(2)
@@ -690,11 +690,11 @@ type hsa_ext_image_region_t
 end
 
 type hsa_ext_sampler_t
-    handle::Uint64
+    handle::UInt64
 end
 
 # begin enum hsa_ext_sampler_addressing_mode_t
-typealias hsa_ext_sampler_addressing_mode_t Uint32
+typealias hsa_ext_sampler_addressing_mode_t UInt32
 const HSA_EXT_SAMPLER_ADDRESSING_MODE_UNDEFINED = (UInt32)(0)
 const HSA_EXT_SAMPLER_ADDRESSING_MODE_CLAMP_TO_EDGE = (UInt32)(1)
 const HSA_EXT_SAMPLER_ADDRESSING_MODE_CLAMP_TO_BORDER = (UInt32)(2)
@@ -703,13 +703,13 @@ const HSA_EXT_SAMPLER_ADDRESSING_MODE_MIRRORED_REPEAT = (UInt32)(4)
 # end enum hsa_ext_sampler_addressing_mode_t
 
 # begin enum hsa_ext_sampler_coordinate_mode_t
-typealias hsa_ext_sampler_coordinate_mode_t Uint32
+typealias hsa_ext_sampler_coordinate_mode_t UInt32
 const HSA_EXT_SAMPLER_COORDINATE_MODE_UNNORMALIZED = (UInt32)(0)
 const HSA_EXT_SAMPLER_COORDINATE_MODE_NORMALIZED = (UInt32)(1)
 # end enum hsa_ext_sampler_coordinate_mode_t
 
 # begin enum hsa_ext_sampler_filter_mode_t
-typealias hsa_ext_sampler_filter_mode_t Uint32
+typealias hsa_ext_sampler_filter_mode_t UInt32
 const HSA_EXT_SAMPLER_FILTER_MODE_NEAREST = (UInt32)(0)
 const HSA_EXT_SAMPLER_FILTER_MODE_LINEAR = (UInt32)(1)
 # end enum hsa_ext_sampler_filter_mode_t
@@ -828,12 +828,12 @@ const QueueTypeMulti = HSA_QUEUE_TYPE_MULTI
 const QueueTypeSingle = HSA_QUEUE_TYPE_SINGLE
 const QueueFeatureKernelDispatch = HSA_QUEUE_FEATURE_KERNEL_DISPATCH
 const QueueFeatureAgentDispatch = HSA_QUEUE_FEATURE_AGENT_DISPATCH
-const PacketTypeVendorSpecific = Uint8(HSA_PACKET_TYPE_VENDOR_SPECIFIC)
-const PacketTypeInvalid = Uint8(HSA_PACKET_TYPE_INVALID)
-const PacketTypeKernelDispatch = Uint8(HSA_PACKET_TYPE_KERNEL_DISPATCH)
-const PacketTypeBarrierAnd = Uint8(HSA_PACKET_TYPE_BARRIER_AND)
-const PacketTypeAgentDispatch = Uint8(HSA_PACKET_TYPE_AGENT_DISPATCH)
-const PacketTypeBarrierOr = Uint8(HSA_PACKET_TYPE_BARRIER_OR)
+const PacketTypeVendorSpecific = UInt8(HSA_PACKET_TYPE_VENDOR_SPECIFIC)
+const PacketTypeInvalid = UInt8(HSA_PACKET_TYPE_INVALID)
+const PacketTypeKernelDispatch = UInt8(HSA_PACKET_TYPE_KERNEL_DISPATCH)
+const PacketTypeBarrierAnd = UInt8(HSA_PACKET_TYPE_BARRIER_AND)
+const PacketTypeAgentDispatch = UInt8(HSA_PACKET_TYPE_AGENT_DISPATCH)
+const PacketTypeBarrierOr = UInt8(HSA_PACKET_TYPE_BARRIER_OR)
 const FenceScopeNone = HSA_FENCE_SCOPE_NONE
 const FenceScopeAgent = HSA_FENCE_SCOPE_AGENT
 const FenceScopeSystem = HSA_FENCE_SCOPE_SYSTEM
@@ -1065,7 +1065,7 @@ function system_info_timestamp_frequency() # /home/strollinger/hsa/jl/gen/gen_ge
 end
 
 function agent_info_vendor_name(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Array(Uint8,64) # line 67:
+    value = Array(UInt8,64) # line 67:
     err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VENDOR_NAME,value) # line 69:
     test_status(err) # line 71:
     value = strip(ascii(value),'\0')
@@ -1100,7 +1100,7 @@ function agent_info_queue_min_size(agent) # /home/strollinger/hsa/jl/gen/gen_get
 end
 
 function agent_info_name(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Array(Uint8,64) # line 67:
+    value = Array(UInt8,64) # line 67:
     err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NAME,value) # line 69:
     test_status(err) # line 71:
     value = strip(ascii(value),'\0')
@@ -1350,7 +1350,7 @@ end
 function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
     begin
         len = isa_info_name_length(isa)
-        value = Array(Uint8,len)
+        value = Array(UInt8,len)
     end # line 67:
     err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME,Base.zero(UInt32),value) # line 69:
     test_status(err) # line 71:
@@ -1395,7 +1395,7 @@ end
 function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
     begin
         len = executable_symbol_info_name_length(symbol)
-        value = Array(Uint8,len)
+        value = Array(UInt8,len)
     end # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:
     test_status(err) # line 71:
@@ -1475,7 +1475,7 @@ end
 function executable_symbol_info_module_name(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
     begin
         len = executable_symbol_info_module_name_length(symbol)
-        value = Array(Uint8,len)
+        value = Array(UInt8,len)
     end # line 67:
     err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # line 69:
     test_status(err) # line 71:

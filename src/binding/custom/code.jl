@@ -64,8 +64,8 @@ function executable_get_symbol(
 
     err = ccall((:hsa_executable_get_symbol, libhsa), hsa_status_t, (
     hsa_executable_t,
-    Ptr{Uint8},
-    Ptr{Uint8},
+    Ptr{UInt8},
+    Ptr{UInt8},
     hsa_agent_t,
     Int32,
     Ptr{hsa_executable_symbol_t}),

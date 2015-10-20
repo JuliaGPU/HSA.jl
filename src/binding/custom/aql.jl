@@ -1,10 +1,10 @@
 export PacketHeader
 
 type PacketHeader
-    typ :: Uint8 # hsa_packet_type_t
+    typ :: UInt8 # hsa_packet_type_t
     barrier :: Bool
-    acquire_fence_scope :: Uint8 # hsa_fence_scope_t
-    release_fence_scope :: Uint8 # hsa_fence_scope_t
+    acquire_fence_scope :: UInt8 # hsa_fence_scope_t
+    release_fence_scope :: UInt8 # hsa_fence_scope_t
 end
 
 function PacketHeader(typ;
@@ -12,9 +12,9 @@ function PacketHeader(typ;
     acquire = FenceScopeNone,
     release = FenceScopeNone
     )
-    typ = convert(Uint8, typ)
-    acquire = convert(Uint8, acquire)
-    release = convert(Uint8, release)
+    typ = convert(UInt8, typ)
+    acquire = convert(UInt8, acquire)
+    release = convert(UInt8, release)
 
     return PacketHeader(typ, barrier, acquire, release)
 end
@@ -35,7 +35,7 @@ function unsafe_convert(::Type{PacketHeader}, ptr :: Ptr{Void})
         error("invalid packet pointer")
     end
 
-    h_ptr = convert(Ptr{Uint8}, ptr)
+    h_ptr = convert(Ptr{UInt8}, ptr)
 
     h_type = unsafe_load(h_ptr)
     byte2 = unsafe_load(h_ptr + 1)
@@ -49,7 +49,7 @@ end
 import Base.unsafe_store!
 
 function unsafe_store!(ptr :: Ptr{Void}, hdr :: PacketHeader)
-    h_ptr = convert(Ptr{Uint8}, ptr)
+    h_ptr = convert(Ptr{UInt8}, ptr)
 
     h_byte2 =
         ((hdr.barrier) ? 0x01 : 0x00) |
@@ -72,8 +72,8 @@ abstract AQLPacket
 import Base.==
 
 function ==(p1 :: AQLPacket, p2 :: AQLPacket)
-    bytes1 = Array(Uint8, 64)
-    bytes2 = Array(Uint8, 64)
+    bytes1 = Array(UInt8, 64)
+    bytes2 = Array(UInt8, 64)
     bytes1_ptr = convert(Ptr{Void}, pointer(bytes1))
     bytes2_ptr = convert(Ptr{Void}, pointer(bytes2))
 
@@ -87,17 +87,17 @@ export KernelDispatchPacket
 
 type KernelDispatchPacket <: AQLPacket
     header :: PacketHeader
-    dimensions :: Uint16
-    workgroup_size_x :: Uint16
-    workgroup_size_y :: Uint16
-    workgroup_size_z :: Uint16
-    grid_size_x :: Uint32
-    grid_size_y :: Uint32
-    grid_size_z :: Uint32
-    private_segment_size :: Uint32
-    group_segment_size :: Uint32
-    kernel_object :: Uint64
-    kernarg_address :: Uint64
+    dimensions :: UInt16
+    workgroup_size_x :: UInt16
+    workgroup_size_y :: UInt16
+    workgroup_size_z :: UInt16
+    grid_size_x :: UInt32
+    grid_size_y :: UInt32
+    grid_size_z :: UInt32
+    private_segment_size :: UInt32
+    group_segment_size :: UInt32
+    kernel_object :: UInt64
+    kernarg_address :: UInt64
     completion_signal :: hsa_signal_t
 
     function KernelDispatchPacket(
@@ -183,20 +183,20 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeKernelDispatch}}, ptr :: P
         error("invalid packet pointer")
     end
 
-    p_dims = unsafe_load(convert(Ptr{Uint16}, ptr + 2)) & 0x03
-    p_wg_x = unsafe_load(convert(Ptr{Uint16}, ptr + 4))
-    p_wg_y = unsafe_load(convert(Ptr{Uint16}, ptr + 6))
-    p_wg_z = unsafe_load(convert(Ptr{Uint16}, ptr + 8))
-    # Uint16 reserved
-    p_gr_x = unsafe_load(convert(Ptr{Uint32}, ptr + 12))
-    p_gr_y = unsafe_load(convert(Ptr{Uint32}, ptr + 16))
-    p_gr_z = unsafe_load(convert(Ptr{Uint32}, ptr + 20))
+    p_dims = unsafe_load(convert(Ptr{UInt16}, ptr + 2)) & 0x03
+    p_wg_x = unsafe_load(convert(Ptr{UInt16}, ptr + 4))
+    p_wg_y = unsafe_load(convert(Ptr{UInt16}, ptr + 6))
+    p_wg_z = unsafe_load(convert(Ptr{UInt16}, ptr + 8))
+    # UInt16 reserved
+    p_gr_x = unsafe_load(convert(Ptr{UInt32}, ptr + 12))
+    p_gr_y = unsafe_load(convert(Ptr{UInt32}, ptr + 16))
+    p_gr_z = unsafe_load(convert(Ptr{UInt32}, ptr + 20))
 
-    p_pseg_size = unsafe_load(convert(Ptr{Uint32}, ptr + 24))
-    p_gseg_size = unsafe_load(convert(Ptr{Uint32}, ptr + 28))
-    p_kobj_addr = unsafe_load(convert(Ptr{Uint64}, ptr + 32))
-    p_karg_addr = unsafe_load(convert(Ptr{Uint64}, ptr + 40))
-    # Uint64 reserved
+    p_pseg_size = unsafe_load(convert(Ptr{UInt32}, ptr + 24))
+    p_gseg_size = unsafe_load(convert(Ptr{UInt32}, ptr + 28))
+    p_kobj_addr = unsafe_load(convert(Ptr{UInt64}, ptr + 32))
+    p_karg_addr = unsafe_load(convert(Ptr{UInt64}, ptr + 40))
+    # UInt64 reserved
     p_comp_sign = unsafe_load(convert(Ptr{hsa_signal_t}, ptr + 56))
 
     res = KernelDispatchPacket(
@@ -219,20 +219,20 @@ function unsafe_store!(ptr :: Ptr{Void}, dp :: KernelDispatchPacket)
         error("not a dispatch packet")
     end
 
-    unsafe_store!(convert(Ptr{Uint16}, ptr + 2), convert(Uint16, dp.dimensions)) # setup
-    unsafe_store!(convert(Ptr{Uint16}, ptr + 4), dp.workgroup_size_x)
-    unsafe_store!(convert(Ptr{Uint16}, ptr + 6), dp.workgroup_size_y)
-    unsafe_store!(convert(Ptr{Uint16}, ptr + 8), dp.workgroup_size_z)
-    unsafe_store!(convert(Ptr{Uint16}, ptr + 10), 0x0000)    # Uint16 reserved
-    unsafe_store!(convert(Ptr{Uint32}, ptr + 12), dp.grid_size_x)
-    unsafe_store!(convert(Ptr{Uint32}, ptr + 16), dp.grid_size_y)
-    unsafe_store!(convert(Ptr{Uint32}, ptr + 20), dp.grid_size_z)
-    unsafe_store!(convert(Ptr{Uint32}, ptr + 24), dp.private_segment_size)
-    unsafe_store!(convert(Ptr{Uint32}, ptr + 28), dp.group_segment_size)
-    unsafe_store!(convert(Ptr{Uint64}, ptr + 32), dp.kernel_object)
-    unsafe_store!(convert(Ptr{Uint64}, ptr + 40), dp.kernarg_address)
-    unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0x00)    # Uint64 reserved
-    unsafe_store!(convert(Ptr{Uint64}, ptr + 56), dp.completion_signal.handle)
+    unsafe_store!(convert(Ptr{UInt16}, ptr + 2), convert(UInt16, dp.dimensions)) # setup
+    unsafe_store!(convert(Ptr{UInt16}, ptr + 4), dp.workgroup_size_x)
+    unsafe_store!(convert(Ptr{UInt16}, ptr + 6), dp.workgroup_size_y)
+    unsafe_store!(convert(Ptr{UInt16}, ptr + 8), dp.workgroup_size_z)
+    unsafe_store!(convert(Ptr{UInt16}, ptr + 10), 0x0000)    # UInt16 reserved
+    unsafe_store!(convert(Ptr{UInt32}, ptr + 12), dp.grid_size_x)
+    unsafe_store!(convert(Ptr{UInt32}, ptr + 16), dp.grid_size_y)
+    unsafe_store!(convert(Ptr{UInt32}, ptr + 20), dp.grid_size_z)
+    unsafe_store!(convert(Ptr{UInt32}, ptr + 24), dp.private_segment_size)
+    unsafe_store!(convert(Ptr{UInt32}, ptr + 28), dp.group_segment_size)
+    unsafe_store!(convert(Ptr{UInt64}, ptr + 32), dp.kernel_object)
+    unsafe_store!(convert(Ptr{UInt64}, ptr + 40), dp.kernarg_address)
+    unsafe_store!(convert(Ptr{UInt64}, ptr + 48), 0x00)    # UInt64 reserved
+    unsafe_store!(convert(Ptr{UInt64}, ptr + 56), dp.completion_signal.handle)
 
     unsafe_store!(ptr, dp.header)
 end
@@ -241,15 +241,15 @@ export AgentDispatchPacket
 
 type AgentDispatchPacket <: AQLPacket
     header :: PacketHeader
-    typ :: Uint16
-    return_address :: Uint64
-    arg :: Array{Uint64, 1}
+    typ :: UInt16
+    return_address :: UInt64
+    arg :: Array{UInt64, 1}
     completion_signal :: hsa_signal_t
 
     function AgentDispatchPacket(typ;
         return_address = 0,
         header :: PacketHeader = PacketHeader(PacketTypeAgentDispatch),
-        args :: Array{Uint64,1} = Array(Uint64, 4),
+        args :: Array{UInt64,1} = Array(UInt64, 4),
         completion_signal = hsa_signal_t(0)
         )
 
@@ -267,34 +267,34 @@ type AgentDispatchPacket <: AQLPacket
 end
 
 function load(::Type{AQLPacket}, ::Type{Val{PacketTypeAgentDispatch}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
-    p_type = unsafe_load(convert(Ptr{Uint16}, ptr + 2))
-    # Uint32 reserved
-    p_retu = unsafe_load(convert(Ptr{Uint64}, ptr + 8))
-    p_arg1 = unsafe_load(convert(Ptr{Uint64}, ptr + 16))
-    p_arg2 = unsafe_load(convert(Ptr{Uint64}, ptr + 24))
-    p_arg3 = unsafe_load(convert(Ptr{Uint64}, ptr + 32))
-    p_arg4 = unsafe_load(convert(Ptr{Uint64}, ptr + 40))
-    # Uint64 reserved
-    p_comp = unsafe_load(convert(Ptr{Uint64}, ptr + 56))
+    p_type = unsafe_load(convert(Ptr{UInt16}, ptr + 2))
+    # UInt32 reserved
+    p_retu = unsafe_load(convert(Ptr{UInt64}, ptr + 8))
+    p_arg1 = unsafe_load(convert(Ptr{UInt64}, ptr + 16))
+    p_arg2 = unsafe_load(convert(Ptr{UInt64}, ptr + 24))
+    p_arg3 = unsafe_load(convert(Ptr{UInt64}, ptr + 32))
+    p_arg4 = unsafe_load(convert(Ptr{UInt64}, ptr + 40))
+    # UInt64 reserved
+    p_comp = unsafe_load(convert(Ptr{UInt64}, ptr + 56))
 
     return AgentDispatchPacket(p_type;
         header = p_hdr,
         return_address = p_retu,
-        args = Uint64[p_arg1, p_arg2, p_arg3, p_arg4],
+        args = UInt64[p_arg1, p_arg2, p_arg3, p_arg4],
         completion_signal = hsa_signal_t(p_comp))
 end
 
 function unsafe_store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)
-    unsafe_store!(convert(Ptr{Uint16}, ptr + 2), ad.typ)
-    unsafe_store!(convert(Ptr{Uint32}, ptr + 4), 0x00000000) # Uint32 reserved
-    unsafe_store!(convert(Ptr{Uint64}, ptr + 8), ad.return_address)
+    unsafe_store!(convert(Ptr{UInt16}, ptr + 2), ad.typ)
+    unsafe_store!(convert(Ptr{UInt32}, ptr + 4), 0x00000000) # UInt32 reserved
+    unsafe_store!(convert(Ptr{UInt64}, ptr + 8), ad.return_address)
     unsafe_copy!(
-        convert(Ptr{Uint64}, ptr + 16),
-        convert(Ptr{Uint64}, pointer(ad.arg)),
+        convert(Ptr{UInt64}, ptr + 16),
+        convert(Ptr{UInt64}, pointer(ad.arg)),
         8 # Bytes
         )
-    unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0x0000000000000000)    # Uint64 reserved
-    unsafe_store!(convert(Ptr{Uint64}, ptr + 56), ad.completion_signal.handle)
+    unsafe_store!(convert(Ptr{UInt64}, ptr + 48), 0x0000000000000000)    # UInt64 reserved
+    unsafe_store!(convert(Ptr{UInt64}, ptr + 56), ad.completion_signal.handle)
 
     unsafe_store!(ptr, ad.header)
 end
@@ -304,32 +304,32 @@ export BarrierPacket
 type BarrierPacket <: AQLPacket
     header :: PacketHeader
     is_or :: Bool
-    dep_signal :: Array{Uint64, 1}
+    dep_signal :: Array{UInt64, 1}
     completion_signal :: hsa_signal_t
 end
 
 function load(::Type{AQLPacket}, ::Type{Val{PacketTypeBarrierAnd}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
-    p_dep = Array(Uint64, 5)
-    p_dep_ptr = convert(Ptr{Uint64}, pointer(p_dep))
+    p_dep = Array(UInt64, 5)
+    p_dep_ptr = convert(Ptr{UInt64}, pointer(p_dep))
 
-    unsafe_copy!(p_dep_ptr, convert(Ptr{Uint64}, ptr + 8), 5)
-    p_comp = unsafe_load(convert(Ptr{Uint64}, ptr + 56))
+    unsafe_copy!(p_dep_ptr, convert(Ptr{UInt64}, ptr + 8), 5)
+    p_comp = unsafe_load(convert(Ptr{UInt64}, ptr + 56))
 
     return BarrierPacket(p_hdr, false, p_dep, p_comp)
 end
 
 function unsafe_store!(ptr :: Ptr{Void}, bp :: BarrierPacket)
-    p_dep_ptr = convert(Ptr{Uint64}, pointer(bp.dep_signal))
+    p_dep_ptr = convert(Ptr{UInt64}, pointer(bp.dep_signal))
 
-    unsafe_store!(convert(Ptr{Uint16}, ptr + 2), 0)
-    unsafe_store!(convert(Ptr{Uint32}, ptr + 4), 0)
+    unsafe_store!(convert(Ptr{UInt16}, ptr + 2), 0)
+    unsafe_store!(convert(Ptr{UInt32}, ptr + 4), 0)
     unsafe_copy!(
-        convert(Ptr{Uint64}, ptr + 8),
+        convert(Ptr{UInt64}, ptr + 8),
         p_dep_ptr,
         5
     )
-    unsafe_store!(convert(Ptr{Uint64}, ptr + 48), 0)
-    unsafe_store!(convert(Ptr{Uint64}, ptr + 56), bp.completion_signal)
+    unsafe_store!(convert(Ptr{UInt64}, ptr + 48), 0)
+    unsafe_store!(convert(Ptr{UInt64}, ptr + 56), bp.completion_signal)
 
     unsafe_store!(ptr, bp.header)
 end
@@ -338,7 +338,7 @@ export InvalidPacket
 
 type InvalidPacket
     header :: PacketHeader
-    bytes :: Array{Uint8, 1}
+    bytes :: Array{UInt8, 1}
 
     function InvalidPacket(hdr, bytes)
         @assert hdr.typ == HSA.PacketTypeInvalid
@@ -349,9 +349,9 @@ type InvalidPacket
 end
 
 function load(::Type{AQLPacket}, ::Type{Val{PacketTypeInvalid}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
-    bytes = Array(Uint8, 64)
+    bytes = Array(UInt8, 64)
 
-    unsafe_copy!(pointer(bytes), convert(Ptr{Uint8}, ptr), 64)
+    unsafe_copy!(pointer(bytes), convert(Ptr{UInt8}, ptr), 64)
 
     return InvalidPacket(p_hdr, bytes)
 end

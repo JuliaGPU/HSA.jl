@@ -1,4 +1,4 @@
-const queue_by_id = Dict{Uint32, WeakRef}()
+const queue_by_id = Dict{UInt32, WeakRef}()
 
 export Queue
 
@@ -8,15 +8,15 @@ type Queue
 
     typ :: hsa_queue_type_t
     features :: hsa_queue_feature_t
-    base_address :: Uint64
+    base_address :: UInt64
     doorbell_signal :: Signal
-    size :: Uint32
-    size_mask :: Uint32 # used for indexing
-    id :: Uint32
+    size :: UInt32
+    size_mask :: UInt32 # used for indexing
+    id :: UInt32
 
     # Info for "hardware" queues
-    group_segment_size :: Nullable{Uint32}
-    private_segment_size :: Nullable{Uint32}
+    group_segment_size :: Nullable{UInt32}
+    private_segment_size :: Nullable{UInt32}
     error_callback :: Nullable{Function}
 
     # Info for "software" queues
@@ -63,10 +63,10 @@ end
 function Queue(a :: Agent, size;
     typ :: hsa_queue_type_t = QueueTypeSingle,
     error_callback = Nullable{Function}(),
-    group_segment_size = typemax(Uint32),
-    private_segment_size = typemax(Uint32))
+    group_segment_size = typemax(UInt32),
+    private_segment_size = typemax(UInt32))
 
-    size = convert(Uint32, size)
+    size = convert(UInt32, size)
     assert_runtime_alive()
 
     h = HSA.queue_create(a, size, typ;
@@ -83,9 +83,9 @@ end
 # Constructor for Software Queues
 function Queue(r :: Region, size, doorbell_signal :: Signal;
     typ :: hsa_queue_type_t = HSA_QUEUE_TYPE_SINGLE,
-    features :: Uint32 = HSA_QUEUE_FEATURE_AGENT_DISPATCH)
+    features :: UInt32 = HSA_QUEUE_FEATURE_AGENT_DISPATCH)
 
-    size = convert(Uint32, size)
+    size = convert(UInt32, size)
 
     h = HSA.soft_queue_create(r, size, typ, features, doorbell_signal)
 
@@ -105,7 +105,7 @@ julia conventions (1-based indexing) but rather respects the indexing used in th
 """
 function getindex(q :: Queue, i)
     assert(i >= 0)
-    i = convert(Uint32, i)
+    i = convert(UInt32, i)
 
     p_ptr = convert(Ptr{Void}, q.base_address + 64 * (i & q.size_mask))
 
@@ -121,7 +121,7 @@ julia conventions (1-based indexing) but rather respects the indexing used in th
 """
 function setindex!(q :: Queue, p :: AQLPacket, i)
     assert(i >= 0)
-    i = convert(Uint32, i)
+    i = convert(UInt32, i)
 
     p_ptr = convert(Ptr{Void}, q.base_address + 64 * (i & q.size_mask))
 
@@ -131,7 +131,7 @@ end
 import Base.push!
 
 function push!(q :: Queue, p :: AQLPacket)
-    idx = add_write_index!(q,Uint64(1)) + 1
+    idx = add_write_index!(q,UInt64(1)) + 1
 
     q[idx] = p
 
@@ -156,16 +156,16 @@ end
 
 const queue_err_cb_ptr = cfunction(queue_err_cb, Void, (hsa_status_t, Ptr{hsa_queue_t}, Ptr{Void}))
 
-function queue_create(a :: Agent, size :: Uint32, typ :: hsa_queue_type_t;
+function queue_create(a :: Agent, size :: UInt32, typ :: hsa_queue_type_t;
     register_callback :: Bool = false,
-    private_segment_size = typemax(Uint32),
-    group_segment_size = typemax(Uint32))
+    private_segment_size = typemax(UInt32),
+    group_segment_size = typemax(UInt32))
 
     res = Ref{Ptr{hsa_queue_t}}(C_NULL)
     cb_ptr = (register_callback) ? queue_err_cb_ptr : C_NULL
     cb_data_ptr = C_NULL
 
-    err = ccall((:hsa_queue_create, libhsa), hsa_status_t, (hsa_agent_t, Uint32, hsa_queue_type_t, Ptr{Void}, Ptr{Void}, Uint32, Uint32, Ptr{Ptr{hsa_queue_t}}),
+    err = ccall((:hsa_queue_create, libhsa), hsa_status_t, (hsa_agent_t, UInt32, hsa_queue_type_t, Ptr{Void}, Ptr{Void}, UInt32, UInt32, Ptr{Ptr{hsa_queue_t}}),
                 a, size, typ, cb_ptr, cb_data_ptr, private_segment_size, group_segment_size, res)
 
     test_status(err)
@@ -173,12 +173,12 @@ function queue_create(a :: Agent, size :: Uint32, typ :: hsa_queue_type_t;
     return res.x
 end
 
-function soft_queue_create(r :: Region, size :: Uint32, typ :: hsa_queue_type_t,
-    features :: Uint32, doorbell_signal :: Signal)
+function soft_queue_create(r :: Region, size :: UInt32, typ :: hsa_queue_type_t,
+    features :: UInt32, doorbell_signal :: Signal)
 
     res = Ref{Ptr{hsa_queue_t}}(C_NULL)
 
-    err = ccall((:hsa_soft_queue_create, libhsa), hsa_status_t, (hsa_region_t, Uint32, hsa_queue_type_t, Uint32, hsa_signal_t, Ptr{Ptr{hsa_queue_t}}),
+    err = ccall((:hsa_soft_queue_create, libhsa), hsa_status_t, (hsa_region_t, UInt32, hsa_queue_type_t, UInt32, hsa_signal_t, Ptr{Ptr{hsa_queue_t}}),
                 r.handle, size, typ, features, doorbell_signal, res)
 
     test_status(err)

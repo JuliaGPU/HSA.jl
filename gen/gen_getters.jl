@@ -99,11 +99,11 @@ end
 function getter_code(getter_spec, eltype :: Type{Val{String}}, count :: Int)
     if count == 1
         # not a single character but a string constant
-        return :($var = Ptr{Uint8}[0]),
+        return :($var = Ptr{UInt8}[0]),
             :($var = bytestring($var[1]))
     else
         # max size string
-        return :($var = Array(Uint8, $count)),
+        return :($var = Array(UInt8, $count)),
             :($var = strip(ascii($var), '\0'))
     end
 end
@@ -113,7 +113,7 @@ function getter_code(getter_spec, eltype :: Type{Val{String}}, count :: Symbol)
     len_sig = getter_signature(getter_spec, count)
 
     return :(len = $len_sig;
-        $var = Array(Uint8, len)),
+        $var = Array(UInt8, len)),
         :($var = strip(ascii($var), '\0'))
 end
 
@@ -243,7 +243,7 @@ push!(getters,
             :HSA_SYSTEM_INFO_SIGNAL_MAX_WAIT => ResultSpec(Culonglong),
             :HSA_SYSTEM_INFO_ENDIANNESS => ResultSpec(:hsa_endianness_t),
             :HSA_SYSTEM_INFO_MACHINE_MODEL => ResultSpec(:hsa_machine_model_t),
-            :HSA_SYSTEM_INFO_EXTENSIONS => ResultSpec(Uint8, 128)
+            :HSA_SYSTEM_INFO_EXTENSIONS => ResultSpec(UInt8, 128)
         )
     )
 )
@@ -262,30 +262,30 @@ push!(getters,
             :HSA_AGENT_INFO_DEFAULT_FLOAT_ROUNDING_MODE => ResultSpec(:hsa_default_float_rounding_mode_t),
             :HSA_AGENT_INFO_BASE_PROFILE_DEFAULT_FLOAT_ROUNDING_MODES => ResultSpec(:hsa_default_float_rounding_mode_t),
             :HSA_AGENT_INFO_FAST_F16_OPERATION => ResultSpec(Bool),
-            :HSA_AGENT_INFO_WAVEFRONT_SIZE => ResultSpec(Uint32),
-            :HSA_AGENT_INFO_WORKGROUP_MAX_DIM => ResultSpec(Tuple{Uint16, Uint16, Uint16}),
-            :HSA_AGENT_INFO_WORKGROUP_MAX_SIZE => ResultSpec(Uint32),
+            :HSA_AGENT_INFO_WAVEFRONT_SIZE => ResultSpec(UInt32),
+            :HSA_AGENT_INFO_WORKGROUP_MAX_DIM => ResultSpec(Tuple{UInt16, UInt16, UInt16}),
+            :HSA_AGENT_INFO_WORKGROUP_MAX_SIZE => ResultSpec(UInt32),
             :HSA_AGENT_INFO_GRID_MAX_DIM => ResultSpec(:hsa_dim3_t),
-            :HSA_AGENT_INFO_GRID_MAX_SIZE => ResultSpec(Uint32),
-            :HSA_AGENT_INFO_FBARRIER_MAX_SIZE => ResultSpec(Uint32),
-            :HSA_AGENT_INFO_QUEUES_MAX => ResultSpec(Uint32),
-            :HSA_AGENT_INFO_QUEUE_MIN_SIZE => ResultSpec(Uint32),
-            :HSA_AGENT_INFO_QUEUE_MAX_SIZE => ResultSpec(Uint32),
+            :HSA_AGENT_INFO_GRID_MAX_SIZE => ResultSpec(UInt32),
+            :HSA_AGENT_INFO_FBARRIER_MAX_SIZE => ResultSpec(UInt32),
+            :HSA_AGENT_INFO_QUEUES_MAX => ResultSpec(UInt32),
+            :HSA_AGENT_INFO_QUEUE_MIN_SIZE => ResultSpec(UInt32),
+            :HSA_AGENT_INFO_QUEUE_MAX_SIZE => ResultSpec(UInt32),
             :HSA_AGENT_INFO_QUEUE_TYPE => ResultSpec(:hsa_queue_type_t),
-            :HSA_AGENT_INFO_NODE => ResultSpec(Uint32),
+            :HSA_AGENT_INFO_NODE => ResultSpec(UInt32),
             :HSA_AGENT_INFO_DEVICE => ResultSpec(:hsa_device_type_t),
-            :HSA_AGENT_INFO_CACHE_SIZE => ResultSpec(Tuple{Uint32, Uint32, Uint32, Uint32}),
+            :HSA_AGENT_INFO_CACHE_SIZE => ResultSpec(Tuple{UInt32, UInt32, UInt32, UInt32}),
             :HSA_AGENT_INFO_ISA => ResultSpec(:hsa_isa_t),
-            :HSA_AGENT_INFO_EXTENSIONS => ResultSpec(Uint8, 128),
-            :HSA_AGENT_INFO_VERSION_MAJOR => ResultSpec(Uint16),
-            :HSA_AGENT_INFO_VERSION_MINOR => ResultSpec(Uint16),
+            :HSA_AGENT_INFO_EXTENSIONS => ResultSpec(UInt8, 128),
+            :HSA_AGENT_INFO_VERSION_MAJOR => ResultSpec(UInt16),
+            :HSA_AGENT_INFO_VERSION_MINOR => ResultSpec(UInt16),
             :HSA_EXT_AGENT_INFO_IMAGE1D_MAX_DIM => ResultSpec(:hsa_dim3_t),
             :HSA_EXT_AGENT_INFO_IMAGE2D_MAX_DIM => ResultSpec(:hsa_dim3_t),
             :HSA_EXT_AGENT_INFO_IMAGE3D_MAX_DIM => ResultSpec(:hsa_dim3_t),
-            :HSA_EXT_AGENT_INFO_IMAGE_ARRAY_MAX_SIZE => ResultSpec(Uint32),
-            :HSA_EXT_AGENT_INFO_IMAGE_RD_MAX => ResultSpec(Uint32),
-            :HSA_EXT_AGENT_INFO_IMAGE_RDWR_MAX => ResultSpec(Uint32),
-            :HSA_EXT_AGENT_INFO_SAMPLER_MAX => ResultSpec(Uint32),
+            :HSA_EXT_AGENT_INFO_IMAGE_ARRAY_MAX_SIZE => ResultSpec(UInt32),
+            :HSA_EXT_AGENT_INFO_IMAGE_RD_MAX => ResultSpec(UInt32),
+            :HSA_EXT_AGENT_INFO_IMAGE_RDWR_MAX => ResultSpec(UInt32),
+            :HSA_EXT_AGENT_INFO_SAMPLER_MAX => ResultSpec(UInt32),
         )
     )
 )
@@ -312,9 +312,9 @@ push!(getters,
     GetterSpec(
         :hsa_isa_get_info,
         (:isa, :attribute, :index, :value),
-        (:hsa_isa_t, :hsa_isa_info_t, Uint32, Ptr{Void}),
+        (:hsa_isa_t, :hsa_isa_info_t, UInt32, Ptr{Void}),
         result_specs = Dict(
-            :HSA_ISA_INFO_NAME_LENGTH => ResultSpec(Uint32),
+            :HSA_ISA_INFO_NAME_LENGTH => ResultSpec(UInt32),
             :HSA_ISA_INFO_NAME => ResultSpec(String, :HSA_ISA_INFO_NAME_LENGTH)
         )
     )
@@ -339,27 +339,27 @@ push!(getters,
         (:hsa_executable_symbol_t, :hsa_executable_symbol_info_t, Ptr{Void}),
         result_specs = Dict(
             :HSA_EXECUTABLE_SYMBOL_INFO_TYPE=> ResultSpec(:hsa_symbol_kind_t),
-            :HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH => ResultSpec(Uint32),
+            :HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH => ResultSpec(UInt32),
             :HSA_EXECUTABLE_SYMBOL_INFO_NAME=> ResultSpec(String, :HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH),
-            :HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH => ResultSpec(Uint32),
+            :HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH => ResultSpec(UInt32),
             :HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME=> ResultSpec(String, :HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH),
             :HSA_EXECUTABLE_SYMBOL_INFO_AGENT => ResultSpec(:hsa_agent_t),
-            :HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS=> ResultSpec(Uint64),
+            :HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS=> ResultSpec(UInt64),
             :HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE=> ResultSpec(:hsa_symbol_kind_linkage_t),
             :HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION => ResultSpec(Bool),
             :HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION => ResultSpec(:hsa_variable_allocation_t),
             :HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT => ResultSpec(:hsa_variable_segment_t),
-            :HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT => ResultSpec(Uint32),
-            :HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE=> ResultSpec(Uint32),
+            :HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT => ResultSpec(UInt32),
+            :HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE=> ResultSpec(UInt32),
             :HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST => ResultSpec(Bool),
-            :HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT => ResultSpec(Uint64),
-            :HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE => ResultSpec(Uint32),
-            :HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT => ResultSpec(Uint32),
-            :HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE=> ResultSpec(Uint32),
-            :HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE=> ResultSpec(Uint32),
+            :HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT => ResultSpec(UInt64),
+            :HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE => ResultSpec(UInt32),
+            :HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT => ResultSpec(UInt32),
+            :HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE=> ResultSpec(UInt32),
+            :HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE=> ResultSpec(UInt32),
             :HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK=> ResultSpec(Bool),
-            :HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT => ResultSpec(Uint32),
-            :HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION => ResultSpec(Uint32)
+            :HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT => ResultSpec(UInt32),
+            :HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION => ResultSpec(UInt32)
         )
     )
 )

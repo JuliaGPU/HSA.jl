@@ -58,21 +58,21 @@ end
 
 type AgentInfo
     agent :: Agent
-    name :: String
-    vendor_name :: String
+    name :: AbstractString
+    vendor_name :: AbstractString
     feature :: hsa_agent_feature_t
-    wavefront_size :: Uint32
-    workgroup_max_dim :: Tuple{Uint16, Uint16, Uint16}
-    workgroup_max_size :: Uint32
+    wavefront_size :: UInt32
+    workgroup_max_dim :: Tuple{UInt16, UInt16, UInt16}
+    workgroup_max_size :: UInt32
     grid_max_dim :: hsa_dim3_t
-    grid_max_size :: Uint32
-    fbarrier_max_size :: Uint32
-    queues_max :: Uint32
-    queue_max_size :: Uint32
+    grid_max_size :: UInt32
+    fbarrier_max_size :: UInt32
+    queues_max :: UInt32
+    queue_max_size :: UInt32
     queue_type :: hsa_queue_type_t
-    node :: Uint32
+    node :: UInt32
     device :: hsa_device_type_t
-    cache_size :: Tuple{Uint32,Uint32,Uint32,Uint32}
+    cache_size :: Tuple{UInt32,UInt32,UInt32,UInt32}
 end
 
 function AgentInfo(a :: Agent)
