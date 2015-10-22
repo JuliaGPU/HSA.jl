@@ -6,8 +6,8 @@ code_llvm(get_global_id, (Int32,))
 @target hsail function kernel_f(a,b)
     i = get_global_id(Int32(0))
 
-	x = Base.unsafe_load(b, i+1)
-	Base.unsafe_store!(a, x, i+1)
+	x = b[i+1]
+	a[i+1] = x
 	return nothing
 end
 
