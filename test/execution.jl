@@ -1,5 +1,5 @@
 using HSA
-using HSA.Intrinsics
+using HSA.Builtins
 using HSA.Execution
 using FactCheck
 
@@ -15,9 +15,9 @@ facts("The execution framework") do
 
         cfg = get_or_init_defaults()
 
-        @fact HSA.status_string(4107) --> anything # does not throw
-        @fact cfg.queue --> anything
-        @fact cfg.agent --> anything
+        @fact HSA.status_string(4107) --> not(nothing) # does not throw
+        @fact cfg.queue --> not(nothing)
+        @fact cfg.agent --> not(nothing)
 
         # disposes runtime reference
         clear_defaults()
@@ -50,7 +50,7 @@ facts("The execution framework") do
 
         kernel_info = build_kernel(cfg.agent, vadd, [Ptr{Float64},Ptr{Float64},Ptr{Float64}])
 
-        @fact kernel_info --> anything
+        @fact kernel_info --> not(nothing)
         @fact length(kernel_cache) --> 1
 
         kernel_info2 = build_kernel(cfg.agent, vadd, [Ptr{Float64}, Ptr{Float64}, Ptr{Float64}])
@@ -60,7 +60,7 @@ facts("The execution framework") do
 
         @pending HSA.executable_get_symbol(
             kernel_info.executable,
-            "&vadd") --> anything
+            "&vadd") --> not(nothing)
 
     end
 

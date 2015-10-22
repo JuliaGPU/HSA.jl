@@ -42,7 +42,6 @@ function has_libhsaext()
 end
 
 function has_hsa_codegen()
-    return false
     try
         return ccall(:jl_has_device_target, Bool, (Any,), :hsail)
     catch err

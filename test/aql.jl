@@ -193,7 +193,7 @@ facts("AQL Packets") do
 
     context("InvalidPackets") do
         in_disp_bytes = copy(dispatch_bytes)
-        in_disp_bytes[1] = HSA.PacketTypeInvalid
+        in_disp_bytes[1] = convert(UInt8, HSA.PacketTypeInvalid)
         in_disp_ptr = convert(Ptr{Void}, pointer(in_disp_bytes))
 
         context("Can be loaded") do

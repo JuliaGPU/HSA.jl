@@ -1,3 +1,5 @@
+module Builtins
+
 using Core.Intrinsics.llvmcall
 
 const int_intrinsics = [
@@ -132,3 +134,4 @@ function intrinsic_impl()
 end
 
 intrinsic_impl()
+end # module Builtins

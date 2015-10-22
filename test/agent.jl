@@ -19,7 +19,7 @@ facts("The Agents") do
             end
         end
 
-        context("with a callback returning anything to continue") do
+        context("with a callback returning not(nothing) to continue") do
             count = 0
 
             HSA.iterate_agents(a -> begin
@@ -74,25 +74,25 @@ facts("The Agents") do
 
             name = HSA.agent_info_name(a)
             @fact length(name) --> greater_than(1)
-            @fact HSA.agent_info_name(a) --> anything
-            @fact HSA.agent_info_vendor_name(a) --> anything
-            @fact HSA.agent_info_feature(a) --> anything
-            @fact HSA.agent_info_wavefront_size(a) --> anything
+            @fact HSA.agent_info_name(a) --> not(nothing)
+            @fact HSA.agent_info_vendor_name(a) --> not(nothing)
+            @fact HSA.agent_info_feature(a) --> not(nothing)
+            @fact HSA.agent_info_wavefront_size(a) --> not(nothing)
 
             wg_dim = HSA.agent_info_workgroup_max_dim(a)
-            @fact wg_dim --> anything
+            @fact wg_dim --> not(nothing)
             @fact typeof(wg_dim) --> Tuple{UInt16, UInt16, UInt16}
 
-            @fact HSA.agent_info_workgroup_max_size(a) --> anything
-            @fact HSA.agent_info_grid_max_dim(a) --> anything
-            @fact HSA.agent_info_grid_max_size(a) --> anything
-            @fact HSA.agent_info_fbarrier_max_size(a) --> anything
-            @fact HSA.agent_info_queues_max(a) --> anything
-            @fact HSA.agent_info_queue_max_size(a) --> anything
-            @fact HSA.agent_info_queue_type(a) --> anything
-            @fact HSA.agent_info_node(a) --> anything
-            @fact HSA.agent_info_device(a) --> anything
-            @fact HSA.agent_info_cache_size(a) --> anything
+            @fact HSA.agent_info_workgroup_max_size(a) --> not(nothing)
+            @fact HSA.agent_info_grid_max_dim(a) --> not(nothing)
+            @fact HSA.agent_info_grid_max_size(a) --> not(nothing)
+            @fact HSA.agent_info_fbarrier_max_size(a) --> not(nothing)
+            @fact HSA.agent_info_queues_max(a) --> not(nothing)
+            @fact HSA.agent_info_queue_max_size(a) --> not(nothing)
+            @fact HSA.agent_info_queue_type(a) --> not(nothing)
+            @fact HSA.agent_info_node(a) --> not(nothing)
+            @fact HSA.agent_info_device(a) --> not(nothing)
+            @fact HSA.agent_info_cache_size(a) --> not(nothing)
         end
 
         @with_agents context("collectively for all basic agent info") do

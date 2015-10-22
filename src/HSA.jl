@@ -6,9 +6,11 @@ include("discovery.jl")
 include("emulation/emulation.jl")
 
 if has_libhsa()
+info("HSA library found.")
 include("binding/binding.jl")
 
 if has_libhsaext()
+info("HSA Ext library found.")
 include("binding/ext_finalization.jl")
 
 if has_hsa_codegen()

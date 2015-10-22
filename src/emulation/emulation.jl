@@ -1,9 +1,16 @@
+if !has_hsa_codegen()
+    include("intrinsics.jl")
+end
+
+module Emulation
+
+export run_cpu
+
 const EMULATED_INTRINSICS = [
     :get_global_id,
     :get_global_size
 ]
 
-export @hsa_kernel, run_cpu
 
 type EmulationContext
     global_id
@@ -47,6 +54,8 @@ function add_intrinsics_ctx_arg(ex)
         if in(fname, EMULATED_INTRINSICS)
             # add context as first argument (after the function name)
             insert!(ex.args, 2, CTX)
+            # qualify the call to the Emulation module
+            ex.args[1] = :(Emulation.$fname)
         end
     end
 end
@@ -54,28 +63,14 @@ end
 function add_emulation(fun::Expr)
    sig = fun.args[1]
    # insert ctx as first argument (after the function name)
-   insert!(sig.args, 2, :($CTX :: HSA.Intrinsics.EmulationContext))
+   insert!(sig.args, 2, :($CTX :: HSA.Emulation.EmulationContext))
 
    visit_ast(add_intrinsics_ctx_arg, fun)
 end
 
-macro hsa_kernel(fun::Expr)
-    if(fun.head != :function)
-        error("@hsa_kernel must be applied to a function definition")
-    end
-
-    emu_fun = copy(fun)
-    add_emulation(emu_fun)
-
-    return quote
-        @target $(esc(:hsail)) $(esc(fun))
-
-        $(esc(emu_fun))
-    end
-end
 
 function run_cpu(rng::Tuple{Int,Int,Int}, kernel::Function, args...)
-    ctx = EmulationContext()
+    ctx = Emulation.EmulationContext()
     ctx.global_size = [rng...]
     for x = 0:rng[1]-1
         for y = 0:rng[2]-1
@@ -84,6 +79,24 @@ function run_cpu(rng::Tuple{Int,Int,Int}, kernel::Function, args...)
                 kernel(ctx, args...)
             end
         end
+    end
+end
+
+end # module Emulation
+
+export @hsa_kernel
+macro hsa_kernel(fun::Expr)
+    if(fun.head != :function)
+        error("@hsa_kernel must be applied to a function definition")
+    end
+
+    emu_fun = copy(fun)
+    Emulation.add_emulation(emu_fun)
+
+    return quote
+        @target $(esc(:hsail)) $(esc(fun))
+
+        $(esc(emu_fun))
     end
 end
 
