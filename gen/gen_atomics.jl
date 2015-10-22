@@ -37,7 +37,7 @@ function map_memspec_funcs(obuf)
 
     # maps each prefix to the ops that have been
     # found for it so far
-    const prefix_found_ops = Dict{String,Set{String}}()
+    const prefix_found_ops = Dict{AbstractString,Set{AbstractString}}()
 
     for exu in obuf
         if isa(exu, Expr) && exu.head == :function
@@ -47,7 +47,7 @@ function map_memspec_funcs(obuf)
             for prefix in keys(prefix_ops)
                 if startswith(name, prefix)
                     ops = get(prefix_ops, prefix, [])
-                    found_methods = get!(prefix_found_ops, prefix, Set{String}())
+                    found_methods = get!(prefix_found_ops, prefix, Set{AbstractString}())
                     suffixes = filter((x) -> endswith(name, x), keys(memspec_suffixes))
 
                     if isempty(suffixes) || isempty(ops)

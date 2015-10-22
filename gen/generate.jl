@@ -6,7 +6,7 @@ using Clang.wrap_c
 
 script_path = dirname(Base.source_path())
 
-include("$script_path/../src/binding/def.jl") # pull in include path
+include("$script_path/../src/discovery.jl") # pull in include path
 
 hsa_hdrs = map(x->joinpath(hsa_include_path, x), [
     "hsa.h",
@@ -67,7 +67,7 @@ end
 
 wc.headers = hsa_hdrs
 
-include("$script_path/../src/runtime/def.jl") # pull in type mappings
+include("$script_path/../src/binding/custom/def.jl") # pull in type mappings
 
 include("gen_argtypes.jl")
 include("gen_atomics.jl")

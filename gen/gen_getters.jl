@@ -96,7 +96,7 @@ function getter_code(getter_spec, eltype, count :: Int)
     end
 end
 
-function getter_code(getter_spec, eltype :: Type{Val{String}}, count :: Int)
+function getter_code(getter_spec, eltype :: Type{Val{AbstractString}}, count :: Int)
     if count == 1
         # not a single character but a string constant
         return :($var = Ptr{UInt8}[0]),
@@ -108,8 +108,8 @@ function getter_code(getter_spec, eltype :: Type{Val{String}}, count :: Int)
     end
 end
 
-function getter_code(getter_spec, eltype :: Type{Val{String}}, count :: Symbol)
-    # String with separate length getter
+function getter_code(getter_spec, eltype :: Type{Val{AbstractString}}, count :: Symbol)
+    # AbstractString with separate length getter
     len_sig = getter_signature(getter_spec, count)
 
     return :(len = $len_sig;
@@ -254,8 +254,8 @@ push!(getters,
         (:agent, :info, :data),
         (:hsa_agent_t, :hsa_agent_info_t, Ptr{Void}),
         result_specs = Dict(
-            :HSA_AGENT_INFO_NAME => ResultSpec(String,64),
-            :HSA_AGENT_INFO_VENDOR_NAME => ResultSpec(String,64),
+            :HSA_AGENT_INFO_NAME => ResultSpec(AbstractString,64),
+            :HSA_AGENT_INFO_VENDOR_NAME => ResultSpec(AbstractString,64),
             :HSA_AGENT_INFO_FEATURE => ResultSpec(:hsa_agent_feature_t),
             :HSA_AGENT_INFO_MACHINE_MODEL => ResultSpec(:hsa_machine_model_t),
             :HSA_AGENT_INFO_PROFILE => ResultSpec(:hsa_profile_t),
@@ -315,7 +315,7 @@ push!(getters,
         (:hsa_isa_t, :hsa_isa_info_t, UInt32, Ptr{Void}),
         result_specs = Dict(
             :HSA_ISA_INFO_NAME_LENGTH => ResultSpec(UInt32),
-            :HSA_ISA_INFO_NAME => ResultSpec(String, :HSA_ISA_INFO_NAME_LENGTH)
+            :HSA_ISA_INFO_NAME => ResultSpec(AbstractString, :HSA_ISA_INFO_NAME_LENGTH)
         )
     )
 )
@@ -340,9 +340,9 @@ push!(getters,
         result_specs = Dict(
             :HSA_EXECUTABLE_SYMBOL_INFO_TYPE=> ResultSpec(:hsa_symbol_kind_t),
             :HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH => ResultSpec(UInt32),
-            :HSA_EXECUTABLE_SYMBOL_INFO_NAME=> ResultSpec(String, :HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH),
+            :HSA_EXECUTABLE_SYMBOL_INFO_NAME=> ResultSpec(AbstractString, :HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH),
             :HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH => ResultSpec(UInt32),
-            :HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME=> ResultSpec(String, :HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH),
+            :HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME=> ResultSpec(AbstractString, :HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH),
             :HSA_EXECUTABLE_SYMBOL_INFO_AGENT => ResultSpec(:hsa_agent_t),
             :HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS=> ResultSpec(UInt64),
             :HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE=> ResultSpec(:hsa_symbol_kind_linkage_t),

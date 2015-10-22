@@ -18,8 +18,8 @@ function hsa_system_get_info(attribute::hsa_system_info_t,value::Ptr{Void})
     ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),attribute,value)
 end
 
-function hsa_system_extension_supported(extension::UInt16,version_major::UInt16,version_minor::UInt16,result::Ptr{Bool})
-    ccall((:hsa_system_extension_supported,libhsa),hsa_status_t,(UInt16,UInt16,UInt16,Ptr{Bool}),extension,version_major,version_minor,result)
+function hsa_system_extension_supported(extension::UInt16,version_major::UInt16,version_minor::UInt16,result::Ptr{Cint})
+    ccall((:hsa_system_extension_supported,libhsa),hsa_status_t,(UInt16,UInt16,UInt16,Ptr{Cint}),extension,version_major,version_minor,result)
 end
 
 function hsa_system_get_extension_table(extension::UInt16,version_major::UInt16,version_minor::UInt16,table::Ptr{Void})
@@ -38,8 +38,8 @@ function hsa_agent_get_exception_policies(agent::Agent,profile::hsa_profile_t,ma
     ccall((:hsa_agent_get_exception_policies,libhsa),hsa_status_t,(hsa_agent_t,hsa_profile_t,Ptr{UInt16}),agent,profile,mask)
 end
 
-function hsa_agent_extension_supported(extension::UInt16,agent::Agent,version_major::UInt16,version_minor::UInt16,result::Ptr{Bool})
-    ccall((:hsa_agent_extension_supported,libhsa),hsa_status_t,(UInt16,hsa_agent_t,UInt16,UInt16,Ptr{Bool}),extension,agent,version_major,version_minor,result)
+function hsa_agent_extension_supported(extension::UInt16,agent::Agent,version_major::UInt16,version_minor::UInt16,result::Ptr{Cint})
+    ccall((:hsa_agent_extension_supported,libhsa),hsa_status_t,(UInt16,hsa_agent_t,UInt16,UInt16,Ptr{Cint}),extension,agent,version_major,version_minor,result)
 end
 
 function hsa_signal_create(initial_value::hsa_signal_value_t,num_consumers::UInt32,consumers::Ptr{hsa_agent_t},signal::Ptr{hsa_signal_t})
@@ -274,28 +274,28 @@ function hsa_agent_iterate_regions(agent::Agent,callback::Ptr{Void},data::Ptr{Vo
     ccall((:hsa_agent_iterate_regions,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Ptr{Void}),agent,callback,data)
 end
 
-function hsa_memory_allocate(region::Region,size::Csize_t,ptr::Ptr{Ptr{Void}})
-    ccall((:hsa_memory_allocate,libhsa),hsa_status_t,(hsa_region_t,Csize_t,Ptr{Ptr{Void}}),region,size,ptr)
+function hsa_memory_allocate(region::Region,size::Cint,ptr::Ptr{Ptr{Void}})
+    ccall((:hsa_memory_allocate,libhsa),hsa_status_t,(hsa_region_t,Cint,Ptr{Ptr{Void}}),region,size,ptr)
 end
 
 function hsa_memory_free(ptr::Ptr{Void})
     ccall((:hsa_memory_free,libhsa),hsa_status_t,(Ptr{Void},),ptr)
 end
 
-function hsa_memory_copy(dst::Ptr{Void},src::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_copy,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void},Csize_t),dst,src,size)
+function hsa_memory_copy(dst::Ptr{Void},src::Ptr{Void},size::Cint)
+    ccall((:hsa_memory_copy,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void},Cint),dst,src,size)
 end
 
 function hsa_memory_assign_agent(ptr::Ptr{Void},agent::Agent,access::hsa_access_permission_t)
     ccall((:hsa_memory_assign_agent,libhsa),hsa_status_t,(Ptr{Void},hsa_agent_t,hsa_access_permission_t),ptr,agent,access)
 end
 
-function hsa_memory_register(ptr::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
+function hsa_memory_register(ptr::Ptr{Void},size::Cint)
+    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Cint),ptr,size)
 end
 
-function hsa_memory_deregister(ptr::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
+function hsa_memory_deregister(ptr::Ptr{Void},size::Cint)
+    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Cint),ptr,size)
 end
 
 function hsa_isa_from_name(name::Ptr{UInt8},isa::Ptr{hsa_isa_t})
@@ -306,16 +306,16 @@ function hsa_isa_get_info(isa::hsa_isa_t,attribute::hsa_isa_info_t,index::UInt32
     ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,attribute,index,value)
 end
 
-function hsa_isa_compatible(code_object_isa::hsa_isa_t,agent_isa::hsa_isa_t,result::Ptr{Bool})
-    ccall((:hsa_isa_compatible,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_t,Ptr{Bool}),code_object_isa,agent_isa,result)
+function hsa_isa_compatible(code_object_isa::hsa_isa_t,agent_isa::hsa_isa_t,result::Ptr{Cint})
+    ccall((:hsa_isa_compatible,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_t,Ptr{Cint}),code_object_isa,agent_isa,result)
 end
 
-function hsa_code_object_serialize(code_object::hsa_code_object_t,alloc_callback::Ptr{Void},callback_data::hsa_callback_data_t,options::Ptr{UInt8},serialized_code_object::Ptr{Ptr{Void}},serialized_code_object_size::Ptr{Csize_t})
-    ccall((:hsa_code_object_serialize,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},hsa_callback_data_t,Ptr{UInt8},Ptr{Ptr{Void}},Ptr{Csize_t}),code_object,alloc_callback,callback_data,options,serialized_code_object,serialized_code_object_size)
+function hsa_code_object_serialize(code_object::hsa_code_object_t,alloc_callback::Ptr{Void},callback_data::hsa_callback_data_t,options::Ptr{UInt8},serialized_code_object::Ptr{Ptr{Void}},serialized_code_object_size::Ptr{Cint})
+    ccall((:hsa_code_object_serialize,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},hsa_callback_data_t,Ptr{UInt8},Ptr{Ptr{Void}},Ptr{Cint}),code_object,alloc_callback,callback_data,options,serialized_code_object,serialized_code_object_size)
 end
 
-function hsa_code_object_deserialize(serialized_code_object::Ptr{Void},serialized_code_object_size::Csize_t,options::Ptr{UInt8},code_object::Ptr{hsa_code_object_t})
-    ccall((:hsa_code_object_deserialize,libhsa),hsa_status_t,(Ptr{Void},Csize_t,Ptr{UInt8},Ptr{hsa_code_object_t}),serialized_code_object,serialized_code_object_size,options,code_object)
+function hsa_code_object_deserialize(serialized_code_object::Ptr{Void},serialized_code_object_size::Cint,options::Ptr{UInt8},code_object::Ptr{hsa_code_object_t})
+    ccall((:hsa_code_object_deserialize,libhsa),hsa_status_t,(Ptr{Void},Cint,Ptr{UInt8},Ptr{hsa_code_object_t}),serialized_code_object,serialized_code_object_size,options,code_object)
 end
 
 function hsa_code_object_destroy(code_object::hsa_code_object_t)
@@ -454,76 +454,76 @@ end
 # Convenience Constants
 # with HSA_ prefix removed and
 # in CamelCase
-	
+    
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_type(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{hsa_queue_type_t},ptr + 0x0000000000000000) # line 15:
+        field_ptr = convert(Ptr{hsa_queue_type_t},ptr + 0x0000000000000000) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_size(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{UInt32},ptr + 0x0000000000000018) # line 15:
+        field_ptr = convert(Ptr{UInt32},ptr + 0x0000000000000018) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_features(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{hsa_queue_feature_t},ptr + 0x0000000000000004) # line 15:
+        field_ptr = convert(Ptr{hsa_queue_feature_t},ptr + 0x0000000000000004) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_id(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000020) # line 15:
+        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000020) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_base_address(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000008) # line 15:
+        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000008) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_doorbell_signal(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000010) # line 15:
+        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000010) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 
 function system_info_endianness() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_endianness_t}(Base.zero(hsa_endianness_t)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_ENDIANNESS,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_endianness_t}(Base.zero(hsa_endianness_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_ENDIANNESS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_version_major() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_VERSION_MAJOR,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_VERSION_MAJOR,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_signal_max_wait() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_SIGNAL_MAX_WAIT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_SIGNAL_MAX_WAIT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_machine_model() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_machine_model_t}(Base.zero(hsa_machine_model_t)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_MACHINE_MODEL,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_machine_model_t}(Base.zero(hsa_machine_model_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_MACHINE_MODEL,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_version_minor() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_VERSION_MINOR,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_VERSION_MINOR,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -531,93 +531,93 @@ function system_info_extensions() # /home/strollinger/hsa/jl/gen/gen_getters.jl,
     begin 
         v_arr = Array(UInt8,128)
         value = pointer(v_arr)
-    end # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_EXTENSIONS,value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_EXTENSIONS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = v_arr
 end
 
 function system_info_timestamp() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_TIMESTAMP,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_TIMESTAMP,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_timestamp_frequency() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_TIMESTAMP_FREQUENCY,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_TIMESTAMP_FREQUENCY,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_vendor_name(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Array(UInt8,64) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VENDOR_NAME,value) # line 69:
-    test_status(err) # line 71:
+    value = Array(UInt8,64) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VENDOR_NAME,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function agent_info_default_float_rounding_mode(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_default_float_rounding_mode_t}(Base.zero(hsa_default_float_rounding_mode_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_DEFAULT_FLOAT_ROUNDING_MODE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_default_float_rounding_mode_t}(Base.zero(hsa_default_float_rounding_mode_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_DEFAULT_FLOAT_ROUNDING_MODE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image2d_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE2D_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE2D_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image_rd_max(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_RD_MAX,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_RD_MAX,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_queue_min_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_MIN_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_MIN_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_name(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Array(UInt8,64) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NAME,value) # line 69:
-    test_status(err) # line 71:
+    value = Array(UInt8,64) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NAME,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function agent_info_profile(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_PROFILE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_PROFILE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_cache_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Tuple{UInt32,UInt32,UInt32,UInt32}}(Base.zero(Tuple{UInt32,UInt32,UInt32,UInt32})) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_CACHE_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Tuple{UInt32,UInt32,UInt32,UInt32}}(Base.zero(Tuple{UInt32,UInt32,UInt32,UInt32})) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_CACHE_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_fbarrier_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FBARRIER_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FBARRIER_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_workgroup_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -625,212 +625,212 @@ function agent_info_extensions(agent) # /home/strollinger/hsa/jl/gen/gen_getters
     begin 
         v_arr = Array(UInt8,128)
         value = pointer(v_arr)
-    end # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_EXTENSIONS,value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_EXTENSIONS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = v_arr
 end
 
 function ext_agent_info_image_rdwr_max(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_RDWR_MAX,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_RDWR_MAX,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_grid_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_GRID_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_GRID_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_node(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NODE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NODE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_device(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_device_type_t}(Base.zero(hsa_device_type_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_DEVICE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_device_type_t}(Base.zero(hsa_device_type_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_DEVICE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_queue_type(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_queue_type_t}(Base.zero(hsa_queue_type_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_TYPE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_queue_type_t}(Base.zero(hsa_queue_type_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_TYPE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_version_major(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VERSION_MAJOR,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VERSION_MAJOR,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_workgroup_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Tuple{UInt16,UInt16,UInt16}}(Base.zero(Tuple{UInt16,UInt16,UInt16})) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Tuple{UInt16,UInt16,UInt16}}(Base.zero(Tuple{UInt16,UInt16,UInt16})) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_wavefront_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WAVEFRONT_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WAVEFRONT_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_isa(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_isa_t}(Base.zero(hsa_isa_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_ISA,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_isa_t}(Base.zero(hsa_isa_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_ISA,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_version_minor(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VERSION_MINOR,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VERSION_MINOR,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_machine_model(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_machine_model_t}(Base.zero(hsa_machine_model_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_MACHINE_MODEL,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_machine_model_t}(Base.zero(hsa_machine_model_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_MACHINE_MODEL,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_queues_max(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUES_MAX,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUES_MAX,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image3d_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE3D_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE3D_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image_array_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_ARRAY_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_ARRAY_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_sampler_max(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_SAMPLER_MAX,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_SAMPLER_MAX,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_queue_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_grid_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_GRID_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_GRID_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_fast_f16_operation(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FAST_F16_OPERATION,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FAST_F16_OPERATION,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_feature(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_agent_feature_t}(Base.zero(hsa_agent_feature_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FEATURE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_agent_feature_t}(Base.zero(hsa_agent_feature_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FEATURE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_base_profile_default_float_rounding_modes(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_default_float_rounding_mode_t}(Base.zero(hsa_default_float_rounding_mode_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_BASE_PROFILE_DEFAULT_FLOAT_ROUNDING_MODES,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_default_float_rounding_mode_t}(Base.zero(hsa_default_float_rounding_mode_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_BASE_PROFILE_DEFAULT_FLOAT_ROUNDING_MODES,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image1d_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE1D_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE1D_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_runtime_alloc_alignment(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_ALIGNMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_ALIGNMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_runtime_alloc_granule(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_GRANULE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_GRANULE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_global_flags(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_region_global_flag_t}(Base.zero(hsa_region_global_flag_t)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_GLOBAL_FLAGS,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_region_global_flag_t}(Base.zero(hsa_region_global_flag_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_GLOBAL_FLAGS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_alloc_max_size(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_ALLOC_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_ALLOC_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_size(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_runtime_alloc_allowed(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_ALLOWED,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_ALLOWED,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_segment(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_region_segment_t}(Base.zero(hsa_region_segment_t)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_SEGMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_region_segment_t}(Base.zero(hsa_region_segment_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_SEGMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function isa_info_name_length(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME_LENGTH,Base.zero(UInt32),value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME_LENGTH,Base.zero(UInt32),value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -838,44 +838,44 @@ function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 
     begin 
         len = isa_info_name_length(isa)
         value = Array(UInt8,len)
-    end # line 67:
-    err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME,Base.zero(UInt32),value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME,Base.zero(UInt32),value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function executable_info_state(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_executable_state_t}(Base.zero(hsa_executable_state_t)) # line 67:
-    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_STATE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_executable_state_t}(Base.zero(hsa_executable_state_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_STATE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_info_profile(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # line 67:
-    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_PROFILE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_PROFILE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_indirect_function_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_linkage(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_symbol_kind_linkage_t}(Base.zero(hsa_symbol_kind_linkage_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_symbol_kind_linkage_t}(Base.zero(hsa_symbol_kind_linkage_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_kernarg_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -883,79 +883,79 @@ function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_
     begin 
         len = executable_symbol_info_name_length(symbol)
         value = Array(UInt8,len)
-    end # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function executable_symbol_info_kernel_group_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_allocation(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_variable_allocation_t}(Base.zero(hsa_variable_allocation_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_variable_allocation_t}(Base.zero(hsa_variable_allocation_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_module_name_length(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_dynamic_callstack(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_is_definition(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_alignment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_segment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_variable_segment_t}(Base.zero(hsa_variable_segment_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_variable_segment_t}(Base.zero(hsa_variable_segment_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_kernarg_segment_alignment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_type(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_symbol_kind_t}(Base.zero(hsa_symbol_kind_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_TYPE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_symbol_kind_t}(Base.zero(hsa_symbol_kind_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_TYPE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -963,58 +963,58 @@ function executable_symbol_info_module_name(symbol) # /home/strollinger/hsa/jl/g
     begin 
         len = executable_symbol_info_module_name_length(symbol)
         value = Array(UInt8,len)
-    end # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function executable_symbol_info_variable_address(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_private_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_agent(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_agent_t}(Base.zero(hsa_agent_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_AGENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_agent_t}(Base.zero(hsa_agent_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_AGENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_name_length(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_is_const(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_indirect_function_call_convention(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 # Julia wrapper for header: /opt/hsa/lib/../include/hsa_ext_finalize.h
@@ -1037,8 +1037,8 @@ function hsa_system_get_info(attribute::hsa_system_info_t,value::Ptr{Void})
     ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),attribute,value)
 end
 
-function hsa_system_extension_supported(extension::UInt16,version_major::UInt16,version_minor::UInt16,result::Ptr{Bool})
-    ccall((:hsa_system_extension_supported,libhsa),hsa_status_t,(UInt16,UInt16,UInt16,Ptr{Bool}),extension,version_major,version_minor,result)
+function hsa_system_extension_supported(extension::UInt16,version_major::UInt16,version_minor::UInt16,result::Ptr{Cint})
+    ccall((:hsa_system_extension_supported,libhsa),hsa_status_t,(UInt16,UInt16,UInt16,Ptr{Cint}),extension,version_major,version_minor,result)
 end
 
 function hsa_system_get_extension_table(extension::UInt16,version_major::UInt16,version_minor::UInt16,table::Ptr{Void})
@@ -1057,8 +1057,8 @@ function hsa_agent_get_exception_policies(agent::Agent,profile::hsa_profile_t,ma
     ccall((:hsa_agent_get_exception_policies,libhsa),hsa_status_t,(hsa_agent_t,hsa_profile_t,Ptr{UInt16}),agent,profile,mask)
 end
 
-function hsa_agent_extension_supported(extension::UInt16,agent::Agent,version_major::UInt16,version_minor::UInt16,result::Ptr{Bool})
-    ccall((:hsa_agent_extension_supported,libhsa),hsa_status_t,(UInt16,hsa_agent_t,UInt16,UInt16,Ptr{Bool}),extension,agent,version_major,version_minor,result)
+function hsa_agent_extension_supported(extension::UInt16,agent::Agent,version_major::UInt16,version_minor::UInt16,result::Ptr{Cint})
+    ccall((:hsa_agent_extension_supported,libhsa),hsa_status_t,(UInt16,hsa_agent_t,UInt16,UInt16,Ptr{Cint}),extension,agent,version_major,version_minor,result)
 end
 
 function hsa_signal_create(initial_value::hsa_signal_value_t,num_consumers::UInt32,consumers::Ptr{hsa_agent_t},signal::Ptr{hsa_signal_t})
@@ -1293,28 +1293,28 @@ function hsa_agent_iterate_regions(agent::Agent,callback::Ptr{Void},data::Ptr{Vo
     ccall((:hsa_agent_iterate_regions,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Ptr{Void}),agent,callback,data)
 end
 
-function hsa_memory_allocate(region::Region,size::Csize_t,ptr::Ptr{Ptr{Void}})
-    ccall((:hsa_memory_allocate,libhsa),hsa_status_t,(hsa_region_t,Csize_t,Ptr{Ptr{Void}}),region,size,ptr)
+function hsa_memory_allocate(region::Region,size::Cint,ptr::Ptr{Ptr{Void}})
+    ccall((:hsa_memory_allocate,libhsa),hsa_status_t,(hsa_region_t,Cint,Ptr{Ptr{Void}}),region,size,ptr)
 end
 
 function hsa_memory_free(ptr::Ptr{Void})
     ccall((:hsa_memory_free,libhsa),hsa_status_t,(Ptr{Void},),ptr)
 end
 
-function hsa_memory_copy(dst::Ptr{Void},src::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_copy,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void},Csize_t),dst,src,size)
+function hsa_memory_copy(dst::Ptr{Void},src::Ptr{Void},size::Cint)
+    ccall((:hsa_memory_copy,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void},Cint),dst,src,size)
 end
 
 function hsa_memory_assign_agent(ptr::Ptr{Void},agent::Agent,access::hsa_access_permission_t)
     ccall((:hsa_memory_assign_agent,libhsa),hsa_status_t,(Ptr{Void},hsa_agent_t,hsa_access_permission_t),ptr,agent,access)
 end
 
-function hsa_memory_register(ptr::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
+function hsa_memory_register(ptr::Ptr{Void},size::Cint)
+    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Cint),ptr,size)
 end
 
-function hsa_memory_deregister(ptr::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
+function hsa_memory_deregister(ptr::Ptr{Void},size::Cint)
+    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Cint),ptr,size)
 end
 
 function hsa_isa_from_name(name::Ptr{UInt8},isa::Ptr{hsa_isa_t})
@@ -1325,16 +1325,16 @@ function hsa_isa_get_info(isa::hsa_isa_t,attribute::hsa_isa_info_t,index::UInt32
     ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,attribute,index,value)
 end
 
-function hsa_isa_compatible(code_object_isa::hsa_isa_t,agent_isa::hsa_isa_t,result::Ptr{Bool})
-    ccall((:hsa_isa_compatible,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_t,Ptr{Bool}),code_object_isa,agent_isa,result)
+function hsa_isa_compatible(code_object_isa::hsa_isa_t,agent_isa::hsa_isa_t,result::Ptr{Cint})
+    ccall((:hsa_isa_compatible,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_t,Ptr{Cint}),code_object_isa,agent_isa,result)
 end
 
-function hsa_code_object_serialize(code_object::hsa_code_object_t,alloc_callback::Ptr{Void},callback_data::hsa_callback_data_t,options::Ptr{UInt8},serialized_code_object::Ptr{Ptr{Void}},serialized_code_object_size::Ptr{Csize_t})
-    ccall((:hsa_code_object_serialize,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},hsa_callback_data_t,Ptr{UInt8},Ptr{Ptr{Void}},Ptr{Csize_t}),code_object,alloc_callback,callback_data,options,serialized_code_object,serialized_code_object_size)
+function hsa_code_object_serialize(code_object::hsa_code_object_t,alloc_callback::Ptr{Void},callback_data::hsa_callback_data_t,options::Ptr{UInt8},serialized_code_object::Ptr{Ptr{Void}},serialized_code_object_size::Ptr{Cint})
+    ccall((:hsa_code_object_serialize,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},hsa_callback_data_t,Ptr{UInt8},Ptr{Ptr{Void}},Ptr{Cint}),code_object,alloc_callback,callback_data,options,serialized_code_object,serialized_code_object_size)
 end
 
-function hsa_code_object_deserialize(serialized_code_object::Ptr{Void},serialized_code_object_size::Csize_t,options::Ptr{UInt8},code_object::Ptr{hsa_code_object_t})
-    ccall((:hsa_code_object_deserialize,libhsa),hsa_status_t,(Ptr{Void},Csize_t,Ptr{UInt8},Ptr{hsa_code_object_t}),serialized_code_object,serialized_code_object_size,options,code_object)
+function hsa_code_object_deserialize(serialized_code_object::Ptr{Void},serialized_code_object_size::Cint,options::Ptr{UInt8},code_object::Ptr{hsa_code_object_t})
+    ccall((:hsa_code_object_deserialize,libhsa),hsa_status_t,(Ptr{Void},Cint,Ptr{UInt8},Ptr{hsa_code_object_t}),serialized_code_object,serialized_code_object_size,options,code_object)
 end
 
 function hsa_code_object_destroy(code_object::hsa_code_object_t)
@@ -1497,76 +1497,76 @@ end
 # Convenience Constants
 # with HSA_ prefix removed and
 # in CamelCase
-	
+    
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_type(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{hsa_queue_type_t},ptr + 0x0000000000000000) # line 15:
+        field_ptr = convert(Ptr{hsa_queue_type_t},ptr + 0x0000000000000000) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_size(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{UInt32},ptr + 0x0000000000000018) # line 15:
+        field_ptr = convert(Ptr{UInt32},ptr + 0x0000000000000018) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_features(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{hsa_queue_feature_t},ptr + 0x0000000000000004) # line 15:
+        field_ptr = convert(Ptr{hsa_queue_feature_t},ptr + 0x0000000000000004) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_id(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000020) # line 15:
+        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000020) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_base_address(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000008) # line 15:
+        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000008) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_doorbell_signal(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000010) # line 15:
+        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000010) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 
 function system_info_endianness() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_endianness_t}(Base.zero(hsa_endianness_t)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_ENDIANNESS,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_endianness_t}(Base.zero(hsa_endianness_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_ENDIANNESS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_version_major() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_VERSION_MAJOR,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_VERSION_MAJOR,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_signal_max_wait() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_SIGNAL_MAX_WAIT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_SIGNAL_MAX_WAIT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_machine_model() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_machine_model_t}(Base.zero(hsa_machine_model_t)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_MACHINE_MODEL,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_machine_model_t}(Base.zero(hsa_machine_model_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_MACHINE_MODEL,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_version_minor() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_VERSION_MINOR,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_VERSION_MINOR,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -1574,93 +1574,93 @@ function system_info_extensions() # /home/strollinger/hsa/jl/gen/gen_getters.jl,
     begin 
         v_arr = Array(UInt8,128)
         value = pointer(v_arr)
-    end # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_EXTENSIONS,value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_EXTENSIONS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = v_arr
 end
 
 function system_info_timestamp() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_TIMESTAMP,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_TIMESTAMP,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_timestamp_frequency() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_TIMESTAMP_FREQUENCY,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_TIMESTAMP_FREQUENCY,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_vendor_name(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Array(UInt8,64) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VENDOR_NAME,value) # line 69:
-    test_status(err) # line 71:
+    value = Array(UInt8,64) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VENDOR_NAME,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function agent_info_default_float_rounding_mode(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_default_float_rounding_mode_t}(Base.zero(hsa_default_float_rounding_mode_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_DEFAULT_FLOAT_ROUNDING_MODE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_default_float_rounding_mode_t}(Base.zero(hsa_default_float_rounding_mode_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_DEFAULT_FLOAT_ROUNDING_MODE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image2d_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE2D_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE2D_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image_rd_max(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_RD_MAX,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_RD_MAX,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_queue_min_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_MIN_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_MIN_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_name(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Array(UInt8,64) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NAME,value) # line 69:
-    test_status(err) # line 71:
+    value = Array(UInt8,64) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NAME,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function agent_info_profile(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_PROFILE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_PROFILE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_cache_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Tuple{UInt32,UInt32,UInt32,UInt32}}(Base.zero(Tuple{UInt32,UInt32,UInt32,UInt32})) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_CACHE_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Tuple{UInt32,UInt32,UInt32,UInt32}}(Base.zero(Tuple{UInt32,UInt32,UInt32,UInt32})) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_CACHE_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_fbarrier_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FBARRIER_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FBARRIER_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_workgroup_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -1668,212 +1668,212 @@ function agent_info_extensions(agent) # /home/strollinger/hsa/jl/gen/gen_getters
     begin 
         v_arr = Array(UInt8,128)
         value = pointer(v_arr)
-    end # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_EXTENSIONS,value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_EXTENSIONS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = v_arr
 end
 
 function ext_agent_info_image_rdwr_max(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_RDWR_MAX,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_RDWR_MAX,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_grid_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_GRID_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_GRID_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_node(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NODE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NODE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_device(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_device_type_t}(Base.zero(hsa_device_type_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_DEVICE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_device_type_t}(Base.zero(hsa_device_type_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_DEVICE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_queue_type(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_queue_type_t}(Base.zero(hsa_queue_type_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_TYPE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_queue_type_t}(Base.zero(hsa_queue_type_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_TYPE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_version_major(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VERSION_MAJOR,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VERSION_MAJOR,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_workgroup_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Tuple{UInt16,UInt16,UInt16}}(Base.zero(Tuple{UInt16,UInt16,UInt16})) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Tuple{UInt16,UInt16,UInt16}}(Base.zero(Tuple{UInt16,UInt16,UInt16})) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_wavefront_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WAVEFRONT_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WAVEFRONT_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_isa(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_isa_t}(Base.zero(hsa_isa_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_ISA,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_isa_t}(Base.zero(hsa_isa_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_ISA,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_version_minor(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VERSION_MINOR,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VERSION_MINOR,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_machine_model(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_machine_model_t}(Base.zero(hsa_machine_model_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_MACHINE_MODEL,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_machine_model_t}(Base.zero(hsa_machine_model_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_MACHINE_MODEL,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_queues_max(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUES_MAX,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUES_MAX,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image3d_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE3D_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE3D_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image_array_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_ARRAY_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_ARRAY_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_sampler_max(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_SAMPLER_MAX,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_SAMPLER_MAX,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_queue_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_grid_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_GRID_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_GRID_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_fast_f16_operation(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FAST_F16_OPERATION,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FAST_F16_OPERATION,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_feature(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_agent_feature_t}(Base.zero(hsa_agent_feature_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FEATURE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_agent_feature_t}(Base.zero(hsa_agent_feature_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FEATURE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_base_profile_default_float_rounding_modes(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_default_float_rounding_mode_t}(Base.zero(hsa_default_float_rounding_mode_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_BASE_PROFILE_DEFAULT_FLOAT_ROUNDING_MODES,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_default_float_rounding_mode_t}(Base.zero(hsa_default_float_rounding_mode_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_BASE_PROFILE_DEFAULT_FLOAT_ROUNDING_MODES,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image1d_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE1D_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE1D_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_runtime_alloc_alignment(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_ALIGNMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_ALIGNMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_runtime_alloc_granule(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_GRANULE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_GRANULE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_global_flags(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_region_global_flag_t}(Base.zero(hsa_region_global_flag_t)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_GLOBAL_FLAGS,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_region_global_flag_t}(Base.zero(hsa_region_global_flag_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_GLOBAL_FLAGS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_alloc_max_size(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_ALLOC_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_ALLOC_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_size(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_runtime_alloc_allowed(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_ALLOWED,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_ALLOWED,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_segment(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_region_segment_t}(Base.zero(hsa_region_segment_t)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_SEGMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_region_segment_t}(Base.zero(hsa_region_segment_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_SEGMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function isa_info_name_length(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME_LENGTH,Base.zero(UInt32),value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME_LENGTH,Base.zero(UInt32),value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -1881,44 +1881,44 @@ function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 
     begin 
         len = isa_info_name_length(isa)
         value = Array(UInt8,len)
-    end # line 67:
-    err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME,Base.zero(UInt32),value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME,Base.zero(UInt32),value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function executable_info_state(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_executable_state_t}(Base.zero(hsa_executable_state_t)) # line 67:
-    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_STATE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_executable_state_t}(Base.zero(hsa_executable_state_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_STATE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_info_profile(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # line 67:
-    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_PROFILE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_PROFILE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_indirect_function_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_linkage(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_symbol_kind_linkage_t}(Base.zero(hsa_symbol_kind_linkage_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_symbol_kind_linkage_t}(Base.zero(hsa_symbol_kind_linkage_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_kernarg_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -1926,79 +1926,79 @@ function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_
     begin 
         len = executable_symbol_info_name_length(symbol)
         value = Array(UInt8,len)
-    end # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function executable_symbol_info_kernel_group_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_allocation(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_variable_allocation_t}(Base.zero(hsa_variable_allocation_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_variable_allocation_t}(Base.zero(hsa_variable_allocation_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_module_name_length(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_dynamic_callstack(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_is_definition(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_alignment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_segment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_variable_segment_t}(Base.zero(hsa_variable_segment_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_variable_segment_t}(Base.zero(hsa_variable_segment_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_kernarg_segment_alignment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_type(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_symbol_kind_t}(Base.zero(hsa_symbol_kind_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_TYPE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_symbol_kind_t}(Base.zero(hsa_symbol_kind_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_TYPE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -2006,58 +2006,58 @@ function executable_symbol_info_module_name(symbol) # /home/strollinger/hsa/jl/g
     begin 
         len = executable_symbol_info_module_name_length(symbol)
         value = Array(UInt8,len)
-    end # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function executable_symbol_info_variable_address(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_private_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_agent(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_agent_t}(Base.zero(hsa_agent_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_AGENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_agent_t}(Base.zero(hsa_agent_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_AGENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_name_length(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_is_const(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_indirect_function_call_convention(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 # Julia wrapper for header: /opt/hsa/lib/../include/hsa_ext_image.h
@@ -2080,8 +2080,8 @@ function hsa_system_get_info(attribute::hsa_system_info_t,value::Ptr{Void})
     ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),attribute,value)
 end
 
-function hsa_system_extension_supported(extension::UInt16,version_major::UInt16,version_minor::UInt16,result::Ptr{Bool})
-    ccall((:hsa_system_extension_supported,libhsa),hsa_status_t,(UInt16,UInt16,UInt16,Ptr{Bool}),extension,version_major,version_minor,result)
+function hsa_system_extension_supported(extension::UInt16,version_major::UInt16,version_minor::UInt16,result::Ptr{Cint})
+    ccall((:hsa_system_extension_supported,libhsa),hsa_status_t,(UInt16,UInt16,UInt16,Ptr{Cint}),extension,version_major,version_minor,result)
 end
 
 function hsa_system_get_extension_table(extension::UInt16,version_major::UInt16,version_minor::UInt16,table::Ptr{Void})
@@ -2100,8 +2100,8 @@ function hsa_agent_get_exception_policies(agent::Agent,profile::hsa_profile_t,ma
     ccall((:hsa_agent_get_exception_policies,libhsa),hsa_status_t,(hsa_agent_t,hsa_profile_t,Ptr{UInt16}),agent,profile,mask)
 end
 
-function hsa_agent_extension_supported(extension::UInt16,agent::Agent,version_major::UInt16,version_minor::UInt16,result::Ptr{Bool})
-    ccall((:hsa_agent_extension_supported,libhsa),hsa_status_t,(UInt16,hsa_agent_t,UInt16,UInt16,Ptr{Bool}),extension,agent,version_major,version_minor,result)
+function hsa_agent_extension_supported(extension::UInt16,agent::Agent,version_major::UInt16,version_minor::UInt16,result::Ptr{Cint})
+    ccall((:hsa_agent_extension_supported,libhsa),hsa_status_t,(UInt16,hsa_agent_t,UInt16,UInt16,Ptr{Cint}),extension,agent,version_major,version_minor,result)
 end
 
 function hsa_signal_create(initial_value::hsa_signal_value_t,num_consumers::UInt32,consumers::Ptr{hsa_agent_t},signal::Ptr{hsa_signal_t})
@@ -2336,28 +2336,28 @@ function hsa_agent_iterate_regions(agent::Agent,callback::Ptr{Void},data::Ptr{Vo
     ccall((:hsa_agent_iterate_regions,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Ptr{Void}),agent,callback,data)
 end
 
-function hsa_memory_allocate(region::Region,size::Csize_t,ptr::Ptr{Ptr{Void}})
-    ccall((:hsa_memory_allocate,libhsa),hsa_status_t,(hsa_region_t,Csize_t,Ptr{Ptr{Void}}),region,size,ptr)
+function hsa_memory_allocate(region::Region,size::Cint,ptr::Ptr{Ptr{Void}})
+    ccall((:hsa_memory_allocate,libhsa),hsa_status_t,(hsa_region_t,Cint,Ptr{Ptr{Void}}),region,size,ptr)
 end
 
 function hsa_memory_free(ptr::Ptr{Void})
     ccall((:hsa_memory_free,libhsa),hsa_status_t,(Ptr{Void},),ptr)
 end
 
-function hsa_memory_copy(dst::Ptr{Void},src::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_copy,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void},Csize_t),dst,src,size)
+function hsa_memory_copy(dst::Ptr{Void},src::Ptr{Void},size::Cint)
+    ccall((:hsa_memory_copy,libhsa),hsa_status_t,(Ptr{Void},Ptr{Void},Cint),dst,src,size)
 end
 
 function hsa_memory_assign_agent(ptr::Ptr{Void},agent::Agent,access::hsa_access_permission_t)
     ccall((:hsa_memory_assign_agent,libhsa),hsa_status_t,(Ptr{Void},hsa_agent_t,hsa_access_permission_t),ptr,agent,access)
 end
 
-function hsa_memory_register(ptr::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
+function hsa_memory_register(ptr::Ptr{Void},size::Cint)
+    ccall((:hsa_memory_register,libhsa),hsa_status_t,(Ptr{Void},Cint),ptr,size)
 end
 
-function hsa_memory_deregister(ptr::Ptr{Void},size::Csize_t)
-    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Csize_t),ptr,size)
+function hsa_memory_deregister(ptr::Ptr{Void},size::Cint)
+    ccall((:hsa_memory_deregister,libhsa),hsa_status_t,(Ptr{Void},Cint),ptr,size)
 end
 
 function hsa_isa_from_name(name::Ptr{UInt8},isa::Ptr{hsa_isa_t})
@@ -2368,16 +2368,16 @@ function hsa_isa_get_info(isa::hsa_isa_t,attribute::hsa_isa_info_t,index::UInt32
     ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,attribute,index,value)
 end
 
-function hsa_isa_compatible(code_object_isa::hsa_isa_t,agent_isa::hsa_isa_t,result::Ptr{Bool})
-    ccall((:hsa_isa_compatible,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_t,Ptr{Bool}),code_object_isa,agent_isa,result)
+function hsa_isa_compatible(code_object_isa::hsa_isa_t,agent_isa::hsa_isa_t,result::Ptr{Cint})
+    ccall((:hsa_isa_compatible,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_t,Ptr{Cint}),code_object_isa,agent_isa,result)
 end
 
-function hsa_code_object_serialize(code_object::hsa_code_object_t,alloc_callback::Ptr{Void},callback_data::hsa_callback_data_t,options::Ptr{UInt8},serialized_code_object::Ptr{Ptr{Void}},serialized_code_object_size::Ptr{Csize_t})
-    ccall((:hsa_code_object_serialize,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},hsa_callback_data_t,Ptr{UInt8},Ptr{Ptr{Void}},Ptr{Csize_t}),code_object,alloc_callback,callback_data,options,serialized_code_object,serialized_code_object_size)
+function hsa_code_object_serialize(code_object::hsa_code_object_t,alloc_callback::Ptr{Void},callback_data::hsa_callback_data_t,options::Ptr{UInt8},serialized_code_object::Ptr{Ptr{Void}},serialized_code_object_size::Ptr{Cint})
+    ccall((:hsa_code_object_serialize,libhsa),hsa_status_t,(hsa_code_object_t,Ptr{Void},hsa_callback_data_t,Ptr{UInt8},Ptr{Ptr{Void}},Ptr{Cint}),code_object,alloc_callback,callback_data,options,serialized_code_object,serialized_code_object_size)
 end
 
-function hsa_code_object_deserialize(serialized_code_object::Ptr{Void},serialized_code_object_size::Csize_t,options::Ptr{UInt8},code_object::Ptr{hsa_code_object_t})
-    ccall((:hsa_code_object_deserialize,libhsa),hsa_status_t,(Ptr{Void},Csize_t,Ptr{UInt8},Ptr{hsa_code_object_t}),serialized_code_object,serialized_code_object_size,options,code_object)
+function hsa_code_object_deserialize(serialized_code_object::Ptr{Void},serialized_code_object_size::Cint,options::Ptr{UInt8},code_object::Ptr{hsa_code_object_t})
+    ccall((:hsa_code_object_deserialize,libhsa),hsa_status_t,(Ptr{Void},Cint,Ptr{UInt8},Ptr{hsa_code_object_t}),serialized_code_object,serialized_code_object_size,options,code_object)
 end
 
 function hsa_code_object_destroy(code_object::hsa_code_object_t)
@@ -2468,12 +2468,12 @@ function hsa_ext_image_copy(agent::Agent,src_image::hsa_ext_image_t,src_offset::
     ccall((:hsa_ext_image_copy,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_t,Ptr{hsa_dim3_t},hsa_ext_image_t,Ptr{hsa_dim3_t},Ptr{hsa_dim3_t}),agent,src_image,src_offset,dst_image,dst_offset,range)
 end
 
-function hsa_ext_image_import(agent::Agent,src_memory::Ptr{Void},src_row_pitch::Csize_t,src_slice_pitch::Csize_t,dst_image::hsa_ext_image_t,image_region::Ptr{hsa_ext_image_region_t})
-    ccall((:hsa_ext_image_import,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Csize_t,Csize_t,hsa_ext_image_t,Ptr{hsa_ext_image_region_t}),agent,src_memory,src_row_pitch,src_slice_pitch,dst_image,image_region)
+function hsa_ext_image_import(agent::Agent,src_memory::Ptr{Void},src_row_pitch::Cint,src_slice_pitch::Cint,dst_image::hsa_ext_image_t,image_region::Ptr{hsa_ext_image_region_t})
+    ccall((:hsa_ext_image_import,libhsa),hsa_status_t,(hsa_agent_t,Ptr{Void},Cint,Cint,hsa_ext_image_t,Ptr{hsa_ext_image_region_t}),agent,src_memory,src_row_pitch,src_slice_pitch,dst_image,image_region)
 end
 
-function hsa_ext_image_export(agent::Agent,src_image::hsa_ext_image_t,dst_memory::Ptr{Void},dst_row_pitch::Csize_t,dst_slice_pitch::Csize_t,image_region::Ptr{hsa_ext_image_region_t})
-    ccall((:hsa_ext_image_export,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_t,Ptr{Void},Csize_t,Csize_t,Ptr{hsa_ext_image_region_t}),agent,src_image,dst_memory,dst_row_pitch,dst_slice_pitch,image_region)
+function hsa_ext_image_export(agent::Agent,src_image::hsa_ext_image_t,dst_memory::Ptr{Void},dst_row_pitch::Cint,dst_slice_pitch::Cint,image_region::Ptr{hsa_ext_image_region_t})
+    ccall((:hsa_ext_image_export,libhsa),hsa_status_t,(hsa_agent_t,hsa_ext_image_t,Ptr{Void},Cint,Cint,Ptr{hsa_ext_image_region_t}),agent,src_image,dst_memory,dst_row_pitch,dst_slice_pitch,image_region)
 end
 
 function hsa_ext_image_clear(agent::Agent,image::hsa_ext_image_t,data::Ptr{Void},image_region::Ptr{hsa_ext_image_region_t})
@@ -2556,76 +2556,76 @@ end
 # Convenience Constants
 # with HSA_ prefix removed and
 # in CamelCase
-	
+    
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_type(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{hsa_queue_type_t},ptr + 0x0000000000000000) # line 15:
+        field_ptr = convert(Ptr{hsa_queue_type_t},ptr + 0x0000000000000000) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_size(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{UInt32},ptr + 0x0000000000000018) # line 15:
+        field_ptr = convert(Ptr{UInt32},ptr + 0x0000000000000018) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_features(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{hsa_queue_feature_t},ptr + 0x0000000000000004) # line 15:
+        field_ptr = convert(Ptr{hsa_queue_feature_t},ptr + 0x0000000000000004) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_id(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000020) # line 15:
+        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000020) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_base_address(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000008) # line 15:
+        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000008) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 begin  # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 13:
     function queue_info_doorbell_signal(ptr::Ptr{hsa_queue_t}) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 14:
-        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000010) # line 15:
+        field_ptr = convert(Ptr{UInt64},ptr + 0x0000000000000010) # /home/strollinger/hsa/jl/gen/gen_fieldgetters.jl, line 15:
         return unsafe_load(field_ptr)
     end
 end
 
 function system_info_endianness() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_endianness_t}(Base.zero(hsa_endianness_t)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_ENDIANNESS,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_endianness_t}(Base.zero(hsa_endianness_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_ENDIANNESS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_version_major() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_VERSION_MAJOR,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_VERSION_MAJOR,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_signal_max_wait() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_SIGNAL_MAX_WAIT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_SIGNAL_MAX_WAIT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_machine_model() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_machine_model_t}(Base.zero(hsa_machine_model_t)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_MACHINE_MODEL,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_machine_model_t}(Base.zero(hsa_machine_model_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_MACHINE_MODEL,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_version_minor() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_VERSION_MINOR,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_VERSION_MINOR,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -2633,93 +2633,93 @@ function system_info_extensions() # /home/strollinger/hsa/jl/gen/gen_getters.jl,
     begin 
         v_arr = Array(UInt8,128)
         value = pointer(v_arr)
-    end # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_EXTENSIONS,value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_EXTENSIONS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = v_arr
 end
 
 function system_info_timestamp() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_TIMESTAMP,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_TIMESTAMP,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function system_info_timestamp_frequency() # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_TIMESTAMP_FREQUENCY,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_system_get_info,libhsa),hsa_status_t,(hsa_system_info_t,Ptr{Void}),HSA_SYSTEM_INFO_TIMESTAMP_FREQUENCY,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_vendor_name(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Array(UInt8,64) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VENDOR_NAME,value) # line 69:
-    test_status(err) # line 71:
+    value = Array(UInt8,64) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VENDOR_NAME,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function agent_info_default_float_rounding_mode(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_default_float_rounding_mode_t}(Base.zero(hsa_default_float_rounding_mode_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_DEFAULT_FLOAT_ROUNDING_MODE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_default_float_rounding_mode_t}(Base.zero(hsa_default_float_rounding_mode_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_DEFAULT_FLOAT_ROUNDING_MODE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image2d_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE2D_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE2D_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image_rd_max(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_RD_MAX,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_RD_MAX,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_queue_min_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_MIN_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_MIN_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_name(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Array(UInt8,64) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NAME,value) # line 69:
-    test_status(err) # line 71:
+    value = Array(UInt8,64) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NAME,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function agent_info_profile(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_PROFILE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_PROFILE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_cache_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Tuple{UInt32,UInt32,UInt32,UInt32}}(Base.zero(Tuple{UInt32,UInt32,UInt32,UInt32})) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_CACHE_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Tuple{UInt32,UInt32,UInt32,UInt32}}(Base.zero(Tuple{UInt32,UInt32,UInt32,UInt32})) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_CACHE_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_fbarrier_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FBARRIER_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FBARRIER_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_workgroup_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -2727,212 +2727,212 @@ function agent_info_extensions(agent) # /home/strollinger/hsa/jl/gen/gen_getters
     begin 
         v_arr = Array(UInt8,128)
         value = pointer(v_arr)
-    end # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_EXTENSIONS,value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_EXTENSIONS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = v_arr
 end
 
 function ext_agent_info_image_rdwr_max(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_RDWR_MAX,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_RDWR_MAX,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_grid_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_GRID_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_GRID_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_node(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NODE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_NODE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_device(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_device_type_t}(Base.zero(hsa_device_type_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_DEVICE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_device_type_t}(Base.zero(hsa_device_type_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_DEVICE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_queue_type(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_queue_type_t}(Base.zero(hsa_queue_type_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_TYPE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_queue_type_t}(Base.zero(hsa_queue_type_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_TYPE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_version_major(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VERSION_MAJOR,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VERSION_MAJOR,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_workgroup_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Tuple{UInt16,UInt16,UInt16}}(Base.zero(Tuple{UInt16,UInt16,UInt16})) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Tuple{UInt16,UInt16,UInt16}}(Base.zero(Tuple{UInt16,UInt16,UInt16})) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WORKGROUP_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_wavefront_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WAVEFRONT_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_WAVEFRONT_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_isa(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_isa_t}(Base.zero(hsa_isa_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_ISA,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_isa_t}(Base.zero(hsa_isa_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_ISA,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_version_minor(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt16}(Base.zero(UInt16)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VERSION_MINOR,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt16}(Base.zero(UInt16)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_VERSION_MINOR,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_machine_model(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_machine_model_t}(Base.zero(hsa_machine_model_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_MACHINE_MODEL,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_machine_model_t}(Base.zero(hsa_machine_model_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_MACHINE_MODEL,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_queues_max(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUES_MAX,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUES_MAX,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image3d_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE3D_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE3D_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image_array_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_ARRAY_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE_ARRAY_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_sampler_max(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_SAMPLER_MAX,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_SAMPLER_MAX,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_queue_max_size(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_QUEUE_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_grid_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_GRID_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_GRID_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_fast_f16_operation(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FAST_F16_OPERATION,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FAST_F16_OPERATION,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_feature(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_agent_feature_t}(Base.zero(hsa_agent_feature_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FEATURE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_agent_feature_t}(Base.zero(hsa_agent_feature_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_FEATURE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function agent_info_base_profile_default_float_rounding_modes(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_default_float_rounding_mode_t}(Base.zero(hsa_default_float_rounding_mode_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_BASE_PROFILE_DEFAULT_FLOAT_ROUNDING_MODES,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_default_float_rounding_mode_t}(Base.zero(hsa_default_float_rounding_mode_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_AGENT_INFO_BASE_PROFILE_DEFAULT_FLOAT_ROUNDING_MODES,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function ext_agent_info_image1d_max_dim(agent) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # line 67:
-    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE1D_MAX_DIM,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_dim3_t}(Base.zero(hsa_dim3_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_agent_get_info,libhsa),hsa_status_t,(hsa_agent_t,hsa_agent_info_t,Ptr{Void}),agent,HSA_EXT_AGENT_INFO_IMAGE1D_MAX_DIM,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_runtime_alloc_alignment(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_ALIGNMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_ALIGNMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_runtime_alloc_granule(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_GRANULE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_GRANULE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_global_flags(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_region_global_flag_t}(Base.zero(hsa_region_global_flag_t)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_GLOBAL_FLAGS,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_region_global_flag_t}(Base.zero(hsa_region_global_flag_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_GLOBAL_FLAGS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_alloc_max_size(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_ALLOC_MAX_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_ALLOC_MAX_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_size(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_runtime_alloc_allowed(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_ALLOWED,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_RUNTIME_ALLOC_ALLOWED,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function region_info_segment(region) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_region_segment_t}(Base.zero(hsa_region_segment_t)) # line 67:
-    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_SEGMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_region_segment_t}(Base.zero(hsa_region_segment_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_region_get_info,libhsa),hsa_status_t,(hsa_region_t,hsa_region_info_t,Ptr{Void}),region,HSA_REGION_INFO_SEGMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function isa_info_name_length(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME_LENGTH,Base.zero(UInt32),value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME_LENGTH,Base.zero(UInt32),value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -2940,44 +2940,44 @@ function isa_info_name(isa) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 
     begin 
         len = isa_info_name_length(isa)
         value = Array(UInt8,len)
-    end # line 67:
-    err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME,Base.zero(UInt32),value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_isa_get_info,libhsa),hsa_status_t,(hsa_isa_t,hsa_isa_info_t,UInt32,Ptr{Void}),isa,HSA_ISA_INFO_NAME,Base.zero(UInt32),value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function executable_info_state(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_executable_state_t}(Base.zero(hsa_executable_state_t)) # line 67:
-    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_STATE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_executable_state_t}(Base.zero(hsa_executable_state_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_STATE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_info_profile(executable) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # line 67:
-    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_PROFILE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_profile_t}(Base.zero(hsa_profile_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_get_info,libhsa),hsa_status_t,(hsa_executable_t,hsa_executable_info_t,Ptr{Void}),executable,HSA_EXECUTABLE_INFO_PROFILE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_indirect_function_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_OBJECT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_linkage(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_symbol_kind_linkage_t}(Base.zero(hsa_symbol_kind_linkage_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_symbol_kind_linkage_t}(Base.zero(hsa_symbol_kind_linkage_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_LINKAGE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_kernarg_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -2985,79 +2985,79 @@ function executable_symbol_info_name(symbol) # /home/strollinger/hsa/jl/gen/gen_
     begin 
         len = executable_symbol_info_name_length(symbol)
         value = Array(UInt8,len)
-    end # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function executable_symbol_info_kernel_group_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_GROUP_SEGMENT_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_allocation(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_variable_allocation_t}(Base.zero(hsa_variable_allocation_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_variable_allocation_t}(Base.zero(hsa_variable_allocation_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALLOCATION,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_object(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_OBJECT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_module_name_length(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME_LENGTH,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_dynamic_callstack(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_DYNAMIC_CALLSTACK,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_is_definition(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_IS_DEFINITION,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_alignment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ALIGNMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_segment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_variable_segment_t}(Base.zero(hsa_variable_segment_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_variable_segment_t}(Base.zero(hsa_variable_segment_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SEGMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_kernarg_segment_alignment(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_KERNARG_SEGMENT_ALIGNMENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_type(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_symbol_kind_t}(Base.zero(hsa_symbol_kind_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_TYPE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_symbol_kind_t}(Base.zero(hsa_symbol_kind_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_TYPE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
@@ -3065,57 +3065,57 @@ function executable_symbol_info_module_name(symbol) # /home/strollinger/hsa/jl/g
     begin 
         len = executable_symbol_info_module_name_length(symbol)
         value = Array(UInt8,len)
-    end # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # line 69:
-    test_status(err) # line 71:
+    end # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_MODULE_NAME,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = strip(ascii(value),'\0')
 end
 
 function executable_symbol_info_variable_address(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt64}(Base.zero(UInt64)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt64}(Base.zero(UInt64)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_ADDRESS,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_kernel_private_segment_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_KERNEL_PRIVATE_SEGMENT_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_agent(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{hsa_agent_t}(Base.zero(hsa_agent_t)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_AGENT,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{hsa_agent_t}(Base.zero(hsa_agent_t)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_AGENT,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_size(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_SIZE,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_name_length(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_NAME_LENGTH,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_variable_is_const(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{Bool}(Base.zero(Bool)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{Bool}(Base.zero(Bool)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_VARIABLE_IS_CONST,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
 
 function executable_symbol_info_indirect_function_call_convention(symbol) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 66:
-    value = Ref{UInt32}(Base.zero(UInt32)) # line 67:
-    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION,value) # line 69:
-    test_status(err) # line 71:
+    value = Ref{UInt32}(Base.zero(UInt32)) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 67:
+    err = ccall((:hsa_executable_symbol_get_info,libhsa),hsa_status_t,(hsa_executable_symbol_t,hsa_executable_symbol_info_t,Ptr{Void}),symbol,HSA_EXECUTABLE_SYMBOL_INFO_INDIRECT_FUNCTION_CALL_CONVENTION,value) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 69:
+    test_status(err) # /home/strollinger/hsa/jl/gen/gen_getters.jl, line 71:
     value = value.x
 end
