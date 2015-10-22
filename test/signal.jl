@@ -10,7 +10,7 @@ facts("A Signal") do
             s2 = HSA.Signal(value = 2)
 
             @fact s.is_alive --> true
-            @fact s.handle --> anything
+            @fact s.handle --> not(nothing)
             @fact get(s) --> 0
             @fact get(s2) --> 2
         end

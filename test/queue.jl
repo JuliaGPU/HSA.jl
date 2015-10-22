@@ -44,12 +44,12 @@ facts("A Queue") do
 
         @fact q.handle --> x -> x != C_NULL
         @fact q.is_active --> true
-        @fact q.typ --> anything
+        @fact q.typ --> not(nothing)
         @fact q.features --> not((HSA.hsa_queue_feature_t)(0))
         @fact q.base_address --> not(UInt64(0))
         @fact isa(q.doorbell_signal, Signal) --> true
         @fact q.size --> greater_than_or_equal(0x04) "Requested/Min/Actual QueueSize: 4/$a_minq/$(q.size)"
-        @fact q.id --> anything
+        @fact q.id --> not(nothing)
 
         # try to see if the signal is actually valid
         HSA.store!(q.doorbell_signal, 1)

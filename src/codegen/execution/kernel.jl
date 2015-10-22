@@ -1,4 +1,5 @@
-using ..HSA: hsa_executable_t, hsa_executable_symbol_t, BrigModuleHeader, hsa_isa_t
+using ..HSA: hsa_executable_t, hsa_executable_symbol_t, BrigModuleHeader,
+             hsa_isa_t, brig, finalize_brig
 
 "Stores the necessary information about a kernel to later invoke it."
 type KernelInfo
@@ -42,14 +43,14 @@ type KernelBlob
     brig::Ptr{BrigModuleHeader}
     executable_by_isa
     function KernelBlob(brig)
-        new(brig, Dict{String, KernelInfo}())
+        new(brig, Dict{AbstractString, KernelInfo}())
     end
 end
 
 const kernel_cache = Dict{Tuple{Function, Array{DataType, 1}}, KernelBlob}()
 
 function find_kernel_symbol(executable, kernel::Function)
-    kernel_name = "&" * string(kernel)
+    kernel_name = "&" * match(r"[^.]+$", string(kernel)).match
 
     symbols = HSA.symbols(executable)
     for (symbol, symbol_name) in symbols
