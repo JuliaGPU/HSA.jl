@@ -1,5 +1,4 @@
 using ..HSA: hsa_executable_t, hsa_executable_symbol_t, BrigModuleHeader, hsa_isa_t
-using ..Compilation: brig, finalize_brig
 
 "Stores the necessary information about a kernel to later invoke it."
 type KernelInfo

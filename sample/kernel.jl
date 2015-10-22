@@ -4,15 +4,12 @@ using HSA.Builtins
 code_llvm(get_global_id, (Int32,))
 
 @target hsail function kernel_f(a,b)
-    i = HSA.Intrinsics.get_global_id(Int32(0))
+    i = get_global_id(Int32(0))
 
-	x = b[i+1]
-	a[i+1] = x
-	return
+	x = Base.unsafe_load(b, i+1)
+	Base.unsafe_store!(a, x, i+1)
+	return nothing
 end
-
-
-HSA.init_hsail_codegen()
 
 println("------- LLVM -------------------------------")
 code_llvm(kernel_f, (Ptr{Int64}, Ptr{Int64}))

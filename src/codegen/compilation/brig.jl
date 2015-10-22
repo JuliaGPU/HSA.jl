@@ -1,5 +1,3 @@
-import ..HSA: BrigModuleHeader
-
 function brig(f::Function, types::ANY)
     t = to_tuple_type(types)
     brig_ptr = ccall(:jl_get_brigf, Ptr{BrigModuleHeader}, (Any, Any), f, t)
@@ -7,7 +5,7 @@ function brig(f::Function, types::ANY)
     return brig_ptr
 end
 
-import ..ExtFinalization: Program, program_finalize, program_add_module
+import .ExtFinalization: Program, program_finalize, program_add_module
 
 function finalize_brig(brig_ptr::Ptr{BrigModuleHeader}, isa)
     program = Program()
