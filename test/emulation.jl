@@ -1,5 +1,4 @@
 using HSA
-using HSA.Intrinsics
 using HSA.Emulation
 using FactCheck
 

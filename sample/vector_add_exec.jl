@@ -11,11 +11,12 @@ end
 # kernel function to BRIG
 import HSA.Intrinsics
 
-@hsa_kernel function vector_copy_kernel(a::Ptr{Int64},b::Ptr{Int64})
+@hsa_kernel function vector_add_kernel(a::Ptr{Int64},b::Ptr{Int64})
     idx = get_global_id(Int32(0)) + 1
 
     x = Base.unsafe_load(b, idx)
-    Base.unsafe_store!(a, x, idx)
+    x += Base.unsafe_load(a, idx)
+    Base.unsafe_store!(b, x, idx)
     return nothing
 end
 check("defining the kernel")
@@ -28,12 +29,14 @@ rand!(a_in)
 b_out = Array(Int, N)
 rand!(b_out)
 
-@hsa (N) vector_copy_kernel(a_in, b_out)
+expected = a_in + b_out
+
+@hsa (N) vector_add_kernel(a_in, b_out)
 check("dispatching the kernel call via @hsa")
 
 failed = 0
 for (i in 1:N)
-    if (b_out[i]!=a_in[i])
+    if (b_out[i]!=expected[i])
         failed = failed + 1
 
         if failed > 10
@@ -41,7 +44,7 @@ for (i in 1:N)
             break
         end
 
-        println("Bad index: $i\n$(a_in[i]) --> $(b_out[i])")
+        println("Bad index: $i\n$(a_in[i]) --> $(expected[i])")
     end
 end
 
