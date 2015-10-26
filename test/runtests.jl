@@ -12,6 +12,10 @@ include("code.jl")
 include("isa.jl")
 include("intrinsics.jl")
 include("emulation.jl")
+if HSA.has_hsa_codegen()
 include("execution.jl")
+else
+warn("codegen is unavailable: skipping 'Execution'")
+end
 
 end

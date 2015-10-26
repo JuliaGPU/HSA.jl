@@ -93,8 +93,15 @@ macro hsa_kernel(fun::Expr)
     emu_fun = copy(fun)
     Emulation.add_emulation(emu_fun)
 
+    if has_hsa_codegen()
+        device_fun = quote
+            @target $(esc(:hsail)) $(esc(fun))
+        end
+    else
+        device_fun = nothing
+    end
+
     return quote
-        @target $(esc(:hsail)) $(esc(fun))
 
         $(esc(emu_fun))
     end
