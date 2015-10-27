@@ -95,13 +95,15 @@ macro hsa_kernel(fun::Expr)
 
     if has_hsa_codegen()
         device_fun = quote
-            @target $(esc(:hsail)) $(esc(fun))
+            @target hsail $(fun)
         end
     else
-        device_fun = nothing
+        device_fun = quote
+        end
     end
 
     return quote
+        $(esc(device_fun))
 
         $(esc(emu_fun))
     end
