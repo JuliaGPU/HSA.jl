@@ -85,6 +85,14 @@ end
 end # module Emulation
 
 export @hsa_kernel
+
+"""
+Marks a function as implementing an HSA kernel
+
+That means that it needs to be handled differently from a host function during
+code generation. Also, this macro enables emulation support for the kernel by
+adding a method that takes an EmulationContext as an additional argument.
+"""
 macro hsa_kernel(fun::Expr)
     if(fun.head != :function)
         error("@hsa_kernel must be applied to a function definition")
@@ -111,12 +119,5 @@ end
 
 # if codegen is not available, we need to emulate @hsa
 if !has_hsa_codegen()
-export @hsa_cpu
-macro hsa_cpu(range, call)
-    if call.head != :call
-        error("the second argument of @hsa must be a function call")
-    end
-
-    :(run_cpu($range, $(call...)))
-end
+include("execution.jl")
 end
