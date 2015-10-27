@@ -2,7 +2,7 @@ using HSA
 using HSA.ExtFinalization
 using HSA.Builtins
 
-USE_CODEGEN = true
+USE_CODEGEN = false
 
 function check(message)
 	println("✓ $message")

@@ -1,7 +1,6 @@
 using HSA
 using HSA.ExtFinalization
 using HSA.Builtins
-using HSA.Execution: @hsa
 
 function check(message)
     println("✓ $message")
@@ -9,7 +8,6 @@ end
 
 # Use the HSAIL Code Generator to compile a
 # kernel function to BRIG
-import HSA.Intrinsics
 
 @hsa_kernel function vector_copy_kernel(a::Ptr{Int64},b::Ptr{Int64})
     idx = get_global_id(Int32(0)) + 1
