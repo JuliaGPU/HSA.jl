@@ -4,7 +4,8 @@ export @hsa
 
 using ..HSA
 
-include("config.jl")
+debug_print = HSA.debug_print
+
 include("arguments.jl")
 include("kernel.jl")
 include("packet.jl")

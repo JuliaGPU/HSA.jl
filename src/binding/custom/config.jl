@@ -17,6 +17,7 @@ end
 
 global Defaults = Nullable{Config}()
 
+export set_defaults
 function set_defaults(rt::Runtime;
     agent = nothing,
     queue = nothing)
@@ -47,7 +48,7 @@ function set_defaults(rt::Runtime;
 
     Defaults = Nullable{Config}(cfg)
 
-    finalizer(cfg, shutdown_managed_hsa)
+    finalizer(cfg, shutdown_managed)
 
     return cfg
 end
@@ -62,6 +63,7 @@ function get_defaults()
     return get(Defaults)
 end
 
+export get_or_init_defaults
 function get_or_init_defaults()
     if isnull(Defaults) || !get_defaults().is_alive
         return set_defaults()
@@ -70,13 +72,17 @@ function get_or_init_defaults()
     end
 end
 
+export init_managed
+init_managed() = get_or_init_defaults()
+
+export clear_defaults
 function clear_defaults()
     global Defaults
-    shutdown_managed_hsa(Defaults)
+    shutdown_managed(Defaults)
     Defaults = Nullable{Config}()
 end
 
-function shutdown_managed_hsa(cfg)
+function shutdown_managed(cfg)
     if isa(cfg, Nullable)
         if isnull(cfg)
             return
