@@ -1,7 +1,11 @@
-# HSA
+# HSA.jl
 
-This is a package wrapping the HSA runtime libraries.
+This is a package wrapping the Heterogeneous System Architecture (HSA) runtime libraries.
 
+For links to official HSA Documentation, check out the
+[wiki](https://github.com/JuliaGPU/HSA.jl/wiki/HSA.jl)
+
+### Library Discovery
 The package needs to know where to find the HSA runtime.
 The code responsible for discovering the HSA libraries and headers is located in
 src/discovery.jl. It looks in _/opt/hsa_ by default or else expects to find the HSA path in
