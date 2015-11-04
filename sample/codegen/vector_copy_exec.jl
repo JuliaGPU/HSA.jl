@@ -1,6 +1,4 @@
 using HSA
-using HSA.ExtFinalization
-using HSA.Builtins
 
 function check(message)
     println("✓ $message")

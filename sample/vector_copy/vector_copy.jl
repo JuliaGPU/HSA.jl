@@ -1,6 +1,5 @@
 using HSA
 using HSA.ExtFinalization
-using HSA.Builtins
 
 USE_CODEGEN = false
 
@@ -119,7 +118,7 @@ check("Extracting the private segment from the executable")
 
 signal = Signal(value = 1)
 check("Creating a HSA signal")
-if HSA.load(signal) != Uint64(1)
+if HSA.load(signal) != UInt64(1)
 	error("incorrect signal value")
 end
 check("Verify initial signal value")
@@ -164,7 +163,7 @@ check("Allocating kernel argument memory buffer of size $kernarg_segment_size")
 unsafe_store!(kernarg_address, pointer(a_in))
 unsafe_store!(kernarg_address + sizeof(pointer(a_in)), pointer(b_out))
 
-index = HSA.load_write_index(queue) # HSA.add_write_index!(queue, Uint64(1))
+index = HSA.load_write_index(queue) # HSA.add_write_index!(queue, UInt64(1))
 
 dispatch_packet = KernelDispatchPacket(kernel_object,N;
     kernarg_address = kernarg_address,
@@ -175,7 +174,7 @@ dispatch_packet = KernelDispatchPacket(kernel_object,N;
 dispatch_packet.header.acquire_fence_scope = HSA.HSA_FENCE_SCOPE_SYSTEM
 dispatch_packet.header.release_fence_scope = HSA.HSA_FENCE_SCOPE_SYSTEM
 
-pkg_bytes = Array(Uint8, 64)
+pkg_bytes = Array(UInt8, 64)
 unsafe_store!(convert(Ptr{Void}, pointer(pkg_bytes)), dispatch_packet)
 
 println("""
@@ -186,7 +185,7 @@ println("""
 
 queue[index] = dispatch_packet
 
-HSA.store_write_index!(queue, Uint64(index + 1))
+HSA.store_write_index!(queue, UInt64(index + 1))
 HSA.store!(queue.doorbell_signal, Int64(index))
 check("Dispatching the kernel")
 

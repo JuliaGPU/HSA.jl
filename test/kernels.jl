@@ -1,5 +1,3 @@
-using HSA.Builtins
-
 @hsa_kernel function vcopy(a,b)
     idx = get_global_id(Int32(0)) + 1
 

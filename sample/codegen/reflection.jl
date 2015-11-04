@@ -1,5 +1,5 @@
 using HSA
-using HSA.Builtins
+using HSA.Builtins: get_global_id
 
 code_llvm(get_global_id, (Int32,))
 

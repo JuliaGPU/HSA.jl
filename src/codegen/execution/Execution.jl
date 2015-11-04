@@ -1,7 +1,5 @@
 module Execution
 
-export @hsa
-
 using ..HSA
 
 debug_print = HSA.debug_print
@@ -9,7 +7,12 @@ debug_print = HSA.debug_print
 include("arguments.jl")
 include("kernel.jl")
 include("packet.jl")
+include("hsa_kernel.jl")
+end # module Execution
 
+using .Execution
+
+export @hsa
 macro hsa(range, call)
     # support plain integer for 1D ranges
     if isa(range, Integer) || isa(range, Symbol)
@@ -59,6 +62,4 @@ macro hsa(range, call)
 
         finalize(signal)
     end
-end
-
 end

@@ -1,6 +1,4 @@
 using HSA
-using HSA.Builtins
-using HSA.Execution: @hsa
 
 function check(message)
     println("✓ $message")

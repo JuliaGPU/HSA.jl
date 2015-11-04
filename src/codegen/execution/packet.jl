@@ -1,3 +1,4 @@
+export build_dispatch
 function build_dispatch(range, kernel_info, karg_memory, signal)
     debug_print("build_dispatch: Building $range KernelDispatchPacket for $(string(kernel_info.func))($(join(kernel_info.argtypes,',')))")
     dispatch_packet = KernelDispatchPacket(

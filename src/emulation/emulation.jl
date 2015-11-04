@@ -1,7 +1,3 @@
-if !has_hsa_codegen()
-    include("intrinsics.jl")
-end
-
 module Emulation
 
 export run_cpu
@@ -102,9 +98,7 @@ macro hsa_kernel(fun::Expr)
     Emulation.add_emulation(emu_fun)
 
     if has_hsa_codegen()
-        device_fun = quote
-            @target hsail $(fun)
-        end
+        device_fun = HSA.Execution.hsa_kernel(fun)
     else
         device_fun = quote
         end

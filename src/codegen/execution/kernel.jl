@@ -63,6 +63,7 @@ function find_kernel_symbol(executable, kernel::Function)
     error("symbol for kernel $kernel_name not found in given executable")
 end
 
+export build_kernel
 function build_kernel(agent, kernel, types)
     global kernel_cache
 

@@ -6,6 +6,7 @@ function convert_arg(x) x end
 function prepare_arg(x) end
 function cleanup_arg(x) end
 
+export prepare_args
 function prepare_args(args)
     kernel_args = [ convert_arg(a) for a in args ]
 
@@ -16,12 +17,14 @@ function prepare_args(args)
     return kernel_args
 end
 
+export cleanup_args
 function cleanup_args(args)
     for a in args
         cleanup_arg(a)
     end
 end
 
+export allocate_args
 function allocate_args(agent, kernel_info, kernel_args)
     karg_size = kernel_info.kernarg_size
 
