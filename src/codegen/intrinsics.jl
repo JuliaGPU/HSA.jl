@@ -13,6 +13,10 @@ import Base.setindex!
 # intrinsic functions
 using Core.Intrinsics.llvmcall
 
+const BUILTINS = Symbol[]
+
+is_builtin(b::Symbol) = in(b, BUILTINS)
+
 const int_intrinsics = [
     ("@_Z13get_global_idj", Int64),
     ("@_Z12get_local_idj", Int64),
@@ -135,12 +139,13 @@ function intrinsic_impl()
         )
 
         final_expr = quote
-            export $intr_name
             $impl_expr
         end
 
         # Add final code to the module
         eval(final_expr)
+
+        push!(BUILTINS, intr_name)
     end
 end
 

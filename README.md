@@ -23,7 +23,6 @@ Minimal example:
 
 ```julia
 using HSA
-using HSA.Builtins
 
 @hsa_kernel function vector_copy(a, b)
     i = get_global_id()
