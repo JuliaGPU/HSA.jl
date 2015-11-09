@@ -1,4 +1,4 @@
-HSASM := HSAILasm
+HSASM := hsailasm
 
 vector_copy: vector_copy.brig
 
