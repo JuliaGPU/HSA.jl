@@ -3,7 +3,7 @@ using HSA.Builtins: get_global_id
 
 code_llvm(get_global_id, (Int32,))
 
-@target hsail function kernel_f(a,b)
+@target hsail function vcopy(a,b)
     i = get_global_id(Int32(0))
 
 	x = b[i+1]
@@ -12,13 +12,13 @@ code_llvm(get_global_id, (Int32,))
 end
 
 println("------- LLVM -------------------------------")
-code_llvm(kernel_f, (Ptr{Int64}, Ptr{Int64}))
+code_llvm(vcopy, (Ptr{Int64}, Ptr{Int64}))
 
 println("------- SPIR -------------------------------")
-code_spir(kernel_f, (Ptr{Int64}, Ptr{Int64}))
+code_spir(vcopy, (Ptr{Int64}, Ptr{Int64}))
 
 println("------- HSA --------------------------------")
-code_hsa(kernel_f, (Ptr{Int}, Ptr{Int}))
+code_hsa(vcopy, (Ptr{Int}, Ptr{Int}))
 
 println("------- HSAIL ------------------------------")
-println(src_hsail(kernel_f, (Ptr{Int}, Ptr{Int})))
+println(src_hsail(vcopy, (Ptr{Int}, Ptr{Int})))
