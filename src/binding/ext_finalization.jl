@@ -1,6 +1,44 @@
 module ExtFinalization
 using HSA
 
+typealias fun_table HSA.hsa_ext_finalizer_1_00_pfn_t
+
+function __init__()
+    @use rt = HSA.Runtime() begin
+        supported = Ref{Cint}(0)
+        err = ccall(
+            (:hsa_system_extension_supported,HSA.libhsa),
+            HSA.hsa_status_t,
+            (UInt16,UInt16,UInt16,Ptr{Cint}),
+            HSA.ExtensionFinalizer,
+            UInt16(1),
+            UInt16(0),
+            supported)
+
+        HSA.test_status(err)
+
+        if supported.x == 0
+            error("HSA Finalization Extension is unsupported")
+        end
+
+        null = Ptr{Void}(0)
+        fn_table = Ref{fun_table}(fun_table(null, null, null, null, null, null))
+
+        err = ccall(
+            (:hsa_system_get_extension_table,HSA.libhsa),
+            HSA.hsa_status_t,
+            (UInt16,UInt16,UInt16,Ptr{Void}),
+            HSA.ExtensionFinalizer,
+            UInt16(1),
+            UInt16(0),
+            fn_table)
+
+        HSA.test_status(err)
+
+        global pfn_finalizer = fn_table.x
+    end
+end
+
 export Program
 
 type Program
