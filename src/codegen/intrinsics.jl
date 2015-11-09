@@ -16,6 +16,7 @@ using Core.Intrinsics.llvmcall
 const BUILTINS = Symbol[]
 
 is_builtin(b::Symbol) = in(b, BUILTINS)
+is_builtin(b) = false
 
 const int_intrinsics = [
     ("@_Z13get_global_idj", Int64),
