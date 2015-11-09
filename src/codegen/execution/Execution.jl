@@ -60,6 +60,7 @@ macro hsa(range, call)
 
         cleanup_args(call_args)
 
+        finalize(karg_memory)
         finalize(signal)
     end
 end

@@ -28,11 +28,6 @@ export allocate_args
 function allocate_args(agent, kernel_info, kernel_args)
     karg_size = kernel_info.kernarg_size
 
-    # returned kernarg_segment_size seems to be wrong, calculate from arguments
-    karg_size = sum(kernel_args) do x
-        sizeof(x)
-    end
-
     debug_print("allocate_args: Allocate $karg_size bytes of kernarg memory for $(string(kernel_info.func))")
 
     karg_region = find_kernarg_region(agent)

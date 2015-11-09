@@ -13,4 +13,3 @@ function build_dispatch(range, kernel_info, karg_memory, signal)
 
     return dispatch_packet
 end
-

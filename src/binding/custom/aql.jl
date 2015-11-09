@@ -97,7 +97,7 @@ type KernelDispatchPacket <: AQLPacket
     private_segment_size :: UInt32
     group_segment_size :: UInt32
     kernel_object :: UInt64
-    kernarg_address :: UInt64
+    kernarg_address :: Ptr{Void}
     completion_signal :: hsa_signal_t
 
     function KernelDispatchPacket(
