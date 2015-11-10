@@ -24,7 +24,9 @@ function test_status(status; warn_only :: Bool = false)
     return test_status(status, warn_only)
 end
 function test_status(status::hsa_status_t; warn_only :: Bool = false)
-    if status & HSA_STATUS_ERROR == HSA_STATUS_ERROR
+    error = status & HSA_STATUS_ERROR == HSA_STATUS_ERROR
+
+    if error
         ex = HSAError(status)
         if warn_only
             warn(ex)
@@ -32,4 +34,6 @@ function test_status(status::hsa_status_t; warn_only :: Bool = false)
             throw(ex)
         end
     end
+
+    return !error
 end
