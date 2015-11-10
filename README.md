@@ -8,8 +8,9 @@ For links to official HSA Documentation, check out the
 ### Library Discovery
 The package needs to know where to find the HSA runtime.
 The code responsible for discovering the HSA libraries and headers is located in
-src/discovery.jl. It looks in _/opt/hsa_ by default or else expects to find the HSA path in
-`ENV["HSA_RUNTIME_PATH"]`.
+src/discovery.jl. It expects to find the path containing the HSA libraries
+(libhsa-runtime64, libhsakmt [and libhsa-runtime-ext64.so]) in
+`ENV["LD_LIBRARY_PATH"]`.
 
 For a port of the `vector_copy` example that comes with the HSA runtime, see the
 `sample` directory.
