@@ -39,7 +39,9 @@ if !USE_CODEGEN
 	# Load the precompiled .brig file containing the
 	# kernel to be executed
 
-	mod_bytes = open(readbytes, "vector_copy.brig")
+    script_path = dirname(@__FILE__)
+    brig_path = joinpath(script_path, "vector_copy.brig")
+	mod_bytes = open(readbytes, brig_path)
 
 	brig_ptr = pointer(mod_bytes)
 else # USE_CODEGEN
