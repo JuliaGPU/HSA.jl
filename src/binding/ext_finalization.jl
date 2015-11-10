@@ -5,21 +5,7 @@ typealias fun_table HSA.hsa_ext_finalizer_1_00_pfn_t
 
 function __init__()
     @use rt = HSA.Runtime() begin
-        supported = Ref{Cint}(0)
-
-        # query runtime for support for the extension
-        err = ccall(
-            (:hsa_system_extension_supported,HSA.libhsa),
-            HSA.hsa_status_t,
-            (UInt16,UInt16,UInt16,Ptr{Cint}),
-            HSA.ExtensionFinalizer,
-            UInt16(1),
-            UInt16(0),
-            supported)
-
-        if HSA.test_status(err, warn_only = true) && supported.x != 0
-            # success so far, try to get the function table
-
+        if HSA.has_ext_finalization()
             null = Ptr{Void}(0)
             fn_table = Ref{fun_table}(fun_table(null, null, null, null, null, null))
 
@@ -41,12 +27,7 @@ function __init__()
 
         # something went wrong
         warn("HSA Finalization Extension is unsupported")
-        global const pfn_finalizer = nothing
     end
-end
-
-function is_available()
-    return pfn_finalizer != nothing
 end
 
 export Program

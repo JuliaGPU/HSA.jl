@@ -6,7 +6,7 @@ facts("The Finalization API") do
     rt = HSA.Runtime()
 
     context("Can check for availability") do
-        @fact HSA.ExtFinalization.is_available() --> true
+        @fact HSA.has_ext_finalization() --> true
     end
 
     context("A Program") do
