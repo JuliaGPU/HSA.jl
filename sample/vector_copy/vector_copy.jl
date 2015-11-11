@@ -57,9 +57,9 @@ else # USE_CODEGEN
 		return nothing
 	end
 
-	println(HSA.Compilation.src_hsail(vector_copy_kernel, Tuple{Ptr{Int64}, Ptr{Int64}}))
+	println(HSA.src_hsail(vector_copy_kernel, Tuple{Ptr{Int64}, Ptr{Int64}}))
 
-	brig_ptr = HSA.Compilation.brig(vector_copy_kernel, Tuple{Ptr{Int64}, Ptr{Int64}})
+	brig_ptr = HSA.brig(vector_copy_kernel, Tuple{Ptr{Int64}, Ptr{Int64}})
     assert(brig_ptr != C_NULL)
 	check("Compile Kernel to BRIG")
 end
