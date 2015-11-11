@@ -159,11 +159,18 @@ end
 kernarg_region = regions[karg_region_idx]
 check("Finding a kernarg memory region")
 
+immutable Args
+    a_in::Ptr{Int}
+    b_out::Ptr{Int}
+end
+
+kernargs = Args(pointer(a_in), pointer(b_out))
+
 alloc = HSA.memory_allocate(kernarg_region, kernarg_segment_size)
-kernarg_address = convert(Ptr{Ptr{Int}}, alloc.ptr)
 check("Allocating kernel argument memory buffer of size $kernarg_segment_size")
-unsafe_store!(kernarg_address, pointer(a_in))
-unsafe_store!(kernarg_address + sizeof(pointer(a_in)), pointer(b_out))
+
+kernarg_address = convert(Ptr{Args}, alloc.ptr)
+unsafe_store!(kernarg_address, kernargs)
 
 index = HSA.load_write_index(queue) # HSA.add_write_index!(queue, UInt64(1))
 
@@ -175,15 +182,6 @@ dispatch_packet = KernelDispatchPacket(kernel_object,N;
 )
 dispatch_packet.header.acquire_fence_scope = HSA.HSA_FENCE_SCOPE_SYSTEM
 dispatch_packet.header.release_fence_scope = HSA.HSA_FENCE_SCOPE_SYSTEM
-
-pkg_bytes = Array(UInt8, 64)
-unsafe_store!(convert(Ptr{Void}, pointer(pkg_bytes)), dispatch_packet)
-
-println("""
-    Header: $(pkg_bytes[1:2])
-    Setup: $(pkg_bytes[3:4])
-    Workgroup X: $(pkg_bytes[5:6])
-    """)
 
 queue[index] = dispatch_packet
 
@@ -217,8 +215,12 @@ else
     println("VALIDATION FAILED!\n")
 end
 
+finalize(a_in)
+finalize(b_out)
+
 finalize(signal)
 finalize(executable)
 finalize(code_object)
 finalize(queue)
+
 finalize(rt)
