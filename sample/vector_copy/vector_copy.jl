@@ -4,7 +4,7 @@ using HSA.ExtFinalization
 USE_CODEGEN = false
 
 function check(message)
-	println("✓ $message")
+    println("✓ $message")
 end
 
 rt = Runtime()
@@ -12,8 +12,8 @@ check("Initializing the hsa runtime")
 
 gpus = HSA.all_agents(dev = HSA.DeviceTypeGpu)
 if isempty(gpus)
-	println("No GPU Agent found")
-	exit(1)
+    println("No GPU Agent found")
+    exit(1)
 end
 check("Getting a gpu agent")
 
@@ -29,39 +29,39 @@ println("The maximum queue size is $queue_size.")
 
 queue = Queue(agent, queue_size, typ = HSA.QueueTypeSingle, error_callback = (s, q) -> begin
     str = HSA.status_string(s)
-	println("($s) : $str")
+    println("($s) : $str")
 end)
 check("Creating the queue")
 
 brig_ptr = C_NULL
 
 if !USE_CODEGEN
-	# Load the precompiled .brig file containing the
-	# kernel to be executed
+    # Load the precompiled .brig file containing the
+    # kernel to be executed
 
     script_path = dirname(@__FILE__)
     brig_path = joinpath(script_path, "vector_copy.brig")
-	mod_bytes = open(readbytes, brig_path)
+    mod_bytes = open(readbytes, brig_path)
 
-	brig_ptr = pointer(mod_bytes)
+    brig_ptr = pointer(mod_bytes)
 else # USE_CODEGEN
-	# Use the HSAIL Code Generator to compile a
-	# kernel function to BRIG
-	import HSA.Intrinsics
+    # Use the HSAIL Code Generator to compile a
+    # kernel function to BRIG
+    import HSA.Intrinsics
 
-	@hsa_kernel function vector_copy_kernel(a::Ptr{Int64},b::Ptr{Int64})
-		idx = get_global_id(Int32(0)) + 1
+    @hsa_kernel function vector_copy_kernel(a::Ptr{Int64},b::Ptr{Int64})
+        idx = get_global_id(Int32(0)) + 1
 
-		x = Base.unsafe_load(b, idx)
+        x = Base.unsafe_load(b, idx)
         Base.unsafe_store!(a, x, idx)
-		return nothing
-	end
+        return nothing
+    end
 
-	println(HSA.src_hsail(vector_copy_kernel, Tuple{Ptr{Int64}, Ptr{Int64}}))
+    println(HSA.src_hsail(vector_copy_kernel, Tuple{Ptr{Int64}, Ptr{Int64}}))
 
-	brig_ptr = HSA.brig(vector_copy_kernel, Tuple{Ptr{Int64}, Ptr{Int64}})
+    brig_ptr = HSA.brig(vector_copy_kernel, Tuple{Ptr{Int64}, Ptr{Int64}})
     assert(brig_ptr != C_NULL)
-	check("Compile Kernel to BRIG")
+    check("Compile Kernel to BRIG")
 end
 
 program = Program()
@@ -93,18 +93,18 @@ symbols = HSA.symbols(executable)
 last_symbol_name = ""
 last_symbol = ""
 for (s, n) in symbols
-	m = HSA.executable_symbol_info_module_name(s)
-	println("$m :: $n")
+    m = HSA.executable_symbol_info_module_name(s)
+    println("$m :: $n")
 
-	last_symbol_name = n
-	last_symbol = s
+    last_symbol_name = n
+    last_symbol = s
 end
 
 symbol = last_symbol
 try
-	symbol = HSA.executable_get_symbol(executable,last_symbol_name)
+    symbol = HSA.executable_get_symbol(executable,last_symbol_name)
 catch ex
-	warn("expected kernel symbol '$last_symbol_name' not found, using any symbol in the executable\n Exception: $ex")
+    warn("expected kernel symbol '$last_symbol_name' not found, using any symbol in the executable\n Exception: $ex")
 
 end
 check("Extract the symbol from the executable")
@@ -121,7 +121,7 @@ check("Extracting the private segment from the executable")
 signal = Signal(value = 1)
 check("Creating a HSA signal")
 if HSA.load(signal) != UInt64(1)
-	error("incorrect signal value")
+    error("incorrect signal value")
 end
 check("Verify initial signal value")
 
@@ -148,13 +148,13 @@ karg_region_idx = findfirst(r -> begin
     flags = HSA.region_info_global_flags(r)
     if (flags & HSA.HSA_REGION_GLOBAL_FLAG_KERNARG) != 0
         return true
-	end
+    end
 
     return false
 end, regions)
 
 if karg_region_idx == 0
-	error("No Kernarg Region found")
+    error("No Kernarg Region found")
 end
 kernarg_region = regions[karg_region_idx]
 check("Finding a kernarg memory region")
@@ -183,7 +183,7 @@ println("""
     Header: $(pkg_bytes[1:2])
     Setup: $(pkg_bytes[3:4])
     Workgroup X: $(pkg_bytes[5:6])
-	""")
+    """)
 
 queue[index] = dispatch_packet
 
@@ -199,22 +199,22 @@ end
 
 failed = 0
 for (i in 1:N)
-	if (b_out[i]!=a_in[i])
-		failed = failed + 1
+    if (b_out[i]!=a_in[i])
+        failed = failed + 1
 
-		if failed > 10
-			println("...")
-			break
-		end
+        if failed > 10
+            println("...")
+            break
+        end
 
         println("Bad index: $i\n$(a_in[i]) --> $(b_out[i])")
-	end
+    end
 end
 
 if(failed == 0)
-	println("Passed validation.")
+    println("Passed validation.")
 else
-	println("VALIDATION FAILED!\n")
+    println("VALIDATION FAILED!\n")
 end
 
 finalize(signal)
