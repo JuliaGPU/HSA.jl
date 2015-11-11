@@ -173,60 +173,6 @@ function getter_ccall(getter_spec, key)
     return Expr(:ccall, ccall_args...)
 end
 
-function is_type_tuple(t)
-    if !isa(t, Tuple)
-        return false
-    end
-
-    for x in t
-        if !isa(x, DataType)
-            return false
-        end
-    end
-    return true
-end
-
-
-function getter(c_name::Symbol, argnames, argtypes, map)
-   for key in keys(map)
-        jl_name = getter_name(key)
-        return_type = map[key]
-
-        setup_code, convert_code = getter_code_for(:value, return_type)
-
-        getter_args = []
-
-
-        push!(ccall_args, key, :value)
-
-        getter_ccall = Expr(:ccall, ccall_args...)
-
-        getter_code = Expr(:function,
-                Expr(:call, symbol(jl_name), getter_args...),
-                quote
-                    local value
-
-                    $setup_code
-
-                    err = $getter_ccall
-
-                    test_status(err)
-
-                    $convert_code
-
-                    return value
-                end
-            )
-
-        # Debug output of generated code
-        if false && endswith(jl_name, "max_dim")
-            println(getter_code)
-        end
-
-        push!(obuf, getter_code)
-    end
-end
-
 const getters = []
 
 push!(getters,
@@ -371,6 +317,9 @@ function gen_getters(obuf)
 
             code = convert(Expr, method)
 
+            methodname = method.signature.args[1]
+
+            #push!(obuf, :(export $methodname))
             push!(obuf, code)
         end
     end
