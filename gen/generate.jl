@@ -48,6 +48,7 @@ wc.header_wrapped = (x,y)-> begin
     contains(y,"hsa")
 end
 
+const wrapped_cursors = Set{AbstractString}()
 # This function determines for each clang cursor encountered
 # whether it should be included in the generated julia files
 wc.cursor_wrapped = (name, cursor)-> begin
@@ -60,7 +61,12 @@ wc.cursor_wrapped = (name, cursor)-> begin
         return false
     elseif cindex.name(cursor) == ""
         return false
+    elseif in(name, wrapped_cursors)
+        # avoid duplicates from each of the
+        # extension headers including hsa.h
+        return false
     else
+        push!(wrapped_cursors, name)
         return true
     end
 end

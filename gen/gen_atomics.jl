@@ -95,7 +95,7 @@ function map_memspec_funcs(obuf)
                             Expr(:block,
                             Expr(:call, symbol(method_name), [a.args[1] for a in arg_specs]..., :(Val{$default_memspec}))
                             )
-                            println(default_impl) #debug
+                            #println(default_impl) #debug
 
                             push!(obuf, default_impl)
                         end

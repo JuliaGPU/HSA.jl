@@ -733,11 +733,6 @@ type hsa_ext_images_1_00_pfn_t
     hsa_ext_sampler_destroy::Ptr{Void}
 end
 
-
-# Convenience Constants
-# with HSA_ prefix removed and
-# in CamelCase
-    
 const StatusSuccess = HSA_STATUS_SUCCESS
 const StatusInfoBreak = HSA_STATUS_INFO_BREAK
 const StatusError = HSA_STATUS_ERROR

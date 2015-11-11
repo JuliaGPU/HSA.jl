@@ -26,12 +26,6 @@ function map_constants(obuf)
         return takebuf_string(stream)
     end
 
-    push!(obuf, "
-# Convenience Constants
-# with HSA_ prefix removed and
-# in CamelCase
-    ")
-
     for exu in obuf
         if isa(exu, Expr) && exu.head == :const && length(exu.args) >= 1
             assign = exu.args[1]
