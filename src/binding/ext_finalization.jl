@@ -91,6 +91,7 @@ function program_destroy(program)
     HSA.test_status(err, warn_only = true)
 end
 
+export program_add_module
 function program_add_module(program, mod)
 	err = ccall(pfn_finalizer.hsa_ext_program_add_module, HSA.hsa_status_t, (HSA.hsa_ext_program_t, HSA.hsa_ext_module_t),
 	            program, mod)
@@ -98,6 +99,7 @@ function program_add_module(program, mod)
 	HSA.test_status(err)
 end
 
+export program_finalize
 function program_finalize(program, isa, call_convention;
 	control_directives = nothing,
 	options = nothing,

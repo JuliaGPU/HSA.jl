@@ -67,13 +67,13 @@ end
 program = Program()
 check("Create the program")
 
-HSA.ExtFinalization.program_add_module(program, brig_ptr)
+program_add_module(program, brig_ptr)
 check("Adding the brig module to the program")
 
 isa = HSA.agent_info_isa(agent)
 check("Query the agents isa")
 
-code_object = HSA.ExtFinalization.program_finalize(program, isa, 0)
+code_object = program_finalize(program, isa, 0)
 check("Finalizing the program")
 
 finalize(program)
