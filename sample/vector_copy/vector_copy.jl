@@ -215,6 +215,8 @@ else
     println("VALIDATION FAILED!\n")
 end
 
+finalize(alloc)
+
 finalize(a_in)
 finalize(b_out)
 
