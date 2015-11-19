@@ -1,7 +1,12 @@
 type Config
+    # runtime objects
     runtime::Runtime
     agent::Agent
     queue::Queue
+    signal::Signal
+    # config parameter defaults
+    wait_state
+
     is_alive::Bool
 end
 
@@ -42,8 +47,15 @@ function set_defaults(rt::Runtime;
         end)
     end
 
+    signal = Signal()
+
     cfg = Config(
-            rt,agent,queue,true
+            # runtime objects
+            rt,agent,queue,signal,
+            # parameter defaults
+            HSA.WaitStateBlocked,
+            # is_alive
+            true
         )
 
     Defaults = Nullable{Config}(cfg)
@@ -98,6 +110,7 @@ function shutdown_managed(cfg)
     end
 
     # perform orderly shutdown of the referenced objects
+    finalize(cfg.signal)
     finalize(cfg.agent)
     finalize(cfg.queue)
     finalize(cfg.runtime)

@@ -34,6 +34,7 @@ macro hsa(range, call)
         cfg = get_or_init_defaults()
         agent = cfg.agent
         queue = cfg.queue
+        signal = cfg.signal
 
         call_args = Any[$([esc(a) for a in args]...)]
         kernel_args = prepare_args(call_args)
@@ -43,8 +44,9 @@ macro hsa(range, call)
 
         karg_memory = allocate_args(agent, kernel_info, kernel_args)
 
-        signal = Signal(value = 1)
         packet = build_dispatch($(esc(range)), kernel_info, karg_memory, signal)
+
+        HSA.store!(signal, 1)
 
         # Enqueue Dispatch
         #idx = HSA.add_write_index!(queue, UInt64(1))
@@ -56,11 +58,10 @@ macro hsa(range, call)
 
         HSA.store!(queue.doorbell_signal, Int64(idx))
 
-        wait(signal, :(<), 1, wait_state_hint = HSA.HSA_WAIT_STATE_ACTIVE)
+        wait(signal, :(<), 1, wait_state_hint = cfg.wait_state)
 
         cleanup_args(call_args)
 
         finalize(karg_memory)
-        finalize(signal)
     end
 end
