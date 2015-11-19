@@ -7,6 +7,7 @@ type KernelInfo
     argtypes::Array{DataType,1}
     executable::hsa_executable_t
     kernel_symbol::hsa_executable_symbol_t
+    kernarg_memory::HSA.Allocation
     kernel_object
     kernarg_size
     group_size
@@ -26,11 +27,15 @@ type KernelInfo
            group: $group_segment_size
            private: $private_segment_size""")
 
+        # Initially, there is no allocation
+        kernarg_mem = HSA.Allocation(0)
+
         return new(
             kernel,
             types,
             executable,
             kernel_symbol,
+            kernarg_mem,
             kernel_object,
             kernarg_segment_size,
             group_segment_size,

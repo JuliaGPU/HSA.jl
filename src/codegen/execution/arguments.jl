@@ -28,12 +28,23 @@ export allocate_args
 function allocate_args(agent, kernel_info, kernel_args)
     karg_size = kernel_info.kernarg_size
 
-    debug_print("allocate_args: Allocate $karg_size bytes of kernarg memory for $(string(kernel_info.func))")
+    # Allocate memory in a kernelarg compatible region
+    # or reuse any that was allocated earlier
+    local karg_mem
 
-    karg_region = find_kernarg_region(agent)
+    if (convert(Bool, kernel_info.kernarg_memory.ptr))
+        # memory allocated on a previous call
+        debug_print("allocate_args: Reuse kernarg memory for $(string(kernel_info.func))")
+        karg_mem = kernel_info.kernarg_memory
+    else
+        debug_print("allocate_args: Allocate $karg_size bytes of kernarg memory for $(string(kernel_info.func))")
+        karg_region = find_kernarg_region(agent)
 
-    karg_mem = HSA.memory_allocate(karg_region, karg_size)
+        karg_mem = HSA.memory_allocate(karg_region, karg_size)
+        kernel_info.kernarg_memory = karg_mem
+    end
 
+    # Store the arguments into the chunk of kernarg memory
     arg_offset = 0
     for i = 1:size(kernel_args, 1)
         a = kernel_args[i]
