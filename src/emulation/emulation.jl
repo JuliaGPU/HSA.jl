@@ -66,6 +66,7 @@ end
 
 
 function run_cpu(rng::Tuple{Int,Int,Int}, kernel::Function, args...)
+    warn("Running HSA kernel '$kernel' on the CPU")
     ctx = Emulation.EmulationContext()
     ctx.global_size = [rng...]
     for x = 0:rng[1]-1
