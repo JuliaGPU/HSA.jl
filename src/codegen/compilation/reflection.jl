@@ -63,3 +63,7 @@ function src_hsail(f::Function, types::ANY)
 
     return str
 end
+
+function init_codegen()
+    ccall(:jl_init_device_codegen, Bool, (Any,), :hsail)
+end
