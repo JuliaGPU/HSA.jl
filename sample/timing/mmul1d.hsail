@@ -1,0 +1,66 @@
+module &m:1:0:$full:$large:$default;
+
+prog kernel &mmul1d(
+	kernarg_u64 %a,
+	kernarg_u64 %b,
+	kernarg_u64 %c,
+	kernarg_u64 %acols)
+{
+	// BB#0:
+    // $d0 = arows
+    gridsize_u32    $s0, 0;
+    cvt_u64_u32 $d0, $s0;
+
+	workitemabsid_u32	$s0, 0;
+	cvt_u64_u32	$d4, $s0;
+	ld_kernarg_align(8)_width(all)_u64	$d1, [%acols];
+	ld_kernarg_align(8)_width(all)_u64	$d2, [%c];
+	ld_kernarg_align(8)_width(all)_u64	$d3, [%a];
+	ld_kernarg_align(8)_width(all)_u64	$d7, [%b];
+
+	mul_u64	$d6, $d1, $d4; // $d6 = acols * i
+	mul_u64	$d4, $d4, $d0; // $d4 = arows * i
+	shl_u64	$d5, $d6, 3; // $d5 = acols * i *8
+	add_u64	$d5, $d7, $d5;
+	shl_u64	$d6, $d0, 3; // $d6 = arows * 8
+	mov_b64	$d7, 0;
+	mov_b64	$d8, 0;
+	mov_b64	$d9, $d7;
+
+@BB0_2:
+	// %.preheader
+	cmp_eq_b1_s64	$c0, $d1, 0;
+	mov_b64	$d13, $d3;
+	mov_b64	$d11, $d5;
+	mov_b64	$d12, $d7;
+	mov_b64	$d10, $d8;
+	cbr_b1	$c0, @BB0_4;
+
+@BB0_3:
+	// %.lr.ph
+	add_u64	$d14, $d13, $d6;
+	ld_global_align(8)_const_width(all)_f64	$d13, [$d13];
+	ld_global_align(8)_f64	$d15, [$d11];
+	mul_f64	$d13, $d13, $d15;
+	add_f64	$d10, $d10, $d13;
+	add_u64	$d11, $d11, 8;
+	add_u64	$d12, $d12, 1;
+	cmp_lt_b1_u64	$c0, $d12, $d1;
+	mov_b64	$d13, $d14;
+	cbr_b1	$c0, @BB0_3;
+
+@BB0_4:
+	// %._crit_edge
+	add_u64	$d11, $d9, $d4;
+	shl_u64	$d11, $d11, 3;
+	add_u64	$d11, $d2, $d11;
+	st_global_align(8)_f64	$d10, [$d11];
+	add_u64	$d3, $d3, 8;
+	add_u64	$d9, $d9, 1;
+	cmp_lt_b1_u64	$c0, $d9, $d0;
+	cbr_b1	$c0, @BB0_2;
+
+@BB0_5:
+	// %._crit_edge4
+	ret;
+};

@@ -1,0 +1,91 @@
+module &m:1:0:$full:$large:$default;
+
+prog kernel &mmul2d(
+    kernarg_u64 %a,
+    kernarg_u64 %b,
+    kernarg_u64 %c,
+    kernarg_u64 %acols)
+{
+    // BB#0:
+    // $d0 = i
+    workitemabsid_u32   $s0, 1;
+    cvt_u64_u32 $d0, $s0;
+    
+    // $d1 = j
+    workitemabsid_u32   $s0, 0;
+    cvt_u64_u32 $d1, $s0;
+
+    // $d4 = arows
+    gridsize_u32    $s0, 0;
+    cvt_u64_u32 $d4, $s0;
+
+    ld_kernarg_align(8)_width(all)_u64  $d3, [%c];
+    ld_kernarg_align(8)_width(all)_u64  $d6, [%acols];
+     
+    // acols == 0 -> skip k-loop
+    cmp_eq_b1_s64   $c0, $d6, 0;
+    cbr_b1  $c0, @BB0_1;
+
+    // BB#2:                                // %.lr.ph
+    ld_kernarg_align(8)_width(all)_u64  $d7, [%a];
+    ld_kernarg_align(8)_width(all)_u64  $d8, [%b];
+
+    // $d9 = i * acols * 8
+    mul_u64 $d9, $d6, $d0;
+    shl_u64 $d9, $d9, 3;
+
+    // $d10 = j * 8
+    shl_u64 $d10, $d1, 3;
+
+    // $d11 = &a[j + 0 * arows]
+    add_u64 $d11, $d7, $d10;
+
+    // $d8 = &b[i*acols + 0]
+    add_u64 $d8, $d8, $d9;
+
+    // $d9 = arows*8
+    shl_u64 $d9, $d4, 3;
+
+    // $d7 = c_ij = 0.0
+    mov_b64 $d7, 0;
+    // $d10 = k = 0
+    mov_b64 $d10, 0;
+
+@BB0_3:
+    // $d12 = &a[j + (k+1) * arows]
+    add_u64 $d12, $d11, $d9;
+
+    // $d11 = a[j + k*arows]
+    ld_global_align(8)_f64  $d11, [$d11];
+    // $d13 = b[k + i*acols]
+    ld_global_align(8)_f64  $d13, [$d8];
+    // $d11 = a[k*arows + j] * b[i * acols + k]
+    mul_f64 $d11, $d11, $d13;
+    // c_ij += a[k*arows + j] * b[i * acols + k]
+    add_f64 $d7, $d7, $d11;
+    // $d8 = &b[i*acols + k + 1]
+    add_u64 $d8, $d8, 8;
+    // $d10 = k + 1
+    add_u64 $d10, $d10, 1;
+    // k < acols -> continue
+    cmp_lt_b1_u64   $c0, $d10, $d6;
+    mov_b64 $d11, $d12;
+    cbr_b1  $c0, @BB0_3;
+    // -> break
+    br  @BB0_4;
+
+@BB0_1:
+    // $d7 = c_ij = 0.0
+    mov_b64 $d7, 0;
+
+@BB0_4:
+    // %._crit_edge
+    // $d0 = i * arows + j
+    mad_u64 $d0, $d0, $d4, $d1;
+    // $d0 = &c[i*arows + j]
+    shl_u64 $d0, $d0, 3;
+    add_u64 $d0, $d3, $d0;
+    // c[i*arows + j] = c_ij
+    st_global_align(8)_f64  $d7, [$d0];
+    ret;
+};
