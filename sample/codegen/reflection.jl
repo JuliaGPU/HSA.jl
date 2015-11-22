@@ -1,24 +1,30 @@
 using HSA
 using HSA.Builtins: get_global_id
 
-code_llvm(get_global_id, (Int32,))
+script_dir = dirname(@__FILE__)
 
-@target hsail function vcopy(a,b)
-    i = get_global_id(Int32(0))
+# kernel implementations
+include("$script_dir/../../test/kernels.jl")
 
-	x = b[i+1]
-	a[i+1] = x
-	return nothing
-end
+# Select a kernel and argument type tuple
+
+#kernel = mmul2d
+#argtypes = (Ptr{Float64}, Ptr{Float64}, Ptr{Float64}, Int64)
+
+kernel = vopy
+argtypes = (Ptr{Float64}, Ptr{Float64})
+
+
+# Dump the various intermediate stages from Julia to HSAIL
 
 println("------- LLVM -------------------------------")
-code_llvm(vcopy, (Ptr{Int64}, Ptr{Int64}))
+code_llvm(kernel, argtypes)
 
 println("------- SPIR -------------------------------")
-code_spir(vcopy, (Ptr{Int64}, Ptr{Int64}))
+code_spir(kernel, argtypes)
 
 println("------- HSA --------------------------------")
-code_hsa(vcopy, (Ptr{Int}, Ptr{Int}))
+code_hsa(kernel, argtypes)
 
 println("------- HSAIL ------------------------------")
-println(src_hsail(vcopy, (Ptr{Int}, Ptr{Int})))
+println(src_hsail(kernel, argtypes))
