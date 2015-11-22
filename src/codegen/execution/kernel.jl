@@ -76,7 +76,14 @@ function build_kernel(agent, kernel, types)
 
     blob = get!(kernel_cache, (kernel, types)) do
         debug_print("build_kernel: build BRIG")
-        KernelBlob(brig(kernel, types))
+        local blob
+        if HSA.debug_output
+            time = @elapsed blob = brig(kernel, types)
+            println("build_kernel: build BRIG took $(time)s")
+        else
+            blob = brig(kernel, types)
+        end
+        KernelBlob(blob)
     end
 
     isa = HSA.agent_info_isa(agent)

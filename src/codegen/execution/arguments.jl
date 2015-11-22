@@ -32,15 +32,23 @@ function allocate_args(agent, kernel_info, kernel_args)
     # or reuse any that was allocated earlier
     local karg_mem
 
-    if (convert(Bool, kernel_info.kernarg_memory.ptr))
+    if (kernel_info.kernarg_memory.ptr != C_NULL)
         # memory allocated on a previous call
         debug_print("allocate_args: Reuse kernarg memory for $(string(kernel_info.func))")
         karg_mem = kernel_info.kernarg_memory
     else
         debug_print("allocate_args: Allocate $karg_size bytes of kernarg memory for $(string(kernel_info.func))")
+        if HSA.debug_output
+            tic()
+        end
         karg_region = find_kernarg_region(agent)
 
         karg_mem = HSA.memory_allocate(karg_region, karg_size)
+        if HSA.debug_output
+            time = toq()
+            println("allocate_args: Allocation took $(time)s")
+        end
+
         kernel_info.kernarg_memory = karg_mem
     end
 
