@@ -61,7 +61,5 @@ macro hsa(range, call)
         wait(signal, :(<), 1, wait_state_hint = cfg.wait_state)
 
         cleanup_args(call_args)
-
-        finalize(karg_memory)
     end
 end
