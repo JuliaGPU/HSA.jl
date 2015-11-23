@@ -43,13 +43,15 @@ type IntrinsicDef
 end
 
 const typeMap = Dict(
-    "j" => Int32,
+    "j" => UInt32,
     "v" => Void
     )
 
 const llvmTypeMap = Dict(
     Int32 => "i32",
-    Int64 => "i64"
+    UInt32 => "i32",
+    Int64 => "i64",
+    UInt64 => "i64"
     )
 
 function parse_mangled_name(name)

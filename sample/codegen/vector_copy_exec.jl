@@ -8,7 +8,7 @@ end
 # kernel function to BRIG
 
 @hsa_kernel function vector_copy_kernel(a::Ptr{Int64},b::Ptr{Int64})
-    idx = get_global_id(Int32(0)) + 1
+    idx = get_global_id(UInt32(0)) + 1
 
     x = Base.unsafe_load(b, idx)
     Base.unsafe_store!(a, x, idx)
