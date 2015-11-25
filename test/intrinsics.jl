@@ -7,7 +7,7 @@ using FactCheck
         defi32 = HSA.Builtins.parse_mangled_name("@_Z13get_global_idj")
 
         @fact defi32.name --> "get_global_id"
-        @fact defi32.arg_types --> [Int32]
+        @fact defi32.arg_types --> [UInt32]
 
         defv = HSA.Builtins.parse_mangled_name("@_Z20get_global_linear_idv")
 

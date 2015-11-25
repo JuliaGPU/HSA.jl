@@ -1,3 +1,6 @@
+"""
+Holds global defaults for runtime objects and setting
+"""
 type Config
     # runtime objects
     runtime::Runtime

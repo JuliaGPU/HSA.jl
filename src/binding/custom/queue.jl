@@ -107,9 +107,9 @@ function getindex(q :: Queue, i)
     assert(i >= 0)
     i = convert(UInt32, i)
 
-    p_ptr = convert(Ptr{Void}, q.base_address + 64 * (i & q.size_mask))
+    p_ptr = convert(Ptr{AQLPacket}, q.base_address + 64 * (i & q.size_mask))
 
-    return unsafe_convert(AQLPacket, p_ptr)
+    return unsafe_load(p_ptr)
 end
 
 import Base.setindex!
@@ -123,7 +123,7 @@ function setindex!(q :: Queue, p :: AQLPacket, i)
     assert(i >= 0)
     i = convert(UInt32, i)
 
-    p_ptr = convert(Ptr{Void}, q.base_address + 64 * (i & q.size_mask))
+    p_ptr = convert(Ptr{AQLPacket}, q.base_address + 64 * (i & q.size_mask))
 
     unsafe_store!(p_ptr, p)
 end

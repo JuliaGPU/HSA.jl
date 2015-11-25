@@ -22,11 +22,11 @@ end
 
 # Emulated version of intrinsic functions
 # mainly for testing and execution on the CPU
-function get_global_id(ctx::EmulationContext, dim::Int32)
+function get_global_id(ctx::EmulationContext, dim::UInt32)
     return ctx.global_id[dim + 1]
 end
 
-function get_global_size(ctx::EmulationContext, dim::Int32)
+function get_global_size(ctx::EmulationContext, dim::UInt32)
     return ctx.global_size[dim + 1]
 end
 
