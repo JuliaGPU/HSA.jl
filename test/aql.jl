@@ -24,14 +24,14 @@ facts("AQL Packets") do
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # reserved
         0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # completion_signal
     ]
-    dispatch_ptr = convert(Ptr{Void}, pointer(dispatch_bytes))
+    dispatch_ptr = convert(Ptr{AQLPacket}, pointer(dispatch_bytes))
 
     dispatch_1d_bytes = copy(dispatch_bytes)
     dispatch_1d_bytes[3] = 0x01
     dispatch_1d_bytes[7] = 0x01
     dispatch_1d_bytes[9] = 0x01
 
-    dispatch_1d_ptr = convert(Ptr{Void}, pointer(dispatch_1d_bytes))
+    dispatch_1d_ptr = convert(Ptr{AQLPacket}, pointer(dispatch_1d_bytes))
 
     agent_bytes = UInt8[
         HSA.PacketTypeAgentDispatch,
@@ -49,7 +49,7 @@ facts("AQL Packets") do
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # reserved
         0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # completion_signal
     ]
-    agent_ptr = convert(Ptr{Void}, pointer(agent_bytes))
+    agent_ptr = convert(Ptr{AQLPacket}, pointer(agent_bytes))
 
     barrier_bytes = UInt8[
         HSA.PacketTypeBarrierAnd,
@@ -67,11 +67,11 @@ facts("AQL Packets") do
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # reserved
         0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # completion_signal
     ]
-    barrier_ptr = convert(Ptr{Void}, pointer(barrier_bytes))
+    barrier_ptr = convert(Ptr{AQLPacket}, pointer(barrier_bytes))
 
     context("PacketHeader") do
         context("can be loaded") do
-            header = HSA.unsafe_convert(HSA.PacketHeader, dispatch_ptr)
+            header = unsafe_load(convert(Ptr{PacketHeader}, dispatch_ptr))
             @fact header.typ --> HSA.PacketTypeKernelDispatch
             @fact header.barrier --> true
             @fact header.acquire_fence_scope --> HSA.FenceScopeAgent
@@ -80,10 +80,10 @@ facts("AQL Packets") do
 
         context("can be stored") do
             hdr_bytes = Array(UInt8, 2)
-            hdr_ptr = convert(Ptr{Void}, pointer(hdr_bytes))
+            hdr_ptr = convert(Ptr{PacketHeader}, pointer(hdr_bytes))
 
-            hdr = HSA.unsafe_convert(HSA.PacketHeader, dispatch_ptr)
-            HSA.unsafe_store!(hdr_ptr, hdr)
+            hdr = unsafe_load(convert(Ptr{PacketHeader}, dispatch_ptr))
+            unsafe_store!(hdr_ptr, hdr)
 
             @fact hdr_bytes --> dispatch_bytes[1:2]
         end
@@ -128,14 +128,9 @@ facts("AQL Packets") do
         end
     end
 
-    context("VendorPackets") do
-
-
-    end
-
     context("KernelDispatchPackets") do
         context("can be loaded") do
-            dp = HSA.unsafe_convert(HSA.AQLPacket, dispatch_ptr)
+            dp = unsafe_load(dispatch_ptr)
 
             @fact isa(dp, HSA.KernelDispatchPacket) --> true
 
@@ -154,19 +149,19 @@ facts("AQL Packets") do
             @fact dp.private_segment_size --> 0x00000020
             @fact dp.group_segment_size --> 0x00000030
             @fact dp.kernel_object --> 0x0000000000000001
-            @fact dp.kernarg_address --> 0x0000000000000002
+            @fact UInt64(dp.kernarg_address) --> 0x0000000000000002
             @fact dp.completion_signal.handle --> 0x0000000000000010
 
-            dp1d = HSA.unsafe_convert(HSA.AQLPacket, dispatch_1d_ptr)
+            dp1d = unsafe_load(dispatch_1d_ptr)
             @fact dp1d.dimensions --> 0x0001
         end
 
         context("can be stored") do
             pkt_bytes = Array(UInt8, 64)
-            pkt_ptr = convert(Ptr{Void}, pointer(pkt_bytes))
+            pkt_ptr = convert(Ptr{AQLPacket}, pointer(pkt_bytes))
 
-            dp = HSA.unsafe_convert(HSA.AQLPacket, dispatch_ptr)
-            HSA.unsafe_store!(pkt_ptr, dp)
+            dp = unsafe_load(dispatch_ptr)
+            unsafe_store!(pkt_ptr, dp)
 
             @fact pkt_bytes --> dispatch_bytes
         end
@@ -186,7 +181,7 @@ facts("AQL Packets") do
             @fact dp1.private_segment_size --> 0
             @fact dp1.group_segment_size --> 0
             @fact dp1.kernel_object --> 0
-            @fact dp1.kernarg_address --> 0
+            @fact UInt64(dp1.kernarg_address) --> 0
             @fact dp1.completion_signal.handle --> 0
         end
     end
@@ -194,17 +189,17 @@ facts("AQL Packets") do
     context("InvalidPackets") do
         in_disp_bytes = copy(dispatch_bytes)
         in_disp_bytes[1] = convert(UInt8, HSA.PacketTypeInvalid)
-        in_disp_ptr = convert(Ptr{Void}, pointer(in_disp_bytes))
+        in_disp_ptr = convert(Ptr{AQLPacket}, pointer(in_disp_bytes))
 
         context("Can be loaded") do
-            p = HSA.unsafe_convert(HSA.AQLPacket, in_disp_ptr)
+            p = unsafe_load(in_disp_ptr)
 
             @fact isa(p, InvalidPacket) --> true
             @fact p.bytes --> in_disp_bytes
         end
 
         context("Can be reinterpreted as a KernelDispatchPacket") do
-            p = HSA.unsafe_convert(HSA.AQLPacket, in_disp_ptr)
+            p = unsafe_load(in_disp_ptr)
             id = convert(KernelDispatchPacket, p)
 
             @fact id.header.typ --> HSA.PacketTypeInvalid
@@ -213,7 +208,7 @@ facts("AQL Packets") do
 
     context("AgentDispatchPackets") do
         context("can be loaded") do
-            ad = HSA.unsafe_convert(HSA.AQLPacket, agent_ptr)
+            ad = unsafe_load(agent_ptr)
 
             @fact isa(ad, HSA.AgentDispatchPacket) --> true
 
@@ -233,10 +228,10 @@ facts("AQL Packets") do
 
         context("can be stored") do
             pkt_bytes = Array(UInt8, 64)
-            pkt_ptr = convert(Ptr{Void}, pointer(pkt_bytes))
+            pkt_ptr = convert(Ptr{AQLPacket}, pointer(pkt_bytes))
 
-            ad = HSA.unsafe_convert(HSA.AQLPacket, agent_ptr)
-            HSA.unsafe_store!(pkt_ptr, ad)
+            ad = unsafe_load(agent_ptr)
+            unsafe_store!(pkt_ptr, ad)
 
             @fact pkt_bytes --> agent_bytes
         end
@@ -244,7 +239,7 @@ facts("AQL Packets") do
 
     context("BarrierPacket") do
         context("can be loaded") do
-            bp = HSA.unsafe_convert(HSA.AQLPacket, barrier_ptr)
+            bp = unsafe_load(barrier_ptr)
 
             @fact isa(bp, HSA.BarrierPacket) --> true
 
@@ -260,18 +255,18 @@ facts("AQL Packets") do
 
         context("can be stored") do
             pkt_bytes = Array(UInt8, 64)
-            pkt_ptr = convert(Ptr{Void}, pointer(pkt_bytes))
+            pkt_ptr = convert(Ptr{AQLPacket}, pointer(pkt_bytes))
 
-            b = HSA.unsafe_convert(HSA.AQLPacket, barrier_ptr)
-            HSA.unsafe_store!(pkt_ptr, b)
+            b = unsafe_load(barrier_ptr)
+            unsafe_store!(pkt_ptr, b)
 
             @fact pkt_bytes --> barrier_bytes
         end
     end
 
     context("Can be compared for equality") do
-        p1 = HSA.unsafe_convert(HSA.AQLPacket, dispatch_ptr)
-        p2 = HSA.unsafe_convert(HSA.AQLPacket, dispatch_ptr)
+        p1 = unsafe_load(dispatch_ptr)
+        p2 = unsafe_load(dispatch_ptr)
 
         @fact p1 == p2 --> true
     end

@@ -1,5 +1,10 @@
 export PacketHeader
 
+"""
+Replacement type for `hsa_packet_header_t`
+
+Packed fields have been promoted to full fields for ease of use
+"""
 type PacketHeader
     typ :: UInt8 # hsa_packet_type_t
     barrier :: Bool
@@ -21,6 +26,7 @@ end
 
 import Base.==
 
+"Structural equality for `PacketHeader`s"
 function ==(h1 :: PacketHeader, h2 :: PacketHeader)
     return h1.typ == h2.typ &&
         h1.barrier == h2.barrier &&
@@ -28,28 +34,31 @@ function ==(h1 :: PacketHeader, h2 :: PacketHeader)
         h1.release_fence_scope == h2.release_fence_scope
 end
 
-import Base.unsafe_convert
+import Base.unsafe_load
 
-function unsafe_convert(::Type{PacketHeader}, ptr :: Ptr{Void})
+function unsafe_load(ptr :: Ptr{PacketHeader}, i::Integer = 1)
     if ptr == C_NULL
         error("invalid packet pointer")
     end
 
-    h_ptr = convert(Ptr{UInt8}, ptr)
+    # the header is stored in 2 bytes, apply offset
+    h_ptr = convert(Ptr{UInt8}, ptr + (i-1)*2)
 
+    # load bytes and reconstruct field values
     h_type = unsafe_load(h_ptr)
     byte2 = unsafe_load(h_ptr + 1)
-    h_barrier = (byte2 & 0x01) != 0x00
-    h_acq_fen = (byte2 >> 1) & 0x03
-    h_rel_fen = (byte2 >> 3) & 0x03
+    h_barrier = (byte2 & 0x01) != 0x00 # bit flag
+    h_acq_fen = (byte2 >> 1) & 0x03    # 2-bit value
+    h_rel_fen = (byte2 >> 3) & 0x03    # 2-bit value
 
     return PacketHeader(h_type, h_barrier, h_acq_fen, h_rel_fen)
 end
 
 import Base.unsafe_store!
 
-function unsafe_store!(ptr :: Ptr{Void}, hdr :: PacketHeader)
-    h_ptr = convert(Ptr{UInt8}, ptr)
+function unsafe_store!(ptr :: Ptr{PacketHeader}, hdr :: PacketHeader, i :: Integer = 1)
+    # the header is stored in 2 bytes, apply offset
+    h_ptr = convert(Ptr{UInt8}, ptr + (i-1) * 2)
 
     h_byte2 =
         ((hdr.barrier) ? 0x01 : 0x00) |
@@ -67,15 +76,22 @@ function copy(hdr :: PacketHeader)
     return PacketHeader(hdr.typ, hdr.barrier, hdr.acquire_fence_scope, hdr.release_fence_scope)
 end
 
+export AQLPacket
 abstract AQLPacket
+
+const AQLPacketSize = 64
 
 import Base.==
 
+"""
+Compares two `AQLPacket`s for equality by serializing them and
+comparing their byte sequences
+"""
 function ==(p1 :: AQLPacket, p2 :: AQLPacket)
-    bytes1 = Array(UInt8, 64)
-    bytes2 = Array(UInt8, 64)
-    bytes1_ptr = convert(Ptr{Void}, pointer(bytes1))
-    bytes2_ptr = convert(Ptr{Void}, pointer(bytes2))
+    bytes1 = Array(UInt8, AQLPacketSize)
+    bytes2 = Array(UInt8, AQLPacketSize)
+    bytes1_ptr = convert(Ptr{AQLPacket}, pointer(bytes1))
+    bytes2_ptr = convert(Ptr{AQLPacket}, pointer(bytes2))
 
     unsafe_store!(bytes1_ptr, p1)
     unsafe_store!(bytes2_ptr, p2)
@@ -85,6 +101,24 @@ end
 
 export KernelDispatchPacket
 
+"""
+Replacement type for `hsa_kernel_dispatch_packet_t`
+
+Packed fields (header, setup) have been promoted to full fields for ease of use
+
+The constructor supports passing the range and workgroup size as a `Tuple` or an `Integer`.
+Examples:
+    # Linear range
+    KernelDispatchPacket(kernel_object, 10)
+    # or
+    KernelDispatchPacket(kernel_object, (10,))
+
+    # 2D Range
+    KernelDispatchPacket(kernel_object, (10,10))
+
+    # 3D Range
+    KernelDispatchPacket(kernel_object, (10,10,10))
+"""
 type KernelDispatchPacket <: AQLPacket
     header :: PacketHeader
     dimensions :: UInt16
@@ -178,9 +212,21 @@ type KernelDispatchPacket <: AQLPacket
     end
 end
 
-function load(::Type{AQLPacket}, ::Type{Val{PacketTypeKernelDispatch}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
+"Load an AQL Packet of type KernelDispatch"
+function load_packet(::Type{Val{PacketTypeKernelDispatch}}, ptr :: Ptr{AQLPacket}, p_hdr :: PacketHeader)
+    unsafe_load(convert(Ptr{KernelDispatchPacket}, ptr), 1, p_hdr)
+end
+
+function unsafe_load(ptr :: Ptr{KernelDispatchPacket}, i :: Integer = 1, p_hdr :: PacketHeader = nothing)
     if ptr == C_NULL
         error("invalid packet pointer")
+    end
+
+    # Apply offset, if necessary
+    ptr = ptr + (i-1) * AQLPacketSize
+
+    if p_hdr == nothing
+        p_hdr = unsafe_load(convert(Ptr{PacketHeader},ptr))
     end
 
     p_dims = unsafe_load(convert(Ptr{UInt16}, ptr + 2)) & 0x03
@@ -214,10 +260,16 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeKernelDispatch}}, ptr :: P
     return res
 end
 
-function unsafe_store!(ptr :: Ptr{Void}, dp :: KernelDispatchPacket)
+unsafe_store!(ptr :: Ptr{KernelDispatchPacket}, p :: KernelDispatchPacket) =
+    unsafe_store!(convert(Ptr{KernelDispatchPacket}, ptr), p)
+
+function unsafe_store!(ptr :: Ptr{AQLPacket}, dp :: KernelDispatchPacket, i :: Integer = 1)
     if dp.header.typ != PacketTypeKernelDispatch
         error("not a dispatch packet")
     end
+
+    # Apply offset, if necessary
+    ptr = ptr + (i-1) * AQLPacketSize
 
     unsafe_store!(convert(Ptr{UInt16}, ptr + 2), convert(UInt16, dp.dimensions)) # setup
     unsafe_store!(convert(Ptr{UInt16}, ptr + 4), dp.workgroup_size_x)
@@ -234,7 +286,7 @@ function unsafe_store!(ptr :: Ptr{Void}, dp :: KernelDispatchPacket)
     unsafe_store!(convert(Ptr{UInt64}, ptr + 48), 0x00)    # UInt64 reserved
     unsafe_store!(convert(Ptr{UInt64}, ptr + 56), dp.completion_signal.handle)
 
-    unsafe_store!(ptr, dp.header)
+    unsafe_store!(convert(Ptr{PacketHeader}, ptr), dp.header)
 end
 
 export AgentDispatchPacket
@@ -266,7 +318,20 @@ type AgentDispatchPacket <: AQLPacket
     end
 end
 
-function load(::Type{AQLPacket}, ::Type{Val{PacketTypeAgentDispatch}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
+"Load an AQL Packet of type AgentDispatch"
+function load_packet(::Type{Val{PacketTypeAgentDispatch}}, ptr :: Ptr{AQLPacket}, p_hdr :: PacketHeader)
+    unsafe_load(convert(Ptr{AgentDispatchPacket}, ptr), 1, p_hdr)
+end
+
+function unsafe_load(ptr :: Ptr{AgentDispatchPacket}, i :: Integer = 1, p_hdr :: PacketHeader = nothing)
+    # Apply offset, if necessary
+    ptr = ptr + (i-1) * AQLPacketSize
+
+    if p_hdr == nothing
+        p_hdr = unsafe_load(convert(Ptr{PacketHeader},ptr))
+    end
+
+    # Restore Packet fields
     p_type = unsafe_load(convert(Ptr{UInt16}, ptr + 2))
     # UInt32 reserved
     p_retu = unsafe_load(convert(Ptr{UInt64}, ptr + 8))
@@ -284,7 +349,13 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeAgentDispatch}}, ptr :: Pt
         completion_signal = hsa_signal_t(p_comp))
 end
 
-function unsafe_store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)
+unsafe_store!(ptr :: Ptr{AQLPacket}, p :: AgentDispatchPacket) =
+    unsafe_store!(convert(Ptr{AgentDispatchPacket}, ptr), p)
+
+function unsafe_store!(ptr :: Ptr{AgentDispatchPacket}, ad :: AgentDispatchPacket, i :: Integer = 1)
+    # Apply offset, if necessary
+    ptr = ptr + (i-1) * AQLPacketSize
+
     unsafe_store!(convert(Ptr{UInt16}, ptr + 2), ad.typ)
     unsafe_store!(convert(Ptr{UInt32}, ptr + 4), 0x00000000) # UInt32 reserved
     unsafe_store!(convert(Ptr{UInt64}, ptr + 8), ad.return_address)
@@ -296,7 +367,7 @@ function unsafe_store!(ptr :: Ptr{Void}, ad :: AgentDispatchPacket)
     unsafe_store!(convert(Ptr{UInt64}, ptr + 48), 0x0000000000000000)    # UInt64 reserved
     unsafe_store!(convert(Ptr{UInt64}, ptr + 56), ad.completion_signal.handle)
 
-    unsafe_store!(ptr, ad.header)
+    unsafe_store!(convert(Ptr{PacketHeader}, ptr), ad.header)
 end
 
 export BarrierPacket
@@ -308,7 +379,20 @@ type BarrierPacket <: AQLPacket
     completion_signal :: hsa_signal_t
 end
 
-function load(::Type{AQLPacket}, ::Type{Val{PacketTypeBarrierAnd}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
+"Load an AQL Packet of type Barrier"
+function load_packet(::Type{Val{PacketTypeBarrierAnd}}, ptr :: Ptr{AQLPacket}, p_hdr :: PacketHeader)
+    unsafe_load(convert(Ptr{BarrierPacket}, ptr), 1, p_hdr)
+end
+
+function unsafe_load(ptr :: Ptr{BarrierPacket}, i :: Integer = 1, p_hdr :: PacketHeader = nothing)
+    # Apply offset, if necessary
+    ptr = ptr + (i-1) * AQLPacketSize
+
+    if p_hdr == nothing
+        p_hdr = unsafe_load(convert(Ptr{PacketHeader},ptr))
+    end
+
+    # Restore Fields
     p_dep = Array(UInt64, 5)
     p_dep_ptr = convert(Ptr{UInt64}, pointer(p_dep))
 
@@ -318,7 +402,13 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeBarrierAnd}}, ptr :: Ptr{V
     return BarrierPacket(p_hdr, false, p_dep, p_comp)
 end
 
-function unsafe_store!(ptr :: Ptr{Void}, bp :: BarrierPacket)
+unsafe_store!(ptr :: Ptr{BarrierPacket}, bp :: BarrierPacket) =
+    unsafe_store(convert(Ptr{AQLPacket}, ptr), bp)
+
+function unsafe_store!(ptr :: Ptr{AQLPacket}, bp :: BarrierPacket, i :: Integer = 1)
+    # Apply offset, if necessary
+    ptr = ptr + (i-1) * AQLPacketSize
+
     p_dep_ptr = convert(Ptr{UInt64}, pointer(bp.dep_signal))
 
     unsafe_store!(convert(Ptr{UInt16}, ptr + 2), 0)
@@ -331,7 +421,7 @@ function unsafe_store!(ptr :: Ptr{Void}, bp :: BarrierPacket)
     unsafe_store!(convert(Ptr{UInt64}, ptr + 48), 0)
     unsafe_store!(convert(Ptr{UInt64}, ptr + 56), bp.completion_signal)
 
-    unsafe_store!(ptr, bp.header)
+    unsafe_store!(convert(Ptr{PacketHeader}, ptr), bp.header)
 end
 
 export InvalidPacket
@@ -348,7 +438,20 @@ type InvalidPacket
     end
 end
 
-function load(::Type{AQLPacket}, ::Type{Val{PacketTypeInvalid}}, ptr :: Ptr{Void}, p_hdr :: PacketHeader)
+"Load an AQL Packet of invalid type"
+function load_packet(::Type{Val{PacketTypeInvalid}}, ptr :: Ptr{AQLPacket}, p_hdr :: PacketHeader)
+    unsafe_load(convert(Ptr{InvalidPacket}, ptr), 1, p_hdr)
+end
+
+function unsafe_load(ptr :: Ptr{InvalidPacket}, i :: Integer, p_hdr :: PacketHeader = nothing)
+    # Apply offset, if necessary
+    ptr = ptr + (i-1) * AQLPacketSize
+
+    if p_hdr == nothing
+        p_hdr = unsafe_load(convert(Ptr{PacketHeader},ptr))
+    end
+
+    # Load the packet as bytes, since we don't know what fields it has
     bytes = Array(UInt8, 64)
 
     unsafe_copy!(pointer(bytes), convert(Ptr{UInt8}, ptr), 64)
@@ -357,14 +460,18 @@ function load(::Type{AQLPacket}, ::Type{Val{PacketTypeInvalid}}, ptr :: Ptr{Void
 end
 
 function convert(::Type{KernelDispatchPacket}, p :: InvalidPacket)
-    ptr = convert(Ptr{Void}, pointer(p.bytes))
-    return load(AQLPacket, Val{PacketTypeKernelDispatch}, ptr, p.header)
+    ptr = convert(Ptr{AQLPacket}, pointer(p.bytes))
+    return load_packet(Val{PacketTypeKernelDispatch}, ptr, p.header)
 end
 
-function unsafe_convert(::Type{AQLPacket}, ptr :: Ptr{Void})
-    hdr = unsafe_convert(PacketHeader, ptr)
+load_packet(typ, ptr, p_hdr) = error("Unknown AQL Packet Type")
 
-    packet = load(AQLPacket, Val{hdr.typ}, ptr, hdr)
+function unsafe_load(ptr :: Ptr{AQLPacket}, i :: Integer = 1)
+    # load the header to determine the packet type
+    hdr = unsafe_load(convert(Ptr{PacketHeader}, ptr))
+
+    # dispatch to the right method via the type
+    packet = load_packet(Val{hdr.typ}, ptr, hdr)
 
     return packet
 end
