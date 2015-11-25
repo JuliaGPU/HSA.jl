@@ -1,13 +1,30 @@
+"The name of the generated variable for holding the return value"
 const var = :value
 
+"""
+Describes a specific HSA getter method.
+
+Has support for the following call signatures:
+
+    getter(attr, value)
+    getter(obj, attr, value)
+    getter(obj, attr, index, value)
+
+examples
+
+    hsa_system_get_info(attr, out_value)
+    hsa_agent_get_info(obj, attr, out_value)
+    hsa_isa_get_info(obj, attr, call_conv_index, out_value)
+"""
 type GetterSpec
     name
     argnames
     argtypes
 
-    attr_idx
-    index_idx
+    attr_idx  # index of the 'attr' argument (1 or 2)
+    index_idx # index of the 'index' argument, if any (nothing or 3)
 
+    # description of the return value for each available attribute
     result_specs
 
     # Simple validating constructor
@@ -16,10 +33,6 @@ type GetterSpec
         namelen = length(argnames)
         typelen = length(argtypes)
         @assert namelen == typelen
-        # Support for the following call signatures:
-        # getter(attr, value)
-        # getter(obj, attr, value)
-        # getter(obj, attr, index, value)
         @assert namelen >= 2 && namelen <= 4
 
         if namelen <= 3
@@ -30,6 +43,23 @@ type GetterSpec
     end
 end
 
+"""
+Describes the result of calling a getter with a specific attribute
+
+Examples:
+
+Single value returned:
+    ResultSpec(Uint16)
+
+Fixed length Array returned:
+    ResultSpec(Uint8, 128)
+
+String with the length from another attribute:
+    ResultSpec(AbstractString, :HSA_XYZ_NAME_LENGTH)
+
+Indexed property (e.g. call convention properties for ISAs)
+    ResultSpec(Uint16; indexed = true)
+"""
 type ResultSpec
     eltype
     count
@@ -42,6 +72,9 @@ type ResultSpec
     end
 end
 
+"""
+Collects all information on a getter so it can later be converted to code
+"""
 type Getter
     signature
     setup_code
@@ -173,7 +206,8 @@ function getter_ccall(getter_spec, key)
     return Expr(:ccall, ccall_args...)
 end
 
-const getters = []
+"Holds GetterSpecs for all known getters"
+const getters = GetterSpec[]
 
 push!(getters,
     GetterSpec(
@@ -310,6 +344,9 @@ push!(getters,
     )
 )
 
+"""
+Generates our custom getter methods from the specifications above
+"""
 function gen_getters(obuf)
     for spec in getters
         for m_key in keys(spec.result_specs)
@@ -319,7 +356,6 @@ function gen_getters(obuf)
 
             methodname = method.signature.args[1]
 
-            #push!(obuf, :(export $methodname))
             push!(obuf, code)
         end
     end

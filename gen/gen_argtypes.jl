@@ -1,4 +1,7 @@
-"Maps some argument types from hsa_*_t to special wrapper types in the julia API"
+"""
+Maps some argument types from hsa_*_t to special wrapper types in the julia API
+The mappings are stored in `HSA.argtype_map` defined by def.jl
+"""
 function map_argtypes(obuf)
     for exu in obuf
         if isa(exu, Expr) && exu.head == :function

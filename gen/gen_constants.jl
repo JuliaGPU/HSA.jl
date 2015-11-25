@@ -1,4 +1,9 @@
+"""
+Adds aliases for HSA_* constants that use CamelCasing instead
+of underscores and drop the HSA prefix
+"""
 function map_constants(obuf)
+    "Replace the type of some well known constants"
     function getCustomType(camelName)
         const custom_type = [
             ( r"PacketType*", :UInt8 )
@@ -13,6 +18,7 @@ function map_constants(obuf)
         end
     end
 
+    "Converts the caps and underscores naming to camelcase"
     function toCamel(str)
         stream = IOBuffer()
 
@@ -28,6 +34,7 @@ function map_constants(obuf)
 
     for exu in obuf
         if isa(exu, Expr) && exu.head == :const && length(exu.args) >= 1
+            # Find all constant definitions and process them
             assign = exu.args[1]
 
             if isa(assign, Expr) && assign.head == :(=)

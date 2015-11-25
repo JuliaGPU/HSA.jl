@@ -2,12 +2,6 @@ export Agent
 
 type Agent
     handle :: hsa_agent_t
-
-    function Agent(h :: hsa_agent_t)
-        assert_runtime_alive()
-
-        new(h)
-    end
 end
 
 import Base.convert
@@ -17,6 +11,10 @@ convert(::Type{hsa_agent_t}, a :: Agent) = a.handle
 # Iterate Agents
 const iterate_agents_cb_ptr = cfunction(iterate_cb, hsa_status_t, (hsa_agent_t, Ptr{Void}))
 
+"""
+Iterates over all available HSA agents and calls `callback(a::Agent)` for each one
+until a call returns false or there are no more agents.
+"""
 function iterate_agents(callback::Function)
     state = IterState(
         function(x)
@@ -36,6 +34,10 @@ function iterate_agents(callback::Function)
     test_status(err)
 end
 
+"""
+Returns all available HSA agents, optionally filtered by
+agent features or device type
+"""
 function all_agents(;
     feat :: hsa_agent_feature_t = (hsa_agent_feature_t)(0),
     dev :: hsa_device_type_t = (hsa_device_type_t)(0))
@@ -56,6 +58,10 @@ function all_agents(;
     return agents
 end
 
+"""
+Collects all attributes of an agent into one object
+which makes calling the getters unnecessary
+"""
 type AgentInfo
     agent :: Agent
     name :: AbstractString
@@ -75,6 +81,9 @@ type AgentInfo
     cache_size :: Tuple{UInt32,UInt32,UInt32,UInt32}
 end
 
+"""
+Fills an AgentInfo by calling all attribute getters on `a`
+"""
 function AgentInfo(a :: Agent)
     AgentInfo(
         a,
@@ -96,6 +105,9 @@ function AgentInfo(a :: Agent)
     )
 end
 
+"""
+Fills an AgentInfo by calling all attribute getters on `a`
+"""
 agent_info(a::Agent) = AgentInfo(a)
 
 

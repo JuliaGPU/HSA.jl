@@ -2,6 +2,12 @@
 # hsa_iterate_agents
 # hsa_agent_iterate_regions
 
+"""
+Holds information on an iteration in progress.
+
+This is passed via the user state parameter of HSA's iterate_* methods
+to our generic C callback
+"""
 type IterState
     inner_cb::Function
     err::Nullable{Exception}
@@ -9,6 +15,11 @@ type IterState
     IterState(cb) = new(cb, Nullable{Exception}())
 end
 
+"""
+Generic iteration C callback for a callback signature like
+    callback(hsa_xyz_t, void*)
+Expects `state_ptr` to be an IterState and calls its callback.
+"""
 function iterate_cb(x, state_ptr::Ptr{Void})
     # common initialization
     if state_ptr == C_NULL
@@ -29,6 +40,11 @@ function iterate_cb(x, state_ptr::Ptr{Void})
     return iterate_cb_common(wrapped_cb, state)
 end
 
+"""
+Generic iteration C callback for a callback signature like
+    callback(hsa_xyz_t, hsa_abc_t, void*)
+Expects `state_ptr` to be an IterState and calls its callback.
+"""
 function iterate_cb(x,y, state_ptr::Ptr{Void})
     # common initialization
     if state_ptr == C_NULL
@@ -49,6 +65,11 @@ function iterate_cb(x,y, state_ptr::Ptr{Void})
     return iterate_cb_common(wrapped_cb, state)
 end
 
+"""
+Common core for iteration callbacks that calls `callback` with no parameters
+and stores any errors that occur in the IterState for rethrowing later.
+If the callback returns anything but `false`, iteration continues.
+"""
 function iterate_cb_common(callback::Function, state)
     local cont
 

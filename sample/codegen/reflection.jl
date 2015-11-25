@@ -1,5 +1,4 @@
 using HSA
-using HSA.Builtins: get_global_id
 
 script_dir = dirname(@__FILE__)
 
